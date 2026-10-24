@@ -3,47 +3,41 @@
 <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#16201e"><meta name="description" content="A story of a pickpocket, a waiting son, and one more meal. A 2D survival game."><title>One More Meal</title>
  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2316201e'/%3E%3Cpath d='M12 32h40v8L42 50H22L12 40Z' fill='%23d6b77a'/%3E%3Cpath d='M22 25v-9m10 9V12m10 13v-9' stroke='%23d6b77a' stroke-width='4'/%3E%3C/svg%3E">
- <link rel="stylesheet" href="game.css?v=city-v6">
+ <link rel="stylesheet" href="game.css?v=ui-v7">
 </head>
-<body id="top">
-<div class="shell">
- <header class="masthead">
-  <a class="brand" href="#top" aria-label="One More Meal"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M5 22h30v5l-8 7H13l-8-7Z"/><path d="M12 16v-6m8 6V6m8 10v-6"/></svg><span><b data-i18n="title">One More Meal</b><small data-i18n="localTitle">THE WEIGHT OF A MEAL</small></span></a>
-  <div class="chapter"><i></i><span data-i18n="chapter"></span><small data-i18n="chapterNo"></small></div>
-  <nav class="header-actions"><select id="localeSelect" aria-label="Language"><option value="en">EN</option><option value="ko">한국어</option></select><button id="saveBtn" class="text-button save-button" title="F2"><svg viewBox="0 0 24 24"><path d="M4 3h13l4 4v14H3V3Z"/><path d="M7 3v6h10V3M7 21v-8h10v8"/></svg><span data-i18n="save"></span></button><button id="soundBtn" class="icon-button" aria-label="Turn sound on"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4Z"/><path class="sound-wave" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="muted-mark" d="m16 9 5 6m0-6-5 6"/></svg></button><button id="helpBtn" class="text-button"><span class="circle-help">?</span><span data-i18n="guide"></span></button><button id="fullscreenBtn" class="icon-button" aria-label="Fullscreen"><svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button id="pauseBtn" class="icon-button" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M8 5v14m8-14v14"/></svg></button></nav>
- </header>
- <main>
-  <div class="above-stage"><span><i class="live-dot"></i><span id="locationLabel"></span></span><span class="edition" data-i18n="edition"></span></div>
+<body>
   <section class="game-stage is-intro" id="stage" aria-label="One More Meal">
-   <canvas id="game" width="1440" height="840" tabindex="0" aria-label="2D survival game"></canvas><div class="scene-shade"></div>
-   <div class="game-hud" id="hud"><div class="day-hud"><div class="eyebrow" data-i18n="chapterNo"></div><h2 id="dayNumber"></h2><span id="dayBadge" class="day-badge"></span><p id="dayHint"></p><div class="story-state"><span id="hungerState"></span><span id="poisonState"></span></div></div><div class="food-hud"><div class="eyebrow" data-i18n="quotaTitle"></div><div class="food-slots" id="foodSlots" role="group"></div><div class="eyebrow coin-title" data-i18n="coinTitle"></div><div class="food-slots coin-slots" id="coinSlots" role="group"></div><small id="coinHint" class="coin-hint"></small><div class="meal-hint" id="mealHint"></div><div class="discard-note" id="discardNote" hidden><span data-i18n="holdDiscard"></span><div><i id="discardBar"></i></div></div></div></div>
+   <canvas id="game" width="1440" height="840" tabindex="0" aria-label="2D survival game"></canvas>
+   <button id="pauseBtn" class="pause-button" aria-label="Pause">Ⅱ</button>
+   <div id="hud" class="game-hud"><span id="dayNumber"></span><span id="healthNote" hidden></span></div>
    <div class="day-clock" id="dayClock"><span data-i18n="untilDusk"></span><strong id="timeLeft">02:30</strong><i><b id="timeBar"></b></i></div>
-   <div id="intro" class="intro"><div class="intro-content"><div class="intro-kicker"><i></i><span data-i18n="introKicker"></span></div><h1 data-i18n-html="introTitle"></h1><p class="intro-sub" data-i18n-html="introCopy"></p><button id="continueBtn" class="continue-button" hidden></button><button id="startBtn" class="primary-button"><span data-i18n="start"></span><b>↗</b></button><p class="intro-note" data-i18n="introNote"></p></div><div class="intro-foot"><span>✦</span><span data-i18n="introFoot"></span></div><div class="intro-scene-tag"><i></i><span data-i18n="nightTag"></span></div></div>
-   <button id="homePrompt" class="home-prompt" hidden><kbd data-control="home">M</kbd><div><strong id="homePromptTitle"></strong><small data-i18n="homeHint"></small></div><span>↗</span></button>
-   <div id="chaseTag" class="chase-tag" hidden><strong data-i18n="chase"></strong><small data-i18n="chaseHint"></small></div>
+   <div id="intro" class="intro"><div class="intro-content"><h1 data-i18n="title"></h1><p data-i18n="introOneLine"></p><button id="continueBtn" class="primary-button" hidden></button><button id="startBtn" class="primary-button" data-i18n="start"></button></div></div>
+   <button id="homePrompt" class="home-prompt" hidden><kbd data-control="home">M</kbd><div><strong id="homePromptTitle"></strong></div></button>
+   <div id="chaseTag" class="chase-tag" hidden><strong data-i18n="chase"></strong></div>
    <div id="toast" class="toast" role="status" aria-live="polite"></div>
    <div id="targetCard" class="target-card" hidden><div class="target-card-top"><kbd data-control="steal">E</kbd><div><strong id="targetName"></strong><small id="targetDetail"></small></div><b id="targetReward"></b></div><div class="steal-track"><i id="stealBar"></i></div><div class="suspicion-row"><span data-i18n="suspicion"></span><div><i id="suspicionBar"></i></div><span id="riskLabel"></span></div></div>
-   <div id="tutorialShade" class="tutorial-shade" hidden></div><div id="tutorial" class="tutorial" role="status"><kbd class="tutorial-arrow" id="tutorialKey">↔</kbd><p id="tutorialText"></p><small class="tutorial-paused" data-i18n="tutorialPaused"></small></div>
-   <div class="bottom-hud"><div class="attempt-hud"><span class="eyebrow" data-i18n="coinTitle"></span><div class="attempt-row"><div id="attempts"></div><strong id="attemptCount"></strong></div><p id="attemptHint"></p></div><div class="goal-hud"><span class="eyebrow" data-i18n="quotaTitle"></span><p id="goalText"></p><div class="goal-track"><i id="goalBar"></i></div><small data-i18n="homeEarly"></small></div></div>
+   <div id="tutorialShade" class="tutorial-shade" hidden></div><div id="tutorial" class="tutorial" role="status"><kbd class="tutorial-arrow" id="tutorialKey">↔</kbd><p id="tutorialText"></p></div>
+   <div class="bottom-hud" id="resourceHud">
+    <div class="hud-group"><span data-i18n="coinTitle"></span><div class="hud-slots" id="coinSlots" role="group"></div></div>
+    <div class="hud-group"><span data-i18n="mealTarget"></span><div class="hud-slots" id="foodSlots" role="group"></div></div>
+    <div class="hud-group"><span data-i18n="chances"></span><div class="hud-slots" id="attemptSlots" role="group"></div></div>
+   </div>
+   <div class="discard-note" id="discardNote" hidden><span data-i18n="holdDiscard"></span><div><i id="discardBar"></i></div></div>
    <div class="stamina" id="staminaWrap" hidden><span id="staminaLabel"></span><div><i id="staminaBar"></i></div></div>
    <div id="cinema" class="cinema" hidden><div class="cinema-top"><span id="cinemaDay"></span><small data-i18n="nightKicker"></small></div><div class="cinema-copy"><i></i><h2 id="nightTitle"></h2><p id="mealCopy"></p><button id="nextDayBtn" class="primary-button"><span id="nextDayText"></span><b>→</b></button></div><div class="night-summary"><span><span data-i18n="nightEarned"></span> <b id="nightEarned"></b></span><span><span data-i18n="nightSpent"></span> <b id="nightSpent"></b></span></div></div>
    <div id="binCard" class="bin-card" hidden><span class="eyebrow" data-i18n="binTitle"></span><p data-i18n="binCopy"></p><div><span data-i18n="takeFood"></span><span data-i18n="leaveFood"></span></div></div>
    <div id="hidePrompt" class="hide-prompt" hidden></div>
    <div id="doorPrompt" class="hide-prompt door-prompt" hidden></div><div id="shopPrompt" class="hide-prompt door-prompt shop-prompt" hidden></div>
-   <div id="pickpocket" class="pickpocket" hidden><div class="pick-coach" data-pick-coach hidden></div><div class="pick-top"><strong data-pick-title></strong><small data-pick-hint></small></div><canvas width="640" height="400"></canvas><div class="pick-bottom"><span data-pick-note></span><div class="pick-track"><i data-pick-bar></i></div></div></div>
+   <div id="pickpocket" class="pickpocket" hidden><div class="pick-top"><strong data-pick-title></strong><p data-pick-hint></p></div><canvas width="640" height="400"></canvas><div class="pick-bottom"><div class="pick-track"><i data-pick-bar></i></div></div></div>
    <div id="shell" class="pickpocket shell" hidden><div class="pick-top"><strong data-i18n="shellTitle"></strong><small data-i18n="shellHint"></small></div><canvas width="640" height="360"></canvas><div class="pick-bottom"><span data-shell-note></span><small class="shell-net" data-shell-net></small><button class="primary-button shell-bet" data-shell-bet><span data-i18n="shellBet"></span></button></div></div>
-   <div id="focusTag" class="focus-tag" data-i18n="focus" hidden></div>
-   <section id="dialogue" class="dialogue" role="dialog" aria-labelledby="sonSpeaker" hidden><div class="dialogue-top"><span id="sonSpeaker" data-i18n="son"></span><small id="dialogueCount"></small></div><p id="sonLine"></p><div class="dialogue-bottom"><small data-i18n="morningHint"></small><button id="dialogueNext" class="primary-button"><span></span><b>→</b></button></div></section>
+   <section id="dialogue" class="dialogue" role="dialog" aria-labelledby="sonSpeaker" hidden><div class="dialogue-top"><span id="sonSpeaker" data-i18n="son"></span><small id="dialogueCount"></small></div><p id="sonLine"></p><div class="dialogue-bottom"><button id="dialogueNext" class="primary-button"><span></span><b>→</b></button></div></section>
    <div id="endingOverlay" class="ending-overlay" hidden><div class="cinema-top"><span data-i18n="endingLabel"></span></div><div class="ending-copy"><i></i><h2 id="endingTitle"></h2><p id="endingCaption"></p><button id="endingSkip" class="ending-skip" data-i18n="skipEnding"></button><button id="endingRestart" class="primary-button" disabled><span data-i18n="overAction"></span><b>→</b></button></div></div>
    <div id="fade" class="fade"></div>
   </section>
-  <section class="under-stage"><div class="controls"><span><kbd data-control="left">A</kbd><kbd data-control="right">D</kbd><span data-i18n="move"></span></span><i></i><span class="advanced-control"><kbd data-control="run">SHIFT</kbd><span data-i18n="run"></span></span><i class="advanced-control"></i><span class="advanced-control"><kbd data-control="steal">E</kbd><span data-i18n="steal"></span></span><i class="advanced-control"></i><span class="advanced-control"><kbd data-control="home">M</kbd><span data-i18n="returnControl"></span></span><i></i><span class="advanced-control"><kbd data-control="hide">F</kbd><span data-i18n="hideControl"></span></span><i class="advanced-control"></i><span class="advanced-control"><kbd data-control="discard">G</kbd><span data-i18n="discardControl"></span></span><i></i><span class="advanced-control"><kbd data-control="enter">W</kbd><span data-i18n="enterControl"></span></span><i></i><span><kbd>ESC</kbd><span data-i18n="pauseControl"></span></span></div><div class="people-legend"><span><i class="person-dot common"></i><span data-i18n="civilian"></span></span><span><i class="person-dot rich"></i><span data-i18n="wealthy"></span></span><span><i class="person-dot police"></i><span data-i18n="police"></span></span></div></section>
-  <section class="story-strip"><div><span class="section-index" data-i18n="storyLabel"></span><p data-i18n-html="story"></p></div><p class="story-caption" data-i18n-html="storyCaption"></p><svg class="bowl-mark" viewBox="0 0 50 50" aria-hidden="true"><path d="M7 26h36v7L33 43H17L7 33Z"/><path d="M16 20v-7m9 7V8m9 12v-7"/></svg></section>
- </main>
- <footer><span>ONE MORE MEAL <b>·</b> <span data-i18n="localTitle"></span></span><span data-i18n="footer"></span><span>✦</span></footer>
-</div>
-<div class="modal-backdrop" id="modal" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1"><button id="closeModal" class="modal-close" aria-label="Close">×</button><span class="modal-kicker" id="modalKicker"></span><h2 id="modalTitle"></h2><div id="modalBody"></div><button id="modalAction" class="primary-button"><span></span><b>→</b></button></section></div>
-<script type="module" src="app.js?v=city-v6"></script>
-</body>
-</html>
-
+<div class="modal-backdrop" id="modal" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+<button id="closeModal" class="modal-close" aria-label="Back">←</button><h2 id="modalTitle"></h2><div id="modalBody"></div>
+<div id="preferences" hidden><div class="pref-controls"><select id="localeSelect" aria-label="Language"><option value="en">EN</option><option value="ko">한국어</option></select><button id="saveBtn" data-i18n="save"></button><button id="fullscreenBtn" data-i18n="fullscreen"></button></div><button id="soundBtn" data-i18n="toggleSound"></button></div>
+<button id="modalAction" class="primary-button"><span></span></button><div id="pauseChoices" hidden><button id="volumeTab" data-i18n="volume"></button><button id="controlsTab" data-i18n="controlsTitle"></button><button id="helpBtn" data-i18n="guide"></button></div>
+</section></div>
+<script type="module" src="app.js?v=ui-v7"></script>
+</body></html>

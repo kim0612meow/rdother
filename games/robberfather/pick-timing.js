@@ -1,3 +1,4 @@
+import {settings} from './settings.js?v=ui-v7';
 // Space gauge that runs on top of the wallet line while your hand is in the pocket.
 // Press Space while the white marker is in the gold zone. Pressing outside it, or letting the marker pass through untouched, is a mistake.
 // Every press throws the zone far away, so hammering the key never works.
@@ -15,7 +16,7 @@ export class Timing{
  update(dt,running){this.running=running;this.flash=Math.max(0,this.flash-dt);this.hit=Math.max(0,this.hit-dt);if(running){this.pos+=this.dir*dt/this.s.sweep;if(this.pos>1){this.pos=2-this.pos;this.dir=-1;}if(this.pos<0){this.pos=-this.pos;this.dir=1;}const inZone=this.pos>=this.zone[0]&&this.pos<=this.zone[1];if(this.inside&&!inZone){this.flash=.4;this.pending=true;this.newZone();}else this.inside=inZone;}
   if(this.pending){this.pending=false;return true;}return false;}
  draw(c){const b=BAR;c.save();if(!this.running)c.globalAlpha=.45;
-  c.fillStyle='#e1dcc0';c.font='bold 16px sans-serif';c.textAlign='right';c.fillText('SPACE',b.x-14,b.y+b.h-6);
+  c.fillStyle='#e1dcc0';c.font='bold 16px sans-serif';c.textAlign='right';c.fillText(settings.label('gauge'),b.x-14,b.y+b.h-6);
   c.fillStyle='#0b1512';c.fillRect(b.x-5,b.y-5,b.w+10,b.h+10);c.fillStyle=this.flash>0?'#7a2219':'#22302b';c.fillRect(b.x,b.y,b.w,b.h);
   c.fillStyle=this.hit>0?'#fff0b8':'#e7c27a';c.fillRect(b.x+b.w*this.zone[0],b.y,b.w*(this.zone[1]-this.zone[0]),b.h);
   const mx=b.x+b.w*this.pos;c.fillStyle='#ffffff';c.fillRect(mx-3,b.y-8,6,b.h+16);c.restore();}

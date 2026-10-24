@@ -1,10 +1,10 @@
-import {drawPocketBack} from './characters.js?v=city-v6';
+import {drawPocketBack} from './characters.js?v=ui-v7';
 // The pocket window, seen over the victim's back. Draw the wallet out along a line with the mouse while keeping the Space gauge in time.
 // The street keeps moving underneath, so suspicion and witnesses still count while you play.
 // When the victim starts to turn (look, set by app.js) press E to leave the pocket; reopening the same pocket picks up where you stopped.
-import {TYPES} from './engine.js?v=city-v6';
-import {Trace} from './pick-trace.js?v=city-v6';
-import {Timing} from './pick-timing.js?v=city-v6';
+import {TYPES} from './engine.js?v=ui-v7';
+import {Trace} from './pick-trace.js?v=ui-v7';
+import {Timing} from './pick-timing.js?v=ui-v7';
 // The Space gauge runs alongside the line everywhere but the tutorial. Set to false to go back to the mouse alone.
 const GAUGE=true;
 const RUSH=.7,W=640,H=400,START={x:206,y:252},HEAD={x:104,y:74};
@@ -56,7 +56,8 @@ export class Pickpocket{
   c.restore();
   if(look==='look'){c.fillStyle='rgba(190,30,24,.2)';c.fillRect(0,0,W,H);c.fillStyle='#ff5a45';c.font='bold 64px sans-serif';c.textAlign='center';c.fillText('!',HEAD.x+86,HEAD.y+44);}
   if(look==='wait'&&this.lastLook==='look')this.game.note='noteBack';this.lastLook=look;
-  const note=look==='warn'?'noteTurn':look==='look'?'noteLooking':this.game.note,el=this.root.querySelector('[data-pick-note]');
-  el.textContent=this.t(note);el.classList.toggle('bad',['noteOff','noteFast','noteMiss','noteTurn','noteLooking'].includes(note));this.root.querySelector('[data-pick-bar]').style.width=`${this.fraction*100}%`;
-  const coach=this.root.querySelector('[data-pick-coach]');coach.hidden=!this.coachKey;if(this.coachKey)coach.textContent=this.t(this.coachKey);}
+  const bad=['noteOff','noteFast','noteMiss','noteTurn','noteLooking'];const note=look==='warn'?'noteTurn':look==='look'?'noteLooking':this.game.note;
+  const key=this.coachKey||(this.gauge?'pickHintDual':'pickHintTrace');
+  const hint=this.root.querySelector('[data-pick-hint]');hint.textContent=this.t(key);hint.classList.toggle('bad',bad.includes(note));this.root.querySelector('[data-pick-bar]').style.width=(this.fraction*100)+'%';}
+
 }

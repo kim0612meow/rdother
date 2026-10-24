@@ -1,6 +1,6 @@
-import {WIDTH as W,HEIGHT as H} from './engine.js?v=city-v6';
+import {WIDTH as W,HEIGHT as H} from './engine.js?v=ui-v7';
 // HD-2D look: sharp pixel characters, with soft camera effects laid on top
-// (tilt-shift blur, bloom, light shafts, dust, colour grade, vignette).
+// (tilt-shift blur, bloom, light shafts, dust, colour grade).
 const canvas=(w,h)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
 const LOOK={
  day:{shaft:'255,222,160',shaftAlpha:.13,warm:'rgba(255,196,120,.16)',cool:'rgba(20,60,80,.22)',bloom:.32,dust:'255,236,190'},
@@ -28,6 +28,5 @@ export class HD2D{
   for(const d of this.dust){const x=(d.x+t*12*d.z)%W,y=(d.y+Math.sin(t*.6+d.p)*14+t*4*d.z)%H,a=(.18+.22*Math.sin(t*1.3+d.p))*d.z;if(a<=0)continue;out.fillStyle=`rgba(${L.dust},${a.toFixed(3)})`;const s=Math.round(1+d.z*2);out.fillRect(Math.round(x),Math.round(y),s,s);}
   // Colour grade: warm light on top, cool shadows below.
   out.globalCompositeOperation='soft-light';const grade=out.createLinearGradient(0,0,0,H);grade.addColorStop(0,L.warm);grade.addColorStop(1,L.cool);out.fillStyle=grade;out.fillRect(0,0,W,H);
-  // Vignette.
-  out.globalCompositeOperation='source-over';const v=out.createRadialGradient(W/2,focusY,H*.35,W/2,H/2,W*.68);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(4,8,10,.42)');out.fillStyle=v;out.fillRect(0,0,W,H);out.restore();}
+  out.restore();}
 }
