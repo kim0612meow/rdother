@@ -1,10 +1,10 @@
-import {Backgrounds} from './themes/backgrounds.js?v=city-v4';
-import {ROBBERY,kickReach} from './cinematics.js?v=city-v4';
-import {drawCharacter,drawChild,drawEating,drawAction,spritesReady} from './characters.js?v=city-v4';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=city-v4';
+import {Backgrounds} from './themes/backgrounds.js?v=city-v5';
+import {ROBBERY,kickReach} from './cinematics.js?v=city-v5';
+import {drawCharacter,drawChild,drawEating,drawAction,spritesReady} from './characters.js?v=city-v5';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=city-v5';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=city-v4';
-import {HD2D} from './hd2d.js?v=city-v4';
+import {t,getLocale} from './i18n.js?v=city-v5';
+import {HD2D} from './hd2d.js?v=city-v5';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
@@ -123,7 +123,14 @@ rect(c,0,0,W,H,'#7e947d');const sky=c.createLinearGradient(0,0,0,640);sky.addCol
  for(const id of g.closedShops){const x=SHOPS[id].door;line(c,x-44,470,x+44,620,'#6b4a2e',9);line(c,x+44,470,x-44,620,'#6b4a2e',9);rect(c,x-50,524,100,30,'#7a2219');label(c,t('barredSign'),x,545,15,'#f3d9c4','sans-serif');}
  if(g.target){const n=g.target;c.strokeStyle='#dcc58a';c.lineWidth=1.5;c.beginPath();c.ellipse(n.x,n.y+2,26,6,0,0,Math.PI*2);c.stroke();if(g.progress){const px=n.x+8*n.face,py=n.y-40;c.strokeStyle=g.suspicion>.65?'#e0a078':'#ead095';c.lineWidth=2;c.beginPath();c.arc(px,py,12,-Math.PI/2,-Math.PI/2+Math.PI*2*g.progress/TYPES[n.type].hold);c.stroke();}else{const px=n.x+8*n.face,py=n.y-40,pulse=.5+.5*Math.sin(time*6);c.strokeStyle=`rgba(240,206,128,${.45+.5*pulse})`;c.lineWidth=2;c.strokeRect(px-7-pulse*2,py-6-pulse*2,14+pulse*4,12+pulse*4);}}
  c.restore();if(g.chasers.length)rect(c,0,0,W,H,'#a04f3217');const dusk=1-g.timeLeft/RULES.daySeconds;if(dusk>.45)rect(c,0,0,W,H,`rgba(92,53,32,${(dusk-.45)*.38})`);if(!this.reduced)for(let i=0;i<18;i++){const x=(i*131+time*(7+i%4)-cam*.1)%W,y=320+(i*43+Math.sin(time+i)*12)%370;rect(c,x,y,1,2,'#e2d7a64b');}}
- box(c,b,occupied){if(this.backgrounds.prop(c,'crate',b.x,GROUND,82,66)){label(c,t(occupied?'hiddenStatus':'boxSign'),b.x,GROUND-84,10,'#dcc7a2','sans-serif');return;}if(this.backgrounds.ready){const x=b.x,y=GROUND;rect(c,x-40,y-61,80,61,'#4f3d2e');rect(c,x-36,y-56,72,50,'#7f6346');for(let i=0;i<5;i++){rect(c,x-35+i*14,y-55,2,49,'#4b3b2b');line(c,x-31+i*14,y-48,x-29+i*14,y-13,'#9a7b5555',1);}line(c,x-33,y-52,x+33,y-9,'#b09468',5);line(c,x+33,y-52,x-33,y-9,'#aa8b5e',5);rect(c,x-43,y-65,86,8,'#a88b61');rect(c,x-40,y-5,80,6,'#49392d');label(c,t(occupied?'hiddenStatus':'boxSign'),x,y-83,10,'#ddcba8','sans-serif');return;}
+ box(c,b,occupied){
+  if(this.backgrounds.props.cover){
+   const x=b.x,y=GROUND;c.save();c.fillStyle='#11191566';c.beginPath();c.ellipse(x-2,y+1,94,7,0,0,Math.PI*2);c.fill();
+   if(occupied){c.globalAlpha=.9;person(c,{x:x+37,y:y-2,face:-1,pose:'seated',walk:0},true,1.75);c.globalAlpha=1;}
+   this.backgrounds.prop(c,'cover',x,y,196,this.backgrounds.props.cover.height);
+   if(occupied){rect(c,x-78,y-143,156,24,'#142b24e8');label(c,t('hiddenStatus'),x,y-126,13,'#e7d2a1','sans-serif');poly(c,[[x+32,y-82],[x+42,y-82],[x+37,y-76]],'#dfc184');}else label(c,t('boxSign'),x,y-120,11,'#d3c29f','sans-serif');c.restore();return;
+  }
+  if(this.backgrounds.prop(c,'crate',b.x,GROUND,82,66)){label(c,t(occupied?'hiddenStatus':'boxSign'),b.x,GROUND-84,10,'#dcc7a2','sans-serif');return;}if(this.backgrounds.ready){const x=b.x,y=GROUND;rect(c,x-40,y-61,80,61,'#4f3d2e');rect(c,x-36,y-56,72,50,'#7f6346');for(let i=0;i<5;i++){rect(c,x-35+i*14,y-55,2,49,'#4b3b2b');line(c,x-31+i*14,y-48,x-29+i*14,y-13,'#9a7b5555',1);}line(c,x-33,y-52,x+33,y-9,'#b09468',5);line(c,x+33,y-52,x-33,y-9,'#aa8b5e',5);rect(c,x-43,y-65,86,8,'#a88b61');rect(c,x-40,y-5,80,6,'#49392d');label(c,t(occupied?'hiddenStatus':'boxSign'),x,y-83,10,'#ddcba8','sans-serif');return;}
 const x=b.x,y=GROUND;rect(c,x-40,y-61,80,61,'#887955');rect(c,x-35,y-56,70,49,'#6d694a');line(c,x-34,y-55,x+34,y-8,'#b7a273',5);line(c,x+34,y-55,x-34,y-8,'#a59367',5);rect(c,x-43,y-65,86,8,occupied?'#6d6346':'#b0a078');rect(c,x-40,y-5,80,7,'#4d583c');rect(c,x-32,y-45,64,1,'#c2ae7d55');if(occupied){rect(c,x-12,y-68,24,3,'#b1c197');label(c,t('hiddenStatus'),x,y-85,10,'#d3d5ab','sans-serif');}else label(c,t('boxSign'),x,y-83,9,'#c8c5a0','sans-serif');}
  bin(c,b){if(this.backgrounds.prop(c,'bin',b.x,GROUND,53,77)){if(!b.searched){rect(c,b.x-12,GROUND-72,17,6,'#809758');rect(c,b.x+3,GROUND-71,10,5,'#9eaa6a');}label(c,t('binSign'),b.x,GROUND-93,10,'#c5c1a5','sans-serif');return;}const x=b.x,y=GROUND;rect(c,x-24,y-62,48,62,'#536a56');rect(c,x-28,y-67,56,8,'#7e8e6d');rect(c,x-17,y-56,3,50,'#819174');rect(c,x+12,y-56,3,50,'#819174');rect(c,x-22,y-5,44,6,'#324c3b');line(c,x-14,y-70,x+22,y-78,'#78896a',4);if(!b.searched){rect(c,x-15,y-77,16,10,'#899b57');rect(c,x+1,y-73,18,8,'#a0a462');rect(c,x-6,y-79,8,3,'#4f7144');}label(c,t('binSign'),x,y-92,8,b.searched?'#7e9479':'#bac798','sans-serif');}
  child(c,x,y,s,time,eating=true){if(drawChild(c,x,y,s,0,'seated',-1))return;c.save();c.translate(x,y);c.scale(s,s);rect(c,-10,-27,24,27,'#8e8760');rect(c,-12,-7,31,10,'#5f6b49');rect(c,-5,-48,16,21,'#bca47c');rect(c,-9,-51,24,9,'#665d40');rect(c,-10,-46,8,13,'#665d40');rect(c,-1,-40,1,2,'#324230');rect(c,6,-40,1,2,'#324230');rect(c,2,-34,4,1,'#8e7f5a');poly(c,[[-14,-29],[1,-23],[16,-32],[27,-1],[-21,5]],'#bab58e');poly(c,[[-14,-29],[1,-23],[-7,-6],[-21,5]],'#929575');for(let yy=-20;yy<0;yy+=3){rect(c,3,yy,18,1,'#747b5e');rect(c,-15,yy+1,10,1,'#7f8465');}rect(c,-9,0,9,7,'#4d603e');rect(c,12,-1,10,7,'#4d603e');if(eating)spoonArm(c,time+2.1,{shoulder:[-6,-22],bowl:[-27,-17],dip:[-36,-11],mouth:[-7,-27],lips:[2,-34],sleeve:'#929575',skin:'#bca47c',width:4,hand:3,turn:1,scoop:'#e8d5a4',thin:1});else{line(c,-9,-20,6,-12,'#ae9b73',4);rect(c,2,-15,7,4,'#c0a77c');}c.restore();}

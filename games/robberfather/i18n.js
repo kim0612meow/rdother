@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=city-v4';
+import {controlText} from './settings.js?v=city-v5';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -68,3 +68,6 @@ Object.assign(MESSAGES.en,{volume:'Master volume',controlsTitle:'Controls',press
 Object.assign(MESSAGES.ko,{volume:'전체 음량',controlsTitle:'조작키 변경',pressKey:'새 키를 누르세요…',pressKeyHint:'지정할 키를 누르세요. Esc는 변경을 취소합니다.',bindingHint:'키를 클릭해서 변경하세요. 중복된 키는 서로 바뀝니다. Esc는 항상 이 메뉴를 엽니다.',invalidKey:'문자, 숫자, 방향키, Shift 또는 Space를 골라주세요.',resetSettings:'음량 · 조작키 초기화',bind_left:'왼쪽 이동',bind_right:'오른쪽 이동',bind_enter:'입장 / 나가기',bind_run:'달리기',bind_steal:'훔치기 / 상호작용 / 취소',bind_gauge:'소매치기 게이지 / 베팅',bind_leave:'썩은 음식 두고 가기',bind_hide:'숨기 / 나오기',bind_discard:'음식 버리기 (길게)',bind_home:'집으로 돌아가기'});
 
 MESSAGES.ko.helpMove="A / D · 좌우로 이동합니다. Esc 메뉴에서 조작키를 변경할 수 있습니다.";
+
+Object.assign(MESSAGES.en,{hideControl:'Crouch behind cover',hideBox:'F · Crouch behind the cart',leaveBox:'F · Leave cover',hidden:'Crouched behind the sacks. Stay quiet.',unhidden:'You left cover.',hiddenStatus:'CROUCHING · HIDDEN',boxSign:'COVER',chaseHint:'Reach a loaded cart and crouch behind it with F.',helpRun:'Shift runs for about 1.6 seconds. F crouches behind a loaded delivery cart or leaves cover. The sacks and cart screen you from pursuit; after a moment, they lose you.',detected:'Spotted! Break away and crouch behind a loaded cart with F.',canvasLabel:'2D survival game. A and D walk. W enters shops and dark alleys. E steals or takes rotten food. Q leaves food. F crouches behind loaded carts. Hold G discards rotten food. Shift runs. Space keeps the pocket gauge. M returns home.'});
+Object.assign(MESSAGES.ko,{hideControl:'엄폐물 뒤에 웅크리기',hideBox:'F · 짐수레 뒤에 웅크리기',leaveBox:'F · 엄폐물에서 나오기',hidden:'짐수레 뒤에 웅크렸습니다. 조용히 기다리세요.',unhidden:'엄폐물에서 나왔습니다.',hiddenStatus:'웅크려 숨는 중',boxSign:'숨을 곳',chaseHint:'짐이 실린 수레 옆에서 F를 눌러 몸을 숨기세요.',helpRun:'Shift로 약 1.6초 동안 달립니다. F를 누르면 짐수레 뒤에 웅크려 숨거나 다시 나옵니다. 수레와 쌓인 짐이 몸을 가려 주며 잠시 뒤 추격자가 놓칩니다.',detected:'들켰습니다! 달아나 짐수레 뒤에서 F로 몸을 숨기세요.',canvasLabel:'2D 생존 게임. A, D 이동, W 가게 들어가기, E 소매치기 또는 썩은 음식 챙기기, Q 두고 가기, F 짐수레 뒤에 웅크려 숨기, G 길게 썩은 음식 버리기, Shift 달리기, Space 주머니 막대 맞추기, M 귀가.'});

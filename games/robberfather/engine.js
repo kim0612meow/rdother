@@ -1,7 +1,7 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=city-v4';
+import {ROBBERY,endingDuration} from './cinematics.js?v=city-v5';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
-export const RULES={foodCap:5,coinCap:5,meal:3,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
+export const RULES={foodCap:5,coinCap:5,coverReach:98,meal:3,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
 // The street grows warier with every theft today: suspicion, turning around and witnesses all scale by this. Starts easy, caps out hard.
 export const WARY={start:.7,step:.13,max:1.6};
 // behind: fixed suspicion per second while your hand is in the pocket (police fill it fast and only pay one portion). wait: seconds between the victim turning around. warn: seconds you get to press E.
@@ -15,8 +15,9 @@ export const SHOPS=[[596,330,0],[938,400,1],[1622,380,4],[2014,340,3],[2370,262,
 export const INSIDE_DOOR=150;
 export const areaAt=x=>SHOPS.find(s=>x>=s.x0-300&&x<=s.x1+300)||null;
 const bounds=x=>{const s=areaAt(x);return s?[s.x0+90,s.x1-90]:[90,WORLD-90];};
-// Nothing to hide in or scavenge right outside home. Each shop has one storage crate.
-export const BOXES=[{id:1,x:1240},{id:2,x:1930},{id:3,x:2850},{id:4,x:3690},...SHOPS.filter(s=>s.kind!==ALLEY).map(s=>({id:10+s.id,x:s.x0+1240,inside:true}))];
+// Stable legacy BOXES ids now identify delivery-cart cover. Keep them for save compatibility.
+// Carts sit clear of entrance centres; each shop has a storage cart at the back.
+export const BOXES=[{id:1,x:1240},{id:2,x:1930},{id:3,x:3070},{id:4,x:3640},...SHOPS.filter(s=>s.kind!==ALLEY).map(s=>({id:10+s.id,x:s.x0+1240,inside:true}))];
 export const BINS=[{id:1,x:1710},{id:2,x:2580},{id:3,x:4140}];
 // Who is inside each kind of shop: bakery, corner store, café, rooms (always wealthy guests), pharmacy. Nobody in the alleys to rob.
 const ROOM_PEOPLE=[[['civilian',560],['wealthy',860]],[['civilian',480],['civilian',780],['police',1040]],[['wealthy',520],['civilian',900]],[['wealthy',600],['wealthy',940]],[['civilian',560],['wealthy',900]],[]];
@@ -59,7 +60,7 @@ export class Game{
  placeBet(){if(!this.nearbyDealer())return false;if(this.coins<GAMBLE.stake){this.emit('noMoney',{price:GAMBLE.stake});return false;}if(this.coins-GAMBLE.stake+GAMBLE.pay>RULES.coinCap){this.emit('coinFullBet');return false;}this.inventory.splice(this.inventory.indexOf('coin'),1);this.emit('betPlaced');return true;}
  // Winnings and losses add up across days. Too far ahead and the men in the alley beat you and take everything; the boy waits all night and collapses.
  settleBet(win){if(win){this.add('coin',GAMBLE.pay);this.gambleNet+=GAMBLE.pay-GAMBLE.stake;}else this.gambleNet-=GAMBLE.stake;this.emit(win?'betWon':'betLost',{net:this.gambleNet});if(this.gambleNet>=GAMBLE.limit){this.ending='robbed';this.endingTime=0;this.mode='ending';this.emit('ending',{kind:'robbed'});}}
- nearbyBox(){return BOXES.find(b=>distance(b,this.player)<53)||null;}
+ nearbyBox(){return BOXES.find(b=>distance(b,this.player)<RULES.coverReach)||null;}
  nearbyBin(){if(this.player.hidden||this.chasers.length)return null;return this.bins.filter(b=>!b.searched&&distance(b,this.player)<60).sort((a,b)=>distance(a,this.player)-distance(b,this.player))[0]||null;}
  // The shop door the player is standing at: a street entrance, or the exit inside a shop. barred: you were caught stealing in there once.
  nearbyDoor(){if(this.player.hidden)return null;const inside=this.shop;if(inside)return Math.abs(this.player.x-(inside.x0+INSIDE_DOOR))<60?{shop:inside,exit:true}:null;const s=SHOPS.find(s=>Math.abs(s.door-this.player.x)<45);return s?{shop:s,exit:false,barred:this.closedShops.includes(s.id)}:null;}
