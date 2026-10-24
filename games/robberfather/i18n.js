@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=recovery-v14';
+import {controlText} from './settings.js?v=cover-v15';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -167,4 +167,17 @@ Object.assign(MESSAGES.en,{
  scrapsCopy:'Only {count} of {required} portions, and some spoiled. You both stay hungry, and the sickness remains.',
  lateScrapsCopy:'Night has fallen. Only {count} of {required} portions to eat, and some spoiled.',
  helpShort5:'Dinner needs 3 portions; after a hungry night it needs 5 and pickpocketing is 1.5× harder. F2 saves; Escape opens the menu.'
+});
+
+Object.assign(MESSAGES.ko,{
+ restartStory:'처음부터 다시하기',newTitle:'처음부터 다시 시작할까요?',newCopy:'저장된 진행을 덮어쓰고 1일째부터 튜토리얼과 이야기를 다시 시작합니다. 음량·조작키·언어 설정은 유지됩니다.',newAction:'처음부터 다시하기',
+ practiceCoverTitle:'숨을 곳 · 짐마차',practiceCoverAction:'짐마차 뒤에 숨기',practiceCoverNow:'지금 눌러 숨으세요!',
+ tutorialCaught:'들켰어요! 남은 기회는 {left}번이에요. 빛나는 짐마차가 숨을 곳입니다. E 사용으로 추격 연습 시작!',
+ tutorialEscape:'빛나는 짐마차로 이동하세요. 가까이서 F 숨기를 누르면 짐 뒤에 웅크립니다.'
+});
+Object.assign(MESSAGES.en,{
+ restartStory:'Restart from day 1',newTitle:'Restart from day 1?',newCopy:'This replaces your saved progress and starts the story and tutorial from day 1. Volume, controls and language stay the same.',newAction:'Restart from day 1',
+ practiceCoverTitle:'HIDE HERE · CART',practiceCoverAction:'Hide behind the cart',practiceCoverNow:'Press now to hide!',
+ tutorialCaught:'Spotted! {left} chances remain. The glowing cart is your hiding place. E Use to practise the chase!',
+ tutorialEscape:'Move to the glowing cart. When close, press F Hide to crouch behind its load.'
 });

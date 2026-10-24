@@ -1,5 +1,5 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=recovery-v14';
-import {dayDifficulty} from './difficulty.js?v=recovery-v14';
+import {ROBBERY,endingDuration} from './cinematics.js?v=cover-v15';
+import {dayDifficulty} from './difficulty.js?v=cover-v15';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,hideLock:.55,meal:3,recoveryMeal:5,hungerDifficulty:1.5,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
@@ -81,6 +81,7 @@ export class Game{
  // A box always hides you: pursuers lose sight the moment you are inside.
  toggleHide(){if(this.player.hidden){if(this.player.hideLock>0)return false;this.player.hidden=false;this.player.boxId=null;this.emit('unhidden');return true;}const b=this.nearbyBox();if(!b)return false;this.clearHold();this.player.hidden=true;this.player.boxId=b.id;this.player.x=b.x;this.player.hideLock=RULES.hideLock;this.player.coverExitReady=false;this.escape=0;this.emit('hidden');return true;}
  // What the practice is waiting for before anything else can happen: 'move' (A/D) or 'steal' (E behind the target). null when nothing blocks.
+ get tutorialCover(){return this.mode==='day'&&!this.player.hidden&&[TUTORIAL.caught,TUTORIAL.escape].includes(this.tutorial)?BOXES[0]:null;}
  get tutorialHold(){const T=TUTORIAL,s=this.tutorial;if(s===T.purchase)return'buy';if(s===T.move&&this.travel===0)return'move';if((s===T.approach||s===T.resume)&&this.activeTarget===null&&this.target&&this.isBehind(this.target)&&!(this.target.lookBack>0))return'steal';return null;}
  update(dt,input={}){dt=clamp(dt,0,.05);this.time+=dt;if(this.mode==='prologue'){this.prologueTime+=dt;if(this.prologueTime>=PROLOGUE_SECONDS/2)this.prologueIndex=1;if(this.prologueTime>=PROLOGUE_SECONDS)this.skipPrologue();return;}if(this.mode==='night'){this.nightTime+=dt;return;}if(this.mode==='ending'){const before=this.endingTime;this.endingTime+=dt;if(this.ending==='robbed'){if(before<ROBBERY.hit&&this.endingTime>=ROBBERY.hit)this.emit('headStrike');for(const hit of ROBBERY.kicks)if(before<hit&&this.endingTime>=hit)this.emit('bodyStrike');if(before<ROBBERY.rob&&this.endingTime>=ROBBERY.rob){this.inventory=this.inventory.filter(x=>x!=='coin');this.emit('robberyTaken');}}return;}if(this.mode!=='day')return;
  const practice=this.tutorial<TUTORIAL.done;if(!practice){const priorTime=this.timeLeft;this.timeLeft=Math.max(0,this.timeLeft-dt);if(priorTime>30&&this.timeLeft<=30)this.emit('duskWarning');if(this.timeLeft===0){this.endChase();this.goHome('timeout');this.emit('timeout');return;}}

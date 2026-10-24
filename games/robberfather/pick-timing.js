@@ -1,5 +1,5 @@
-import {settings} from './settings.js?v=recovery-v14';
-import {dayDifficulty} from './difficulty.js?v=recovery-v14';
+import {settings} from './settings.js?v=cover-v15';
+import {dayDifficulty} from './difficulty.js?v=cover-v15';
 // Space gauge that runs on top of the wallet line while your hand is in the pocket.
 // Press Space while the white marker is in the gold zone. Pressing outside it, or letting the marker pass through untouched, is a mistake.
 // Every press throws the zone far away, so hammering the key never works.

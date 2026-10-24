@@ -182,3 +182,17 @@ select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius
 .dialogue{width:65vw}
 .cinema-copy,.ending-copy{max-width:80%;top:20%}
 }
+
+.cover-guide{position:absolute;z-index:6;transform:translate(-50%,-100%);padding:12px 16px;border:2px solid #ffdc94;border-radius:12px;background:#192c23f5;color:#fff0ca;text-align:center;pointer-events:none;box-shadow:0 0 18px #e5be6555;white-space:nowrap}
+.cover-guide>strong{display:block;font-size:19px;margin-bottom:6px}
+.cover-guide>span{display:flex;gap:9px;align-items:center;font-size:18px}
+.cover-guide kbd{padding:3px 10px;background:#edc786;color:#17251f;border-radius:5px;font-size:25px;font-weight:800}
+.cover-guide>b{position:absolute;left:50%;top:100%;transform:translateX(-50%);font-size:36px;line-height:1.1;color:#ffe3a3;text-shadow:0 2px 5px #000;animation:cover-arrow .8s ease-in-out infinite alternate}
+.cover-guide.ready{border-width:3px;box-shadow:0 0 25px #ffe3a399}
+.cover-guide.ready kbd{animation:hud-border .8s ease-in-out infinite}
+@keyframes cover-arrow{to{margin-top:7px}}
+@media(prefers-reduced-motion:reduce){.cover-guide>b,.cover-guide.ready kbd{animation:none}}
+.pause-menu #pauseChoices #restartBtn{margin-top:8px;background:#493d33;color:#ffd4ba}
+.modal-cancel{display:block;width:100%;margin-top:10px;padding:11px 20px;background:#344d3e;color:#fff4de}
+
+.tutorial.cover-lesson{top:145px;bottom:auto}

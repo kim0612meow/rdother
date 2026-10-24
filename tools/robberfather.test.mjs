@@ -231,3 +231,11 @@ test('the real pocket uses recovery pressure, preserves it on reopen, and leaves
 test('nightfall uses the recovery quota and partial rotten food increments hunger and sickness together',()=>{
  for(const count of [3,4,5]){const g=afterHungryNight();g.add('fresh',count-1);g.add('rotten',1);g.timeLeft=.01;g.update(.02);assert.equal(g.mode,'return');assert.equal(g.returnReason,'timeout');g.beginNight();assert.equal(g.eaten,count);assert.equal(g.fed,count===5);assert.equal(g.hungerStreak,count===5?0:2);assert.equal(g.rottenStreak,1);}
 });
+
+test('the chase lesson points at the real cart until F hides the player, including after reload',()=>{
+ const g=practice();reachWarning(g);g.dodge();tick(g,1.6);g.update(.02,{pick:true,trace:1});const cart=g.tutorialCover;assert.equal(cart?.id,1);assert.equal(g.player.hidden,false);g.advanceTutorial();assert.equal(g.tutorialCover,cart);const copy=new Game(g.save());copy.start();assert.equal(copy.tutorialCover?.id,cart.id);copy.player.x=cart.x;copy.update(.02,{hide:true});assert.equal(copy.player.hidden,true);assert.equal(copy.tutorialCover,null);tick(copy,1.3);assert.equal(copy.tutorial,TUTORIAL.memory);assert.equal(copy.tutorialCover,null);
+});
+
+test('normal gameplay and other lessons never mark the tutorial cart',()=>{
+ const g=practice();assert.equal(g.tutorialCover,null);g.tutorial=TUTORIAL.done;assert.equal(g.tutorialCover,null);g.tutorial=TUTORIAL.escape;g.mode='night';assert.equal(g.tutorialCover,null);
+});
