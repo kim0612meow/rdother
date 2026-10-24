@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=lessons-v13';
+import {controlText} from './settings.js?v=recovery-v14';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -139,4 +139,32 @@ Object.assign(MESSAGES.en,{
  hold:'Tap and release · Pick a pocket',holdToBuy:'Hold E Use for 0.65 seconds to buy.',
  buyBread:'Hold E Use · Bread: {price} coins',buyPotato:'Hold E Use · Potatoes: {price} coin',buyMedicine:'Hold E Use · Medicine: {price} coins',bind_steal:'Use · tap / hold',
  binLeft:'You left the food here. You can take it later.',helpShort2:'E Use: tap and release to pick a pocket; hold 0.65 seconds to buy. Steal only from behind!'
+});
+
+// Recovery-day copy: keep the quota in sync with the meal actually consumed.
+Object.assign(MESSAGES.ko,{
+ mealTarget:'식사 · {required}칸 필요',foodQuotaCount:'음식 {count}칸 / 오늘 필요한 {required}칸',bothNotice:'아이가 굶주리고 아파요',
+ dayHungryTitle:'아이가 어젯밤 굶었습니다.',daySickTitle:'아이가 아픕니다.',dayBothTitle:'아이가 굶주리고 아픕니다.',
+ dayHungryCopy:'오늘은 음식 {required}칸을 먹어야 합니다.\n굶주림으로 소매치기 난이도 {multiplier}배',
+ daySickCopy:'썩은 음식 때문에 병이 남아 있습니다.\n약국에서 약을 사야 병이 줄어듭니다.',
+ dayBothCopy:'오늘은 음식 {required}칸을 먹어야 합니다. 소매치기 난이도 {multiplier}배\n썩은 음식으로 생긴 병은 약국의 약으로 치료하세요.',
+ nightCopy:'음식 {count}칸. 오늘 필요한 만큼 나눠 먹었다. 함께할 시간이 조금 더 늘었다.',nightFresh:'음식 {count}칸을 먹었다',
+ partialMealTitle:'아직 모자란 저녁.',nightRotten:'음식 {count}칸 · 썩은 음식 포함',
+ partialMealCopy:'음식 {count}칸을 나눠 먹었지만, 오늘은 {required}칸이 필요했다. 두 사람은 여전히 굶주렸다.',
+ scrapsCopy:'음식 {count}칸, 오늘 필요한 {required}칸에 모자라고 상한 음식도 섞였다. 굶주림과 병이 모두 남았다.',
+ lateScrapsCopy:'밤이 됐다. 음식 {count}칸은 필요한 {required}칸에 모자랐고, 상한 음식도 섞였다.',
+ helpShort5:'보통은 음식 3칸. 굶은 다음 날은 5칸이 필요하고 소매치기가 1.5배 어려워요. F2 저장, Esc 메뉴.'
+});
+Object.assign(MESSAGES.en,{
+ mealTarget:'Meal · {required} needed',foodQuotaCount:'{count} food portions / {required} needed today',bothNotice:'Your son is hungry and ill',
+ dayHungryTitle:'Your son went hungry last night.',daySickTitle:'Your son is ill.',dayBothTitle:'Your son is hungry and ill.',
+ dayHungryCopy:'You must eat {required} food portions today.\nHunger makes pickpocketing {multiplier}× harder.',
+ daySickCopy:'Rotten food has left him ill.\nBuy medicine at the pharmacy to reduce his sickness.',
+ dayBothCopy:'Eat {required} portions today. Pickpocketing is {multiplier}× harder.\nBuy medicine at the pharmacy to treat his sickness.',
+ nightCopy:'{count} portions. Enough for tonight. A little more time together.',nightFresh:'Ate {count} food portions',
+ partialMealTitle:'Dinner was not enough.',nightRotten:'Ate {count} portions · spoiled food included',
+ partialMealCopy:'You shared {count} portions, but needed {required} today. Both are still hungry.',
+ scrapsCopy:'Only {count} of {required} portions, and some spoiled. You both stay hungry, and the sickness remains.',
+ lateScrapsCopy:'Night has fallen. Only {count} of {required} portions to eat, and some spoiled.',
+ helpShort5:'Dinner needs 3 portions; after a hungry night it needs 5 and pickpocketing is 1.5× harder. F2 saves; Escape opens the menu.'
 });

@@ -179,3 +179,55 @@ test('street bins and loaded carts leave actual doorway openings clear',async()=
 test('collapse framing centres the father and child in tall and wide windows',async()=>{
  const {COLLAPSE_LAYOUT,HOME_ZOOM,homeFocusY,viewportSize,fitZoom,cameraWindow}=await import('../games/robberfather/framing.js');const l=COLLAPSE_LAYOUT;for(const [w,h]of [[1028,883],[1280,720],[1920,1080]]){const size=viewportSize(w,h),z=fitZoom(HOME_ZOOM,size.width,size.height),cam=cameraWindow(z,720,homeFocusY(z),size.width,size.height),positions=[967,1054].map(x=>(l.center+(x-l.sourceCenter)*l.scale-cam.sx)*z/size.width);assert.ok(Math.abs((positions[0]+positions[1])/2-.5)<.001);}
 });
+function survivalDay(){const g=new Game();g.start();g.mode='day';g.tutorialDone=true;g.tutorial=TUTORIAL.done;return g;}
+function afterHungryNight(){const g=survivalDay();g.goHome();g.beginNight();assert.equal(g.nextDay(),true);for(let i=0;i<3;i++)g.advanceMorning();g.drainEvents();return g;}
+
+test('a hungry night requires five portions the next day, while sickness alone still requires three',()=>{
+ const g=afterHungryNight();assert.equal(g.hungerStreak,1);assert.equal(g.mealRequired,5);assert.equal(g.theftMultiplier,1.5);g.add('fresh',3);assert.equal(g.quotaMet,false);g.add('fresh',2);assert.equal(g.quotaMet,true);
+ const sick=survivalDay();sick.rottenStreak=1;assert.equal(sick.mealRequired,3);assert.equal(sick.theftMultiplier,1);
+});
+
+test('three portions cannot clear hunger on recovery day and lead to the consecutive-hunger ending',()=>{
+ const g=afterHungryNight();g.add('fresh',3);g.goHome();g.beginNight();assert.equal(g.eaten,3);assert.equal(g.fed,false);assert.equal(g.hungerStreak,2);assert.equal(g.food,0);assert.equal(g.mealRequired,5);assert.equal(g.nextDay(),false);assert.equal(g.ending,'arrest');
+});
+
+test('a full recovery consumes five actual portions, preserves coins, and restores the next normal day',()=>{
+ const g=afterHungryNight();g.add('fresh',5);g.add('coin',2);g.goHome();g.beginNight();assert.equal(g.eaten,5);assert.equal(g.fed,true);assert.equal(g.food,0);assert.equal(g.coins,2);assert.equal(g.hungerStreak,0);assert.equal(g.mealRequired,5);assert.equal(g.theftMultiplier,1.5);
+ g.nextDay();assert.equal(g.mealRequired,3);assert.equal(g.theftMultiplier,1);assert.equal(g.coins,2);
+ const normal=survivalDay();normal.add('fresh',5);normal.goHome();normal.beginNight();assert.equal(normal.eaten,3);assert.equal(normal.food,2);
+});
+
+test('recovery quota and five eaten portions survive saves during day, dinner and morning',()=>{
+ let g=afterHungryNight();g.add('fresh',5);g=new Game(g.save());g.start();assert.equal(g.mealRequired,5);assert.equal(g.theftMultiplier,1.5);g.goHome();g.beginNight();g=new Game(g.save());g.start();assert.equal(g.eaten,5);assert.equal(g.mealRequired,5);assert.equal(g.fed,true);assert.equal(g.hungerStreak,0);g.nextDay();g=new Game(g.save());g.start();assert.equal(g.mealRequired,3);assert.equal(g.theftMultiplier,1);
+});
+
+test('old hungry daytime saves acquire recovery rules but completed old dinners remain intact',()=>{
+ const old=afterHungryNight().save();delete old.recoveryDay;const g=new Game(old);g.start();assert.equal(g.mealRequired,5);assert.equal(g.theftMultiplier,1.5);
+ old.mode='night';old.hungerStreak=0;old.fed=true;old.eaten=3;const night=new Game(old);night.start();assert.equal(night.mealRequired,3);assert.equal(night.eaten,3);assert.equal(night.fed,true);
+});
+
+test('food goals fire at five on recovery day for shopping and scavenging, never at three',async()=>{
+ const {SHOPS}=await import('../games/robberfather/engine.js');const g=afterHungryNight();g.player.x=SHOPS[1].x0+1110;g.add('fresh',2);g.add('coin',3);
+ for(let i=0;i<3;i++){g.buy();const goals=g.drainEvents().filter(e=>e.type==='goal');assert.equal(goals.length,i===2?1:0);}
+ const bin=afterHungryNight();bin.add('fresh',2);for(let i=0;i<3;i++){bin.takeBin(bin.bins[i]);assert.equal(bin.drainEvents().filter(e=>e.type==='goal').length,i===2?1:0);}
+});
+
+test('medicine treats illness without cancelling recovery requirements; rotten recovery food still causes illness',async()=>{
+ const {SHOPS}=await import('../games/robberfather/engine.js');const g=afterHungryNight();g.rottenStreak=1;g.player.x=SHOPS.find(s=>s.kind===4).x0+1110;g.add('coin',4);assert.equal(g.buy(),true);assert.equal(g.rottenStreak,0);assert.equal(g.mealRequired,5);assert.equal(g.theftMultiplier,1.5);
+ g.add('fresh',4);g.add('rotten',1);g.goHome();g.beginNight();assert.equal(g.fed,true);assert.equal(g.hungerStreak,0);assert.equal(g.rottenStreak,1);assert.equal(g.eaten,5);
+});
+
+test('hunger multiplies actual suspicion by 1.5 and narrows the same-day Space target by 1.5',()=>{
+ const hungry=afterHungryNight(),normal=survivalDay();normal.day=hungry.day;assert.ok(Math.abs(hungry.wary-normal.wary*1.5)<1e-10);assert.ok(Math.abs(hungry.difficulty.warning*1.5-normal.difficulty.warning)<1e-10);
+ for(const g of [hungry,normal]){g.player.x=748;g.npcs=[{...g.npcs[0],x:790,face:1,pause:999,type:'police'}];g.activeTarget=0;g.turn={phase:'wait',t:Infinity,face:1};g.update(.02,{pick:true,trace:0,grab:true});}
+ assert.ok(Math.abs(hungry.suspicion-normal.suspicion*1.5)<1e-10);
+ for(const day of [2,14,100])for(const type of ['civilian','wealthy','police']){const a=new Timing({type,seed:72,day}),b=new Timing({type,seed:72,day,multiplier:1.5});assert.ok(Math.abs(b.s.zone*1.5-a.s.zone)<1e-10);b.running=true;b.pos=b.zone[1]+.001;assert.equal(b.tap(),false);}
+});
+
+test('the real pocket uses recovery pressure, preserves it on reopen, and leaves practice forgiving',()=>{
+ const root={hidden:true,querySelector:()=>({})},p=Object.create(Pickpocket.prototype);Object.assign(p,{root,t:key=>key,render(){}});const target={type:'civilian',id:0};p.open(target,72,{day:2});const normal=p.gauge.s.zone;p.close();p.open(target,72,{day:2,multiplier:1.5});assert.ok(Math.abs(p.gauge.s.zone*1.5-normal)<1e-10);p.game.index=20;const gauge=p.gauge;p.close(true);p.open(target,72,{day:2,multiplier:1.5});assert.equal(p.gauge,gauge);assert.equal(p.game.index,20);p.close(true);p.open(target,72,{day:2,multiplier:1.5,practice:true});assert.ok(p.gauge.s.zone>normal);
+});
+
+test('nightfall uses the recovery quota and partial rotten food increments hunger and sickness together',()=>{
+ for(const count of [3,4,5]){const g=afterHungryNight();g.add('fresh',count-1);g.add('rotten',1);g.timeLeft=.01;g.update(.02);assert.equal(g.mode,'return');assert.equal(g.returnReason,'timeout');g.beginNight();assert.equal(g.eaten,count);assert.equal(g.fed,count===5);assert.equal(g.hungerStreak,count===5?0:2);assert.equal(g.rottenStreak,1);}
+});

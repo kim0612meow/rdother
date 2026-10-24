@@ -29,7 +29,12 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 @media(prefers-reduced-motion:reduce){.prologue-copy{animation:none}}
 .game-hud{position:absolute;left:20px;top:20px;z-index:3;display:flex;gap:12px;align-items:center;pointer-events:none}
 .game-hud>span{background:var(--panel);padding:8px 13px;border-radius:10px;font-size:20px;font-weight:700}
-#healthNote{font-size:16px;color:#f6ca92}
+#healthNote{font-size:20px;color:#ffd5a0}
+.day-notice{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);z-index:7;width:max-content;max-width:min(92%,850px);padding:26px 36px;border-radius:16px;background:#14251cf5;border:1px solid #d8ab6a;color:#fff7e8;text-align:center;pointer-events:none;box-shadow:0 8px 30px #0005;animation:day-notice-in .35s ease-out}
+.day-notice strong{display:block;font-size:clamp(27px,3vw,38px);line-height:1.4;color:#ffdcaa}
+.day-notice p{font-size:clamp(19px,2vw,25px);line-height:1.65;margin:12px 0 0;white-space:pre-line;word-break:keep-all}
+@keyframes day-notice-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.day-notice{animation:none}}
 .day-clock{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:12px;align-items:center;padding:9px 16px;border-radius:12px;background:var(--panel);pointer-events:none}
 .day-clock>span{font-size:17px}
 .day-clock strong{font-size:25px;font-variant-numeric:tabular-nums}
