@@ -1,4 +1,4 @@
-import {settings} from './settings.js?v=viewport-v9';
+import {settings} from './settings.js?v=story-v10';
 // Space gauge that runs on top of the wallet line while your hand is in the pocket.
 // Press Space while the white marker is in the gold zone. Pressing outside it, or letting the marker pass through untouched, is a mistake.
 // Every press throws the zone far away, so hammering the key never works.
@@ -11,7 +11,7 @@ export class Timing{
  rand(){this.r=(this.r*16807)%2147483647;return this.r/2147483647;}
  // The new zone always lands well away from the marker.
  newZone(){const w=this.s.zone;let a;do a=.04+this.rand()*(.92-w);while(Math.abs(a+w/2-this.pos)<.35);this.zone=[a,a+w];this.inside=false;}
- tap(){if(!this.running||this.hit>0||this.flash>0)return;if(this.pos>=this.zone[0]&&this.pos<=this.zone[1])this.hit=.2;else{this.flash=.4;this.pending=true;}this.newZone();}
+ tap(){if(!this.running||this.hit>0||this.flash>0)return;const success=this.pos>=this.zone[0]&&this.pos<=this.zone[1];if(success)this.hit=.2;else{this.flash=.4;this.pending=true;}this.newZone();return success;}
  // running: the hand is on the wallet. Returns true on a mistake.
  update(dt,running){this.running=running;this.flash=Math.max(0,this.flash-dt);this.hit=Math.max(0,this.hit-dt);if(running){this.pos+=this.dir*dt/this.s.sweep;if(this.pos>1){this.pos=2-this.pos;this.dir=-1;}if(this.pos<0){this.pos=-this.pos;this.dir=1;}const inZone=this.pos>=this.zone[0]&&this.pos<=this.zone[1];if(this.inside&&!inZone){this.flash=.4;this.pending=true;this.newZone();}else this.inside=inZone;}
   if(this.pending){this.pending=false;return true;}return false;}

@@ -11,12 +11,13 @@ import {Timing} from '../games/robberfather/pick-timing.js';
 import {MESSAGES} from '../games/robberfather/i18n.js';
 const tick=(g,seconds,input={})=>{for(let i=0;i<Math.ceil(seconds*60);i++)g.update(1/60,input);};
 function practice(){const g=new Game();g.start();for(let i=0;i<3;i++)g.advanceMorning();g.tutorial=TUTORIAL.approach;g.player.x=748;g.npcs=[{...g.npcs[0],x:790,face:1,pause:999}];return g;}
+function reachWarning(g){g.update(.02,{pick:true,trace:1});assert.equal(g.tutorial,TUTORIAL.qte);g.update(.02,{pick:true,trace:1,qteHit:true});g.update(.02,{pick:true,trace:1});}
 test('the tutorial freezes at the turn warning even if the wallet reports 100%',()=>{
- const g=practice();g.update(.02,{pick:true,trace:1,grab:true});assert.equal(g.tutorial,TUTORIAL.dodge);
+ const g=practice();reachWarning(g);assert.equal(g.tutorial,TUTORIAL.dodge);
  tick(g,3,{pick:true,trace:1,grab:true});assert.equal(g.coins,0);assert.equal(g.tutorialDone,false);assert.equal(g.progress,.4*3);
 });
 test('closing or reopening without E cannot bypass the tutorial dodge lesson',()=>{
- const g=practice();g.update(.02,{pick:true,trace:1});g.clearHold();g.update(.02,{pick:true,trace:1});assert.equal(g.tutorial,TUTORIAL.dodge);assert.equal(g.turn.phase,'warn');assert.equal(g.coins,0);
+ const g=practice();reachWarning(g);g.clearHold();g.update(.02,{pick:true,trace:1});assert.equal(g.tutorial,TUTORIAL.dodge);assert.equal(g.turn.phase,'warn');assert.equal(g.coins,0);
 });
 test('the warning pause freezes both the actual wallet path and the timing gauge',()=>{
  const p=Object.create(Pickpocket.prototype);Object.assign(p,{active:true,type:'civilian',shake:0,render(){},game:new Trace({type:'civilian',hold:3,seed:72,start:{x:206,y:252},W:640,H:400}),gauge:new Timing({type:'civilian',seed:72})});
@@ -24,8 +25,8 @@ test('the warning pause freezes both the actual wallet path and the timing gauge
  for(let i=0;i<60;i++)p.update(1/60,true);
  assert.equal(p.game.index,index);assert.equal(p.gauge.pos,0);p.update(.05,false);assert.ok(p.game.index>index);assert.ok(p.gauge.pos>0);
 });
-test('pressing E to dodge unlocks the resumed theft and then completes practice',()=>{
- const g=practice();g.update(.02,{pick:true,trace:1});g.dodge();assert.equal(g.tutorial,TUTORIAL.resume);tick(g,1.6);g.update(.02,{pick:true,trace:1});assert.equal(g.coins,1);assert.equal(g.tutorialDone,true);
+test('E withdrawal and a successful theft lead to a real detection, not premature completion',()=>{
+ const g=practice();reachWarning(g);g.dodge();assert.equal(g.tutorial,TUTORIAL.resume);tick(g,1.6);g.update(.02,{pick:true,trace:1});assert.equal(g.coins,1);assert.equal(g.tutorialDone,false);assert.equal(g.tutorial,TUTORIAL.caught);assert.equal(g.caughtCount,1);assert.ok(g.chasers.includes(0));assert.equal(g.npcs[0].knows,true);
 });
 test('E cancels a Space that arrived first, within the arbitration window',()=>{const k=new PocketInput();k.request(1000);assert.equal(k.consume(1040),false);k.exit(1050);assert.equal(k.consume(1200),false);});
 test('Space after E is ignored, while a later independent Space is delivered once',()=>{const k=new PocketInput();k.exit(1000);assert.equal(k.request(1075),false);assert.equal(k.request(1190),true);assert.equal(k.consume(1269),false);assert.equal(k.consume(1270),true);assert.equal(k.consume(1500),false);});
@@ -94,4 +95,27 @@ test('whole window storeys cover the top of the street at every camera position'
 });
 test('every indoor hiding place is central and old hidden saves move with the same cover id',async()=>{
  const {Game,SHOPS,BOXES}=await import('../games/robberfather/engine.js');for(const b of BOXES.filter(b=>b.inside)){const shop=SHOPS.find(s=>b.x>=s.x0&&b.x<=s.x1);assert.equal(b.x,(shop.x0+shop.x1)/2);const g=practice();g.inventory=['coin','fresh'];g.player.x=shop.x0+1240;g.player.hidden=true;g.player.boxId=b.id;const copy=new Game(g.save());copy.start();assert.equal(copy.player.x,b.x);assert.equal(copy.player.boxId,b.id);assert.equal(copy.player.hidden,true);assert.equal(copy.coins,1);assert.equal(copy.food,1);}
+});
+
+test('home/title framing leaves eight percent paving at tall, desktop and wide ratios',async()=>{
+ const {HOME_ZOOM,HOME_FOOT_LINE,homeFocusY,fitZoom,viewportSize,cameraWindow}=await import('../games/robberfather/framing.js');
+ for(const [w,h]of [[1090,870],[1280,720],[2100,900]]){const size=viewportSize(w,h),zoom=fitZoom(HOME_ZOOM,size.width,size.height),v=cameraWindow(zoom,720,homeFocusY(zoom),size.width,size.height);assert.ok(Math.abs((650-v.sy)*zoom/840-HOME_FOOT_LINE)<.001);for(const x of [925,1040])assert.ok((x-v.sx)*zoom>0&&(x-v.sx)*zoom<size.width);assert.ok((638-v.sy)*zoom<840-35);}
+});
+test('a new story has a timed, skippable prologue while continuing preserves its saved scene',()=>{
+ const g=new Game();g.start({prologue:true});assert.equal(g.mode,'prologue');tick(g,4);assert.equal(g.mode,'prologue');g.skipPrologue();assert.equal(g.mode,'morning');assert.equal(g.morningIndex,0);assert.equal(g.timeLeft,RULES.daySeconds);
+ const auto=new Game();auto.start({prologue:true});tick(auto,10.1);assert.equal(auto.mode,'morning');assert.equal(auto.drainEvents().filter(e=>e.type==='prologueEnd').length,1);
+ const saved=practice();saved.tutorialDone=true;saved.tutorial=TUTORIAL.done;saved.inventory=['fresh','coin'];const copy=new Game(saved.save());copy.start();assert.equal(copy.mode,'day');assert.deepEqual(copy.inventory,['fresh','coin']);
+});
+test('the QTE lesson cannot be passed by mouse progress or a missed Space press',()=>{
+ const g=practice();g.update(.02,{pick:true,trace:1});assert.equal(g.tutorial,TUTORIAL.qte);tick(g,5,{pick:true,trace:1,qteHit:false,slip:.3});assert.equal(g.tutorial,TUTORIAL.qte);assert.equal(g.coins,0);assert.equal(g.tutorialDone,false);assert.equal(g.timeLeft,RULES.daySeconds);g.update(.02,{pick:true,trace:1,qteHit:true});assert.equal(g.tutorialQte,true);assert.equal(g.tutorial,TUTORIAL.pull);
+ const gauge=new Timing({type:'civilian',seed:72});gauge.running=true;gauge.pos=0;assert.equal(gauge.tap(),false);gauge.flash=0;gauge.pos=(gauge.zone[0]+gauge.zone[1])/2;assert.equal(gauge.tap(),true);
+});
+test('Space practice freezes the wallet while its gauge continues moving without a mouse hold',()=>{
+ const p=Object.create(Pickpocket.prototype);Object.assign(p,{active:true,type:'civilian',shake:0,render(){},game:new Trace({type:'civilian',hold:3,seed:72,start:{x:206,y:252},W:640,H:400}),gauge:new Timing({type:'civilian',seed:72})});p.game.index=20;for(let i=0;i<20;i++)p.update(1/60,false,true);assert.equal(p.game.index,20);assert.ok(p.gauge.pos>0);assert.equal(p.gauge.running,true);
+});
+test('the hiding lesson requires actual F cover, then explains memory before completion',()=>{
+ const g=practice();reachWarning(g);g.dodge();tick(g,1.6);g.update(.02,{pick:true,trace:1});const before=g.player.x;tick(g,2,{right:true});assert.equal(g.player.x,before);assert.equal(g.caughtCount,1);g.advanceTutorial();tick(g,3.6,{right:true});assert.equal(g.tutorial,TUTORIAL.escape);assert.equal(g.mode,'day');assert.equal(g.tutorialDone,false);assert.ok(g.nearbyBox());g.update(.02,{hide:true});tick(g,1.3);assert.equal(g.player.hidden,true);assert.equal(g.chasers.length,0);assert.equal(g.tutorial,TUTORIAL.memory);assert.equal(g.tutorialDone,false);assert.equal(g.npcs[0].knows,true);g.advanceTutorial();assert.equal(g.tutorialDone,true);assert.equal(g.caughtCount,1);assert.equal(g.timeLeft,RULES.daySeconds);g.toggleHide();g.npcs[0].calm=0;g.npcs[0].x=g.player.x-60;g.npcs[0].face=1;tick(g,2);assert.ok(g.chasers.includes(0));assert.equal(g.caughtCount,1);
+});
+test('each unfinished lesson saves and resumes without losing QTE credit, pursuit or face memory',()=>{
+ const g=practice();reachWarning(g);g.dodge();tick(g,1.6);g.update(.02,{pick:true,trace:1});let copy=new Game(g.save());copy.start();assert.equal(copy.tutorial,TUTORIAL.caught);assert.equal(copy.tutorialQte,true);assert.equal(copy.npcs[0].knows,true);assert.equal(copy.caughtCount,1);copy.advanceTutorial();copy.player.x=1240;copy.update(.02,{hide:true});tick(copy,1.3);copy=new Game(copy.save());copy.start();assert.equal(copy.tutorial,TUTORIAL.memory);assert.equal(copy.player.hidden,true);copy.advanceTutorial();assert.equal(copy.tutorialDone,true);
 });

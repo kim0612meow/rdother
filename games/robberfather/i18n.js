@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=viewport-v9';
+import {controlText} from './settings.js?v=story-v10';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -87,3 +87,28 @@ Object.assign(MESSAGES.en,{shellHint:'Win: 2 coins. Lose: −1 coin. E Use to cl
 
 Object.assign(MESSAGES.ko,{hidden:'몸을 낮춰 엄폐물 뒤에 숨었어요.',hiddenStatus:'숨어 있는 중',boxSign:'숨을 곳',detected:'들켰어요! 수레나 수납장 옆에서 F 숨기를 쓰세요.',chaseHint:'엄폐물 옆에서 F 숨기를 쓰세요.'});
 Object.assign(MESSAGES.en,{hidden:'You crouch behind cover.',hiddenStatus:'HIDDEN',boxSign:'COVER',detected:'Spotted! Use F Hide beside a cart or cupboard.',chaseHint:'Use F Hide beside cover.'});
+
+Object.assign(MESSAGES.ko,{
+ prologueCopy:'당신은 한 가장의 아버지입니다.\n아이를 먹여살리기 위해 더러운 일을 하고 있죠.',skipPrologue:'건너뛰기 · S',
+ coachPull:'지갑을 잡고 마우스로 선을 따라 천천히 꺼내세요. 잠시 뒤 Space 맞추기를 연습해요.',
+ coachQte:'지갑은 잠시 멈췄어요. 흰 막대가 금색 구간에 오면 Space 맞추기! 한 번 성공해 보세요.',
+ coachAfterQte:'Space 맞추기 성공! 다시 마우스로 꺼내세요. ?가 뜨면 E 사용으로 닫아요.',
+ coachResume:'마우스와 Space 맞추기로 끝까지 꺼내세요. 그다음 발각·숨기 연습이 이어져요.',
+ tutorialCaught:'들켰어요! 들킨 횟수가 {count} 늘어 남은 기회는 {left}번이에요. E 사용으로 추격 연습 시작!',
+ tutorialEscape:'오른쪽의 어두운 수레까지 이동하고, 옆에서 F 숨기를 써 보세요. 연습 중에는 천천히 쫓아와요.',
+ tutorialWait:'잘 숨었어요. 쫓아오던 사람이 포기할 때까지 잠시 기다려요.',
+ tutorialMemory:'따돌렸지만 그는 얼굴을 기억해요. 다시 만나면 빨간 게이지가 차고 쫓아와요. E 사용으로 연습 완료!',
+ finishPractice:'먼저 숨기 연습까지 마쳐 보세요.'
+});
+Object.assign(MESSAGES.en,{
+ prologueCopy:'You are a father, the head of a family.\nYou do dirty work to keep your child fed.',skipPrologue:'Skip · S',
+ coachPull:'Hold the wallet and follow the line slowly with the mouse. Next, you will practise Space Time it.',
+ coachQte:'The wallet is paused. Press Space Time it when the white marker enters the gold zone. Land one hit!',
+ coachAfterQte:'Space Time it: success! Keep pulling with the mouse. When ? appears, E Use to close.',
+ coachResume:'Finish with the mouse and Space Time it together. Then you will practise being spotted and hiding.',
+ tutorialCaught:'Spotted! Your spotted count rose by {count}; {left} chances remain. E Use to practise the chase!',
+ tutorialEscape:'Move right to the dark cart, then use F Hide beside it. Your pursuer moves slowly for this practice.',
+ tutorialWait:'You are hidden. Wait a moment for your pursuer to give up.',
+ tutorialMemory:'You escaped, but he remembers your face. Meet him again and a red gauge fills before he chases. E Use to finish!',
+ finishPractice:'Finish the hiding practice first.'
+});

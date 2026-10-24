@@ -1,8 +1,11 @@
-import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=viewport-v9';
+import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=story-v10';
 
 // Keep a narrow walkable foreground at every street/room camera scale.
 export const FOOT_LINE=.85;
 export function streetFocusY(zoom){return GROUND-HEIGHT*(FOOT_LINE-.5)/zoom;}
+// Meal/title scenes have no bottom HUD: keep paving to eight percent there.
+export const HOME_FOOT_LINE=.92,HOME_ZOOM=1.25;
+export function homeFocusY(zoom){return GROUND-HEIGHT*(HOME_FOOT_LINE-.5)/zoom;}
 // Match the real window, keeping square pixels and no letterbox bands.
 export function viewportSize(width,height){return {width:Math.max(1,Math.round(HEIGHT*width/Math.max(1,height))),height:HEIGHT};}
 export function fitZoom(zoom,width=WIDTH,height=HEIGHT){return Math.max(zoom,width/WIDTH,height/HEIGHT);}
