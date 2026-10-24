@@ -1,7 +1,7 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=city-v5';
+import {ROBBERY,endingDuration} from './cinematics.js?v=city-v6';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
-export const RULES={foodCap:5,coinCap:5,coverReach:98,meal:3,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
+export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,meal:3,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
 // The street grows warier with every theft today: suspicion, turning around and witnesses all scale by this. Starts easy, caps out hard.
 export const WARY={start:.7,step:.13,max:1.6};
 // behind: fixed suspicion per second while your hand is in the pocket (police fill it fast and only pay one portion). wait: seconds between the victim turning around. warn: seconds you get to press E.
@@ -10,14 +10,14 @@ export const TYPES={civilian:{slots:1,hold:3.0,risk:.36,speed:40,wait:[2.4,4.6],
 export const TUTORIAL={move:0,find:1,approach:2,pull:3,dodge:4,resume:5,done:6};
 // Every shop front on the street has its own room, laid out far beyond the street so distances never cross.
 // Kind 5 is a dark alley behind one of the shadowy doorways between the shops: no shop front, just a way in to the shell game.
-export const ALLEY=5,ALLEY_DOORS=[1530,2730,3830];
+export const ALLEY=5,ALLEY_DOORS=[1470,2670,3730];
 export const SHOPS=[[596,330,0],[938,400,1],[1622,380,4],[2014,340,3],[2370,262,0],[2820,370,1],[3202,370,2],[3920,460,3],...ALLEY_DOORS.map(x=>[x-68,0,ALLEY])].map(([x,w,kind],id)=>({id,x,w,kind,door:x+68,x0:6000+id*2400,x1:6000+id*2400+WIDTH}));
 export const INSIDE_DOOR=150;
 export const areaAt=x=>SHOPS.find(s=>x>=s.x0-300&&x<=s.x1+300)||null;
 const bounds=x=>{const s=areaAt(x);return s?[s.x0+90,s.x1-90]:[90,WORLD-90];};
 // Stable legacy BOXES ids now identify delivery-cart cover. Keep them for save compatibility.
 // Carts sit clear of entrance centres; each shop has a storage cart at the back.
-export const BOXES=[{id:1,x:1240},{id:2,x:1930},{id:3,x:3070},{id:4,x:3640},...SHOPS.filter(s=>s.kind!==ALLEY).map(s=>({id:10+s.id,x:s.x0+1240,inside:true}))];
+export const BOXES=[{id:1,x:1240},{id:2,x:1895},{id:3,x:3070},{id:4,x:3500},...SHOPS.filter(s=>s.kind!==ALLEY).map(s=>({id:10+s.id,x:s.x0+1240,inside:true}))];
 export const BINS=[{id:1,x:1710},{id:2,x:2580},{id:3,x:4140}];
 // Who is inside each kind of shop: bakery, corner store, café, rooms (always wealthy guests), pharmacy. Nobody in the alleys to rob.
 const ROOM_PEOPLE=[[['civilian',560],['wealthy',860]],[['civilian',480],['civilian',780],['police',1040]],[['wealthy',520],['civilian',900]],[['wealthy',600],['wealthy',940]],[['civilian',560],['wealthy',900]],[]];
@@ -79,6 +79,7 @@ export class Game{
  if(edge('hide'))this.toggleHide();if(p.hidden&&dir)this.toggleHide();if(edge('enter'))this.useDoor();
  if(p.exhausted&&p.stamina>=RULES.stamina*.45)p.exhausted=false;const running=dir&&input.run&&!p.exhausted&&p.stamina>0&&!p.hidden;
  if(dir&&!p.hidden){const dx=dir*(running?RULES.run:RULES.walk)*dt,[lo,hi]=bounds(p.x);p.x=clamp(p.x+dx,lo,hi);p.face=dir;p.walk+=dt*(running?15:9);this.travel+=Math.abs(dx);}
+ const inside=this.shop;if(inside&&dir<0&&!p.hidden&&p.x<=inside.x0+100){if(!this.chasers.length)this.useDoor();else if(!this.edgeExitBlocked){this.emit('doorBlocked');this.edgeExitBlocked=true;}}else this.edgeExitBlocked=false;
  p.stamina=clamp(p.stamina+(running?-RULES.sprintDrain:RULES.regen)*dt,0,RULES.stamina);if(p.stamina<=0)p.exhausted=true;
  if(this.tutorial===TUTORIAL.move&&this.travel>=75)this.tutorial=TUTORIAL.find;
  const bin=this.nearbyBin();this.target=this.nearest();const binPriority=bin&&(!this.target||distance(bin,p)<distance(this.target,p));if(binPriority)this.target=null;

@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=city-v5';
+import {controlText} from './settings.js?v=city-v6';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -71,3 +71,6 @@ MESSAGES.ko.helpMove="A / D · 좌우로 이동합니다. Esc 메뉴에서 조�
 
 Object.assign(MESSAGES.en,{hideControl:'Crouch behind cover',hideBox:'F · Crouch behind the cart',leaveBox:'F · Leave cover',hidden:'Crouched behind the sacks. Stay quiet.',unhidden:'You left cover.',hiddenStatus:'CROUCHING · HIDDEN',boxSign:'COVER',chaseHint:'Reach a loaded cart and crouch behind it with F.',helpRun:'Shift runs for about 1.6 seconds. F crouches behind a loaded delivery cart or leaves cover. The sacks and cart screen you from pursuit; after a moment, they lose you.',detected:'Spotted! Break away and crouch behind a loaded cart with F.',canvasLabel:'2D survival game. A and D walk. W enters shops and dark alleys. E steals or takes rotten food. Q leaves food. F crouches behind loaded carts. Hold G discards rotten food. Shift runs. Space keeps the pocket gauge. M returns home.'});
 Object.assign(MESSAGES.ko,{hideControl:'엄폐물 뒤에 웅크리기',hideBox:'F · 짐수레 뒤에 웅크리기',leaveBox:'F · 엄폐물에서 나오기',hidden:'짐수레 뒤에 웅크렸습니다. 조용히 기다리세요.',unhidden:'엄폐물에서 나왔습니다.',hiddenStatus:'웅크려 숨는 중',boxSign:'숨을 곳',chaseHint:'짐이 실린 수레 옆에서 F를 눌러 몸을 숨기세요.',helpRun:'Shift로 약 1.6초 동안 달립니다. F를 누르면 짐수레 뒤에 웅크려 숨거나 다시 나옵니다. 수레와 쌓인 짐이 몸을 가려 주며 잠시 뒤 추격자가 놓칩니다.',detected:'들켰습니다! 달아나 짐수레 뒤에서 F로 몸을 숨기세요.',canvasLabel:'2D 생존 게임. A, D 이동, W 가게 들어가기, E 소매치기 또는 썩은 음식 챙기기, Q 두고 가기, F 짐수레 뒤에 웅크려 숨기, G 길게 썩은 음식 버리기, Shift 달리기, Space 주머니 막대 맞추기, M 귀가.'});
+
+Object.assign(MESSAGES.en,{exitShop:'Walk to the left edge to leave · W also works',helpShop:'W enters a shop at its door. Walk to the left edge inside to leave automatically, or press W near the exit. Doors are blocked during pursuit. Being caught stealing inside permanently boards up that shop.'});
+Object.assign(MESSAGES.ko,{exitShop:'왼쪽 끝으로 걸어가면 나갑니다 · W도 가능',helpShop:'문 앞에서 W로 들어갑니다. 안에서는 왼쪽 끝까지 걸어가면 자동으로 나오며, 출구 앞에서 W를 눌러도 됩니다. 쫓기는 중에는 출입할 수 없습니다. 가게 안에서 훔치다 들키면 그 가게는 영원히 닫힙니다.',doorBlocked:'쫓기는 중에는 출입할 수 없습니다. 먼저 따돌리세요.'});
