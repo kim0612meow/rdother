@@ -6,8 +6,8 @@ export function streetBays(shops,world=4400){
 }
 // Keep the central doorway at a fixed human width. The side windows stay whole
 // as the rest of each facade fills its assigned bay.
-export function facadeSlices(bay,sourceWidth,doorU=.5,doorWidth=112){
- const centre=sourceWidth*doorU,half=Math.min(sourceWidth*.16,centre*.8,(sourceWidth-centre)*.8);
+export function facadeSlices(bay,sourceWidth,doorU=.5,doorWidth=112,sourceDoorWidth){
+ const centre=sourceWidth*doorU,half=Math.min(sourceDoorWidth?sourceDoorWidth/2:sourceWidth*.16,centre*.8,(sourceWidth-centre)*.8);
  return [
   {sx:0,sw:centre-half,dx:bay.left,dw:bay.door-doorWidth/2-bay.left},
   {sx:centre-half,sw:half*2,dx:bay.door-doorWidth/2,dw:doorWidth},

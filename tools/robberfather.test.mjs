@@ -62,3 +62,19 @@ test('rebinding movement updates both compact and spaced key labels',async()=>{
  const {settings,controlText}=await import('../games/robberfather/settings.js');const original={...settings.bindings};
  try{settings.bind('left','KeyJ');settings.bind('right','KeyL');settings.bind('steal','KeyR');assert.equal(controlText('A/D 이동 · A / D 이동 · E 사용'),'J/L 이동 · J / L 이동 · R 사용');}finally{settings.bindings=original;}
 });
+
+
+test('the walking camera leaves only 15 percent foreground at street and room zooms',async()=>{
+ const {streetFocusY,cameraWindow,FOOT_LINE}=await import('../games/robberfather/framing.js');
+ for(const zoom of [1.5,2,2.8]){const view=cameraWindow(zoom,720,streetFocusY(zoom));const feet=(650-view.sy)*zoom/840;assert.ok(Math.abs(feet-FOOT_LINE)<.00001);assert.ok(feet>=.84&&feet<=.87);}
+});
+test('indoor legacy cover ids draw cupboards while outdoor poses stay behind the load',async()=>{
+ const {BOXES}=await import('../games/robberfather/engine.js');const {coverPlacement}=await import('../games/robberfather/framing.js');
+ for(const cover of BOXES){const p=coverPlacement(cover,.5);assert.equal(p.prop,cover.inside?'storage':'cover');if(!cover.inside)assert.ok(p.poseX+40<=cover.x);const g=practice();g.tutorial=TUTORIAL.done;g.player.x=cover.x;g.toggleHide();assert.equal(g.player.hidden,true);const loaded=new Game(g.save());loaded.start();assert.equal(loaded.player.boxId,cover.id);assert.equal(loaded.player.hidden,true);}
+});
+test('the new alley facade fills to the top and keeps the real door on its exit marker',async()=>{
+ const {Backgrounds}=await import('../games/robberfather/themes/backgrounds.js');const img={width:1536,height:1024};let args;Backgrounds.prototype.completeAlley.call({alleyWall:img,wholeWall(...a){args=a;}});
+ const calls=[],ctx={fillRect(){},drawImage(...a){calls.push(a);}};Backgrounds.prototype.wholeWall.call({panels:{street:{}},floor(){}},ctx,...args.slice(1));
+ assert.equal(calls.length,3);for(const a of calls){assert.equal(a[6],0);assert.equal(a[8],650);}
+ const a=calls[1],centre=280;assert.ok(Math.abs(a[5]+(centre-a[1])*a[7]/a[3]-150)<.001);assert.ok(180*a[7]/a[3]>=100);
+});

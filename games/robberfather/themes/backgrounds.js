@@ -1,5 +1,5 @@
-import {streetBays,facadeSlices} from './layout.js?v=ui-v7';
-import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=ui-v7';
+import {streetBays,facadeSlices} from './layout.js?v=cover-v8';
+import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=cover-v8';
 const W=1440,H=840,GROUND=650;
 export class Backgrounds{
  constructor(theme=ACTIVE_THEME){this.theme=THEMES[theme];this.panels={};this.props={};this.ready=false;if(!this.theme)return;this.loadStreetAssets();const img=new Image();img.onload=()=>{
@@ -15,10 +15,10 @@ export class Backgrounds{
   this.ready=true;
  };img.onerror=()=>console.error('Background theme failed to load');img.src=this.theme.atlas;const props=new Image();props.onload=()=>{const halfW=Math.floor(props.width/2),halfH=Math.floor(props.height/2),scan=document.createElement('canvas');scan.width=props.width;scan.height=props.height;const sc=scan.getContext('2d',{willReadFrequently:true});sc.drawImage(props,0,0);for(const [name,col,row]of [['crate',0,0],['bin',1,0],['table',0,1],['bowl',1,1]]){const data=sc.getImageData(col*halfW,row*halfH,halfW,halfH).data;let x0=halfW,y0=halfH,x1=0,y1=0;for(let y=0;y<halfH;y++)for(let x=0;x<halfW;x++)if(data[(y*halfW+x)*4+3]>128){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}const el=document.createElement('canvas');el.width=x1-x0+1;el.height=y1-y0+1;el.getContext('2d').drawImage(props,col*halfW+x0,row*halfH+y0,el.width,el.height,0,0,el.width,el.height);this.props[name]=el;}};props.src=this.theme.props;if(this.theme.alley){const alley=new Image();alley.onload=()=>{const panel=document.createElement('canvas');panel.width=W;panel.height=H;const ctx=panel.getContext('2d');ctx.imageSmoothingEnabled=false;const split=Math.round(alley.height*.708);ctx.drawImage(alley,0,0,alley.width,split,0,0,W,GROUND);ctx.drawImage(alley,0,split,alley.width,alley.height-split,0,GROUND,W,H-GROUND);this.alleyOverride=panel;};alley.src=this.theme.alley;}}
  loadStreetAssets(){
-  for(const name of ['modules','room'])if(this.theme[name]){const img=new Image();img.onload=()=>{this[name]=img;};img.onerror=()=>console.error(name+' art failed to load');img.src=this.theme[name];}
+  for(const name of ['modules','room','alleyWall'])if(this.theme[name]){const img=new Image();img.onload=()=>{this[name]=img;};img.onerror=()=>console.error(name+' art failed to load');img.src=this.theme[name];}
 
   if(this.theme.facade){const img=new Image();img.onload=()=>{this.facade=img;};img.onerror=()=>console.error('Street facade failed to load');img.src=this.theme.facade;}
-  if(this.theme.cover){const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=img.width;canvas.height=img.height;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);const data=ctx.getImageData(0,0,img.width,img.height).data;let left=img.width,top=img.height,right=-1,bottom=-1;for(let y=0;y<img.height;y++)for(let x=0;x<img.width;x++)if(data[(y*img.width+x)*4+3]>128){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}if(right<left)return;const out=document.createElement('canvas');out.width=196;out.height=Math.round((bottom-top+1)*196/(right-left+1));const oc=out.getContext('2d');oc.imageSmoothingEnabled=false;oc.drawImage(img,left,top,right-left+1,bottom-top+1,0,0,out.width,out.height);this.props.cover=out;};img.onerror=()=>console.error('Hiding cart failed to load');img.src=this.theme.cover;}
+  for(const name of ['cover','storage'])if(this.theme[name]){const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=img.width;canvas.height=img.height;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);const data=ctx.getImageData(0,0,img.width,img.height).data;let left=img.width,top=img.height,right=-1,bottom=-1;for(let y=0;y<img.height;y++)for(let x=0;x<img.width;x++)if(data[(y*img.width+x)*4+3]>128){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}if(right<left)return;const out=document.createElement('canvas');out.width=196;out.height=Math.round((bottom-top+1)*196/(right-left+1));const oc=out.getContext('2d');oc.imageSmoothingEnabled=false;oc.drawImage(img,left,top,right-left+1,bottom-top+1,0,0,out.width,out.height);this.props[name]=out;};img.onerror=()=>console.error(name+' cover failed to load');img.src=this.theme[name];}
  }
  frontage(c,cam){
   if(!this.facade){this.wall(c);return;}
@@ -39,7 +39,7 @@ export class Backgrounds{
    else{const scale=ARCHITECTURE.facadeScale,sw=shop.w/scale,sx=ARCHITECTURE.streetDoor-sw/2,top=this.facade?GROUND-240/scale:0;c.drawImage(p,sx,top,sw,GROUND-top,x-shop.w/2,GROUND-(GROUND-top)*scale,shop.w,(GROUND-top)*scale);}
   }return true;
  }
- draw(c,name,cam=0){if(!this.ready)return false;if(this.theme.flatFloor&&name==='shop'&&this.room)return this.completeRoom(c);if(this.theme.flatFloor&&name==='alley'&&this.alleyOverride)return this.completeAlley(c);const panel=name==='alley'?(this.alleyOverride||this.panels.alley):this.panels[name];if(!panel)return false;
+ draw(c,name,cam=0){if(!this.ready)return false;if(this.theme.flatFloor&&name==='shop'&&this.room)return this.completeRoom(c);if(this.theme.flatFloor&&name==='alley'&&(this.alleyWall||this.alleyOverride))return this.completeAlley(c);const panel=name==='alley'?(this.alleyOverride||this.panels.alley):this.panels[name];if(!panel)return false;
   if(name==='home'||(!this.theme.compact&&name!=='street')){c.drawImage(panel,0,0);if(this.theme.flatFloor)this.floor(c,panel);return true;}
   if(name==='street'){for(let x=-Math.round(cam%W);x<W;x+=W)c.drawImage(panel,x,0);return true;}
   const scale=ARCHITECTURE.roomScale,width=W*scale,door=name==='alley'?ARCHITECTURE.alleyDoor:115,offset=150-door*scale;
@@ -65,18 +65,18 @@ export class Backgrounds{
   }
   this.floor(c,this.panels.street,cam);return true;
  }
- wholeWall(c,img,sourceHeight,doorU,height){
+ wholeWall(c,img,sourceHeight,doorU,height,sourceDoorWidth){
   c.imageSmoothingEnabled=false;c.fillStyle='#524b3d';c.fillRect(0,0,W,H);
-  if(img===this.room){if(!this.ceiling){const tile=document.createElement('canvas');tile.width=160;tile.height=24;const ctx=tile.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.drawImage(img,140,12,200,30,0,0,160,24);this.ceiling=tile;}c.fillStyle=c.createPattern(this.ceiling,'repeat');c.fillRect(0,0,W,GROUND-height);}
+  if(img===this.room){if(!this.ceiling){const tile=document.createElement('canvas');tile.width=160;tile.height=56;const ctx=tile.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.drawImage(img,520,8,180,70,0,0,160,56);this.ceiling=tile;}c.fillStyle=c.createPattern(this.ceiling,'repeat');c.fillRect(0,0,W,GROUND-height);}
   const bay={left:0,right:W,door:150};
-  for(const part of facadeSlices(bay,img.width,doorU,120)){
+  for(const part of facadeSlices(bay,img.width,doorU,120,sourceDoorWidth)){
    c.drawImage(img,part.sx,0,part.sw,sourceHeight,part.dx,GROUND-height,part.dw,height);
 
   }
   this.floor(c,this.panels.street);return true;
  }
  completeRoom(c){return this.wholeWall(c,this.room,this.room.height*ARCHITECTURE.shopWallFraction,ARCHITECTURE.shopDoor,ARCHITECTURE.doorHeight/ARCHITECTURE.shopDoorFraction);}
- completeAlley(c){return this.wholeWall(c,this.alleyOverride,GROUND,ARCHITECTURE.alleyDoor/W,ARCHITECTURE.doorHeight/.414);}
+ completeAlley(c){if(this.alleyWall)return this.wholeWall(c,this.alleyWall,this.alleyWall.height,280/1536,GROUND,190);return this.wholeWall(c,this.alleyOverride,GROUND,ARCHITECTURE.alleyDoor/W,ARCHITECTURE.doorHeight/.414);}
  wall(c){const a=this.alleyOverride||this.panels.alley;if(!a){c.fillStyle='#514c3f';c.fillRect(0,0,W,GROUND);return;}for(let y=0;y<GROUND;y+=30)for(let x=0;x<W;x+=42)c.drawImage(a,670,160,76,54,x,y,42,30);}
  floor(c,p,cam=0){
   if(this.theme.flatFloor){

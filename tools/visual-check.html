@@ -1,10 +1,10 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>Robberfather · character and gameplay checks</title>
 <style>body{background:#222936;color:#e8dcc4;font:16px system-ui;margin:32px auto;max-width:1200px}h1{font:32px Georgia}p{color:#bfc2c7}button{padding:14px;margin:5px;background:#526b61;color:#fff;border:1px solid #9caa99;cursor:pointer}canvas{width:100%;image-rendering:pixelated;background:#d8d4c7}#result{white-space:pre-wrap}</style>
 <h1>One More Meal · Pixel sprite studio · revision 2</h1><p>Raster dot sprites, sampled to native pixels with a shared 24-colour palette per person. Full-body animation; no rectangle-built bodies. Local QA fixtures replace only this preview origin's save.</p>
-<canvas id="sheet" width="1200" height="630"></canvas><p id="result"></p><div id="fixtures"></div>
+<canvas id="sheet" width="1200" height="940"></canvas><p id="result"></p><div id="fixtures"></div>
 <script type="module">
-import {drawCharacter,drawChild,drawPocketBack,drawEating,ready} from '/games/robberfather/characters.js?v=ui-v7';
-import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=ui-v7';
+import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=cover-v8';
+import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=cover-v8';
 await ready;
 const c=document.getElementById('sheet').getContext('2d');c.fillStyle='#d8d4c7';c.fillRect(0,0,1200,630);c.imageSmoothingEnabled=false;
 const people=[['FATHER','father'],['SON','child'],['PASSERBY','civilian'],['WEALTHY','wealthy'],['POLICE','police'],['ALLEY MAN','thug']];
@@ -18,6 +18,11 @@ for(let i=0;i<people.length;i++){
 }
 const fresh=()=>{const g=new Game();g.start();for(let i=0;i<3;i++)g.advanceMorning();g.tutorialDone=true;g.tutorial=TUTORIAL.done;return g;};
 const scenarios={
+ 'V8 · street floor':()=>{const g=fresh();g.player.x=1480;return g;},
+ 'V8 · street cover':()=>{const g=fresh();g.player.x=BOXES[0].x;g.toggleHide();return g;},
+ 'V8 · indoor cover':()=>{const g=fresh();g.player.x=SHOPS[1].x0+1240;g.toggleHide();return g;},
+ 'V8 · full alley':()=>{const g=fresh();g.player.x=SHOPS.find(s=>s.kind===5).x0+650;return g;},
+
  'UI · HUD with one chance used':()=>{const g=fresh();g.player.x=1006;g.inventory=['coin','coin','fresh','fresh'];g.attempts=['caught'];return g;},
  'UI · first dialogue':()=>{const g=new Game();g.start();return g;},
  'UI · first tutorial':()=>{const g=new Game();g.start();for(let i=0;i<3;i++)g.advanceMorning();return g;},
@@ -45,5 +50,5 @@ let rendered=0;for(const [,type]of people)for(const face of [-1,1])for(const pos
 }
 for(const type of ['civilian','wealthy','police'])for(const look of ['wait','warn','look']){const tmp=document.createElement('canvas');tmp.width=640;tmp.height=400;drawPocketBack(tmp.getContext('2d'),type,look,0);rendered++;}
 for(const kind of ['father','child'])for(let i=0;i<4;i++){const tmp=document.createElement('canvas');tmp.width=180;tmp.height=160;drawEating(tmp.getContext('2d'),kind,90,150,2,i/2.6);rendered++;}
-document.getElementById('result').textContent=`PASS · ${rendered} character frames and pocket views rendered`;
+for(let i=0;i<4;i++){drawCrouch(c,180+i*270,910,i/3,3.6);rendered++;}document.getElementById('result').textContent=`PASS · ${rendered} character frames and pocket views rendered`;
 </script></html>

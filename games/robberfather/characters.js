@@ -35,8 +35,9 @@ function reduce(frame,palette){
 export const ready=typeof Image==='undefined'?Promise.resolve():Promise.all([
  image(new URL('./assets/people-pixel-v2.png',import.meta.url).href),
  image(new URL('./assets/eating-pixel-v2.png',import.meta.url).href),
- image(new URL('./assets/actions-v3.png',import.meta.url).href)
-]).then(([people,eating,actionSheet])=>{
+ image(new URL('./assets/actions-v3.png',import.meta.url).href),
+ image(new URL('./assets/crouch-v4.png',import.meta.url).href)
+]).then(([people,eating,actionSheet,crouchSheet])=>{
  const rows=[0,267,524,785,1006,1145],mealRows=[0,381,724,1062,1448],cw=people.width/6;
  for(const [kind,col]of Object.entries(COLUMNS)){
   if(kind==='worker')continue;
@@ -47,6 +48,7 @@ export const ready=typeof Image==='undefined'?Promise.resolve():Promise.all([
  for(const [kind,row,height]of [['child',0,48],['thug',1,73]]){
   actions[kind]=Array.from({length:4},(_,col)=>{const f=cut(actionSheet,Math.round(col*actionSheet.width/4),Math.round(row*actionSheet.height/2),Math.floor(actionSheet.width/4),Math.floor(actionSheet.height/2),1);const out=document.createElement('canvas');out.height=height;out.width=Math.round(f.width*height/f.height);const oc=out.getContext('2d');oc.imageSmoothingEnabled=false;oc.drawImage(f,0,0,out.width,out.height);reduce(out,palettes[kind]);return out;});
  }
+ actions.crouch=[58,52,45,42].map((height,i)=>{const f=cut(crouchSheet,(i%2)*crouchSheet.width/2,i<2?0:550,crouchSheet.width/2,i<2?550:crouchSheet.height-550,1),out=document.createElement('canvas');out.height=height;out.width=Math.round(f.width*height/f.height);const ctx=out.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.drawImage(f,0,0,out.width,out.height);reduce(out,palettes.father);return out;});
  frames.worker=frames.civilian;loaded=true;
 }).catch(error=>{console.error('Character sprite loading failed',error);});
 export function spritesReady(){return loaded;}
@@ -70,3 +72,4 @@ export function drawPocketBack(c,type,look,time){
 }
 
 export function drawAction(c,kind,frame,x,y,scale=1){if(!loaded||!actions[kind])return false;const face=kind==='thug'&&frame!==2?-1:1;blit(c,actions[kind][frame],x,y,scale,face);return true;}
+export function drawCrouch(c,x,y,amount,scale=1,face=1){if(!loaded)return false;blit(c,actions.crouch[Math.min(3,Math.floor(Math.max(0,amount)*4))],x,y,scale,face);return true;}

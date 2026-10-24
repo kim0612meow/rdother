@@ -1,13 +1,13 @@
-import {settings,DEFAULT_BINDINGS} from './settings.js?v=ui-v7';
-import {PocketInput} from './pocket-input.js?v=ui-v7';
-import {ROBBERY,endingPart} from './cinematics.js?v=ui-v7';
-import {Game,TYPES,RULES,TUTORIAL,WIDTH,HEIGHT,PRICES} from './engine.js?v=ui-v7';
-import {Pickpocket} from './pickpocket.js?v=ui-v7';
-import {Shell} from './shell.js?v=ui-v7';
-import {Renderer} from './scene.js?v=ui-v7';
-import {Soundscape} from './audio.js?v=ui-v7';
-import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=ui-v7';
-import {getMorningLines,storyText} from './story.js?v=ui-v7';
+import {settings,DEFAULT_BINDINGS} from './settings.js?v=cover-v8';
+import {PocketInput} from './pocket-input.js?v=cover-v8';
+import {ROBBERY,endingPart} from './cinematics.js?v=cover-v8';
+import {Game,TYPES,RULES,TUTORIAL,WIDTH,HEIGHT,PRICES} from './engine.js?v=cover-v8';
+import {Pickpocket} from './pickpocket.js?v=cover-v8';
+import {Shell} from './shell.js?v=cover-v8';
+import {Renderer} from './scene.js?v=cover-v8';
+import {Soundscape} from './audio.js?v=cover-v8';
+import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=cover-v8';
+import {getMorningLines,storyText} from './story.js?v=cover-v8';
 const $=id=>document.getElementById(id),SAVE='one-more-meal-v3',LANG='one-more-meal-language';
 function getSaved(){try{const s=JSON.parse(localStorage.getItem(SAVE));if(s?.version===3&&Number.isInteger(s.day)&&s.day>0&&s.day<1000000&&Array.isArray(s.inventory))return s;}catch{}return null;}
 let saved=getSaved(),game=new Game(),renderer=new Renderer($('game')),held=new Set(),pendingPresses=new Set(),modalOpen=false,transitioning=false,lastTime=0,visualTime=0,toastUntil=0,tutorialUntil=0,lastSignature='',sound=true,soundscape=new Soundscape(),modalSpec=null,previousFocus=null,toastSpec=null;

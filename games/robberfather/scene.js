@@ -1,11 +1,12 @@
-import {ARCHITECTURE} from './themes/config.js?v=ui-v7';
-import {Backgrounds} from './themes/backgrounds.js?v=ui-v7';
-import {ROBBERY,kickReach} from './cinematics.js?v=ui-v7';
-import {drawCharacter,drawChild,drawEating,drawAction,spritesReady} from './characters.js?v=ui-v7';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=ui-v7';
+import {streetFocusY,cameraWindow,coverPlacement} from './framing.js?v=cover-v8';
+import {ARCHITECTURE} from './themes/config.js?v=cover-v8';
+import {Backgrounds} from './themes/backgrounds.js?v=cover-v8';
+import {ROBBERY,kickReach} from './cinematics.js?v=cover-v8';
+import {drawCharacter,drawChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=cover-v8';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=cover-v8';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=ui-v7';
-import {HD2D} from './hd2d.js?v=ui-v7';
+import {t,getLocale} from './i18n.js?v=cover-v8';
+import {HD2D} from './hd2d.js?v=cover-v8';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
@@ -98,10 +99,10 @@ function interiorBackground(shop){if(shop.kind===ALLEY)return alleyBackground();
  // Soft dark corners.
  return el;}
 export class Renderer{
- constructor(el){this.el=el;this.out=el.getContext('2d');this.surface=canvas();this.c=this.surface.getContext('2d');this.camera=0;this.zoom=1;this.focus={x:W*.5,y:H*.5};this.locale='';this.reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;this.night=nightBackground();this.rooms=[];this.area=-1;this.snap=false;this.fx=new HD2D();this.backgrounds=new Backgrounds();}
- draw(g,time,dt){const c=this.c;if(this.locale!==getLocale()){this.locale=getLocale();this.day=dayBackground();this.rooms=SHOPS.map(interiorBackground);}const shop=areaAt(g.player.x),area=shop?shop.id:-1;if(area!==this.area){this.area=area;this.snap=true;}c.clearRect(0,0,W,H);c.save();if(g.mode==='ending'){if(g.ending==='arrest')this.drawArrest(c,g,time);else if(g.ending==='robbed')this.drawRobbed(c,g,time);else this.drawCollapse(c,g,time);}else if(['intro','night'].includes(g.mode)){this.homeBackground(c);this.drawMeal(c,g,time);}else this.drawStreet(c,g,time,dt);c.restore();
- const closeRobbery=g.mode==='ending'&&g.ending==='robbed'&&g.endingTime<ROBBERY.home;const street=['day','caught','return','morning'].includes(g.mode),base=street?STREET_ZOOM:closeRobbery?2.1:1;const holding=g.mode==='day'&&g.activeTarget!==null&&g.target;const ratio=holding?Math.min(1,g.progress/TYPES[g.target.type].hold):0;const wanted=base+(holding?(this.reduced?.35:1.3)*ratio:0);this.zoom+=(wanted-this.zoom)*Math.min(1,dt*6);if(Math.abs(this.zoom-wanted)<.002)this.zoom=wanted;const fx=holding?g.target.x-this.camera:street?g.player.x-this.camera:W*.5,fy=holding?g.target.y-65:street?GROUND-130:closeRobbery?GROUND-50:H*.5,ease=street&&this.zoom>1.01?Math.min(1,dt*7):1;this.focus.x+=(fx-this.focus.x)*ease;this.focus.y+=(fy-this.focus.y)*ease;if(this.snap){this.focus.x=fx;this.focus.y=fy;this.snap=false;}
- const sw=W/this.zoom,sh=H/this.zoom;const sx=Math.max(0,Math.min(W-sw,this.focus.x-sw/2)),sy=Math.max(0,Math.min(H-sh,this.focus.y-sh/2));this.view={sx,sy,zoom:this.zoom,cam:Math.round(this.camera)};this.out.imageSmoothingEnabled=false;this.out.clearRect(0,0,W,H);this.out.drawImage(this.surface,sx,sy,sw,sh,0,0,W,H);
+ constructor(el){this.el=el;this.out=el.getContext('2d');this.surface=canvas();this.c=this.surface.getContext('2d');this.camera=0;this.zoom=1;this.coverMotion=null;this.coverSeen=false;this.focus={x:W*.5,y:H*.5};this.locale='';this.reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;this.night=nightBackground();this.rooms=[];this.area=-1;this.snap=false;this.fx=new HD2D();this.backgrounds=new Backgrounds();}
+ draw(g,time,dt){const c=this.c;if(this.locale!==getLocale()){this.locale=getLocale();this.day=dayBackground();this.rooms=SHOPS.map(interiorBackground);}const shop=areaAt(g.player.x),area=shop?shop.id:-1;if(area!==this.area){this.area=area;this.snap=true;this.coverMotion=null;this.coverSeen=false;}c.clearRect(0,0,W,H);c.save();if(g.mode==='ending'){if(g.ending==='arrest')this.drawArrest(c,g,time);else if(g.ending==='robbed')this.drawRobbed(c,g,time);else this.drawCollapse(c,g,time);}else if(['intro','night'].includes(g.mode)){this.homeBackground(c);this.drawMeal(c,g,time);}else this.drawStreet(c,g,time,dt);c.restore();
+ const closeRobbery=g.mode==='ending'&&g.ending==='robbed'&&g.endingTime<ROBBERY.home;const street=['day','caught','return','morning'].includes(g.mode),base=street?STREET_ZOOM:closeRobbery?2.1:1;const holding=g.mode==='day'&&g.activeTarget!==null&&g.target;const ratio=holding?Math.min(1,g.progress/TYPES[g.target.type].hold):0;const wanted=base+(holding?(this.reduced?.35:1.3)*ratio:0);this.zoom+=(wanted-this.zoom)*Math.min(1,dt*6);if(Math.abs(this.zoom-wanted)<.002)this.zoom=wanted;const fx=holding?g.target.x-this.camera:street?g.player.x-this.camera:W*.5,fy=holding?g.target.y-65:street?streetFocusY(this.zoom):closeRobbery?GROUND-50:H*.5,ease=street&&this.zoom>1.01?Math.min(1,dt*7):1;this.focus.x+=(fx-this.focus.x)*ease;this.focus.y+=(fy-this.focus.y)*ease;if(this.snap){this.focus.x=fx;this.focus.y=fy;this.snap=false;}
+ const {w:sw,h:sh,sx,sy}=cameraWindow(this.zoom,this.focus.x,this.focus.y);this.view={sx,sy,zoom:this.zoom,cam:Math.round(this.camera)};this.out.imageSmoothingEnabled=false;this.out.clearRect(0,0,W,H);this.out.drawImage(this.surface,sx,sy,sw,sh,0,0,W,H);
  const look=street?(shop?(shop.kind===ALLEY?'alley':'shop'):'day'):'night';this.fx.apply(this.out,look,street?(this.focus.y-sy)*this.zoom:560,time,(holding?.6:1)*this.backgrounds.fx);
  if(g.mode==='day'){const seen=Math.max(0,...g.npcs.filter(n=>!n.alert).map(n=>n.witness));if(seen>.08){const edge=this.out.createRadialGradient(W/2,H/2,H*.45,W/2,H/2,W*.62);edge.addColorStop(0,'rgba(200,30,20,0)');edge.addColorStop(1,`rgba(200,30,20,${(.15+seen*.4).toFixed(3)})`);this.out.fillStyle=edge;this.out.fillRect(0,0,W,H);}} // Red edge while someone is noticing.
  }
@@ -116,19 +117,28 @@ export class Renderer{
  for(const x0 of ALLEY_DOORS){const x=x0-cam;if(x>-60&&x<W+60){label(c,t('alleyDoor'),x,GROUND-120,15,'#b8b5a0','sans-serif');poly(c,[[x-6,GROUND-14],[x+6,GROUND-14],[x,GROUND-7]],'#b8b5a0');}}return;}
 rect(c,0,0,W,H,'#7e947d');const sky=c.createLinearGradient(0,0,0,640);sky.addColorStop(0,'#8d9d86');sky.addColorStop(1,'#b1b397');c.fillStyle=sky;c.fillRect(0,0,W,650);for(let i=-1;i<12;i++){const x=i*175-(cam*.22)%175,y=80+(i*71%170);rect(c,x,y,130,520-y,'#5a78675c');poly(c,[[x-8,y],[x+65,y-42],[x+139,y]],'#536f624d');for(let yy=y+20;yy<490;yy+=51)for(let xx=x+15;xx<x+125;xx+=34)rect(c,xx,yy,10,22,'#aec2a427');}c.drawImage(this.day,-cam,0,WORLD,H);}
  worldPoint(px,py){const v=this.view;return v?{x:v.cam+v.sx+px/v.zoom,y:v.sy+py/v.zoom}:null;}
- drawStreet(c,g,time,dt){const shop=areaAt(g.player.x),desired=shop?shop.x0:Math.max(0,Math.min(WORLD-W,g.player.x-W*.38));this.camera+=(desired-this.camera)*Math.min(1,dt*5);if(g.player.x===330||this.snap)this.camera=desired;const cam=Math.round(this.camera);if(shop)this.roomBackground(c,shop);else this.streetBase(c,cam);c.save();c.translate(-cam,0);
- for(const b of g.bins)this.bin(c,b);const chars=[...g.npcs,...(!g.player.hidden?[{...g.player,id:-1}]:[])].sort((a,b)=>a.y-b.y);for(const n of chars){if(n.x<cam-60||n.x>cam+W+60)continue;const isPlayer=n.id===-1;person(c,n,isPlayer,ARCHITECTURE.actorScale);if(isPlayer)poly(c,[[n.x-5,n.y-164],[n.x+5,n.y-164],[n.x,n.y-158]],'#dfc184');else if(n.alert)label(c,'!',n.x,n.y-170,24,'#eca77f','sans-serif');else if(n.type==='wealthy')poly(c,[[n.x,n.y-172],[n.x+4,n.y-168],[n.x,n.y-164],[n.x-4,n.y-168]],'#d9bb77');else if(n.type==='police'){rect(c,n.x-4,n.y-168,8,7,'#b6c8b0');rect(c,n.x-2,n.y-166,4,5,'#5d7f73');}if(n.witness>.04&&!n.alert){const hot=n.witness>.6&&Math.sin(time*18)>0;const ex=n.x,ey=n.y-196;poly(c,[[ex-12,ey],[ex,ey-7],[ex+12,ey],[ex,ey+7]],hot?'#ff6a55':'#e23b2e');rect(c,ex-6,ey-3,12,6,'#fbe9df');rect(c,ex-3,ey-3,6,6,'#2a1512');rect(c,n.x-23,n.y-183,46,7,'#2a1512');rect(c,n.x-22,n.y-182,44*n.witness,5,hot?'#ff6a55':'#e23b2e');}}
- this.child(c,259,647,1.7,time,false);for(const b of BOXES)this.box(c,b,g.player.hidden&&g.player.boxId===b.id);
+ drawStreet(c,g,time,dt){this.updateCover(g,dt);const shop=areaAt(g.player.x),desired=shop?shop.x0:Math.max(0,Math.min(WORLD-W,g.player.x-W*.38));this.camera+=(desired-this.camera)*Math.min(1,dt*5);if(g.player.x===330||this.snap)this.camera=desired;const cam=Math.round(this.camera);if(shop)this.roomBackground(c,shop);else this.streetBase(c,cam);c.save();c.translate(-cam,0);
+ for(const b of g.bins)this.bin(c,b);const chars=[...g.npcs,...(!g.player.hidden&&!this.coverMotion?[{...g.player,id:-1}]:[])].sort((a,b)=>a.y-b.y);for(const n of chars){if(n.x<cam-60||n.x>cam+W+60)continue;const isPlayer=n.id===-1;person(c,n,isPlayer,ARCHITECTURE.actorScale);if(isPlayer)poly(c,[[n.x-5,n.y-164],[n.x+5,n.y-164],[n.x,n.y-158]],'#dfc184');else if(n.alert)label(c,'!',n.x,n.y-170,24,'#eca77f','sans-serif');else if(n.type==='wealthy')poly(c,[[n.x,n.y-172],[n.x+4,n.y-168],[n.x,n.y-164],[n.x-4,n.y-168]],'#d9bb77');else if(n.type==='police'){rect(c,n.x-4,n.y-168,8,7,'#b6c8b0');rect(c,n.x-2,n.y-166,4,5,'#5d7f73');}if(n.witness>.04&&!n.alert){const hot=n.witness>.6&&Math.sin(time*18)>0;const ex=n.x,ey=n.y-196;poly(c,[[ex-12,ey],[ex,ey-7],[ex+12,ey],[ex,ey+7]],hot?'#ff6a55':'#e23b2e');rect(c,ex-6,ey-3,12,6,'#fbe9df');rect(c,ex-3,ey-3,6,6,'#2a1512');rect(c,n.x-23,n.y-183,46,7,'#2a1512');rect(c,n.x-22,n.y-182,44*n.witness,5,hot?'#ff6a55':'#e23b2e');}}
+ this.child(c,259,647,1.7,time,false);for(const b of BOXES){if(b.x<cam-180||b.x>cam+W+180)continue;const motion=this.coverMotion?.id===b.id?this.coverMotion:null;this.box(c,b,!!motion,motion?.amount||0,g.player.face);}
  // Boarded doors of shops that caught you stealing.
  for(const id of g.closedShops){const x=SHOPS[id].door;line(c,x-44,470,x+44,620,'#6b4a2e',9);line(c,x+44,470,x-44,620,'#6b4a2e',9);rect(c,x-50,524,100,30,'#7a2219');label(c,t('barredSign'),x,545,15,'#f3d9c4','sans-serif');}
  if(g.target){const n=g.target;c.strokeStyle='#dcc58a';c.lineWidth=1.5;c.beginPath();c.ellipse(n.x,n.y+2,26,6,0,0,Math.PI*2);c.stroke();if(g.progress){const px=n.x+8*n.face,py=n.y-62;c.strokeStyle=g.suspicion>.65?'#e0a078':'#ead095';c.lineWidth=2;c.beginPath();c.arc(px,py,12,-Math.PI/2,-Math.PI/2+Math.PI*2*g.progress/TYPES[n.type].hold);c.stroke();}else{const px=n.x+8*n.face,py=n.y-62,pulse=.5+.5*Math.sin(time*6);c.strokeStyle=`rgba(240,206,128,${.45+.5*pulse})`;c.lineWidth=2;c.strokeRect(px-7-pulse*2,py-6-pulse*2,14+pulse*4,12+pulse*4);}}
  c.restore();if(g.chasers.length)rect(c,0,0,W,H,'#a04f3217');const dusk=1-g.timeLeft/RULES.daySeconds;if(dusk>.45)rect(c,0,0,W,H,`rgba(92,53,32,${(dusk-.45)*.38})`);if(!this.reduced)for(let i=0;i<18;i++){const x=(i*131+time*(7+i%4)-cam*.1)%W,y=320+(i*43+Math.sin(time+i)*12)%370;rect(c,x,y,1,2,'#e2d7a64b');}}
- box(c,b,occupied){
-  if(this.backgrounds.props.cover){
-   const x=b.x,y=GROUND;c.save();c.fillStyle='#11191566';c.beginPath();c.ellipse(x-2,y+1,112,7,0,0,Math.PI*2);c.fill();
-   if(occupied){c.globalAlpha=.9;person(c,{x:x+44,y:y-2,face:-1,pose:'seated',walk:0},true,ARCHITECTURE.actorScale);c.globalAlpha=1;}
-   this.backgrounds.prop(c,'cover',x,y,RULES.coverWidth,this.backgrounds.props.cover.height*RULES.coverWidth/196);
-   if(occupied){rect(c,x-78,y-166,156,24,'#142b24e8');label(c,t('hiddenStatus'),x,y-149,13,'#e7d2a1','sans-serif');poly(c,[[x+39,y-101],[x+49,y-101],[x+44,y-95]],'#dfc184');}else label(c,t('boxSign'),x,y-141,11,'#d3c29f','sans-serif');c.restore();return;
+ updateCover(g,dt){
+  const cover=g.player.hidden?BOXES.find(b=>b.id===g.player.boxId):null;
+  if(cover){if(this.coverMotion?.id!==cover.id)this.coverMotion={id:cover.id,x:cover.x,amount:this.coverSeen?0:1};this.coverMotion.amount=Math.min(1,this.coverMotion.amount+dt/.28);}
+  else if(this.coverMotion){this.coverMotion.amount-=dt/.22;if(this.coverMotion.amount<=0||Math.abs(g.player.x-this.coverMotion.x)>RULES.coverReach)this.coverMotion=null;}
+  this.coverSeen=true;
+ }
+ box(c,b,occupied,amount=1,face=1){
+  const prop=b.inside?'storage':'cover',img=this.backgrounds.props[prop];
+  if(img){
+   const p=coverPlacement(b,img.height/img.width),x=b.x,y=GROUND;c.save();c.fillStyle='#11191555';c.beginPath();c.ellipse(x,y+1,p.width*.46,5,0,0,Math.PI*2);c.fill();
+   if(occupied)drawCrouch(c,p.poseX,p.poseY,amount,ARCHITECTURE.actorScale,face);
+   this.backgrounds.prop(c,p.prop,x,y,p.width,p.height);
+   label(c,t(occupied?'hiddenStatus':'boxSign'),x,y-p.height-12,11,occupied?'#eed6a3':'#d3c29f','sans-serif');
+   if(occupied)poly(c,[[x-5,y-p.height-7],[x+5,y-p.height-7],[x,y-p.height-2]],'#dfc184');
+   c.restore();return;
   }
   if(this.backgrounds.prop(c,'crate',b.x,GROUND,82,66)){label(c,t(occupied?'hiddenStatus':'boxSign'),b.x,GROUND-84,10,'#dcc7a2','sans-serif');return;}if(this.backgrounds.ready){const x=b.x,y=GROUND;rect(c,x-40,y-61,80,61,'#4f3d2e');rect(c,x-36,y-56,72,50,'#7f6346');for(let i=0;i<5;i++){rect(c,x-35+i*14,y-55,2,49,'#4b3b2b');line(c,x-31+i*14,y-48,x-29+i*14,y-13,'#9a7b5555',1);}line(c,x-33,y-52,x+33,y-9,'#b09468',5);line(c,x+33,y-52,x-33,y-9,'#aa8b5e',5);rect(c,x-43,y-65,86,8,'#a88b61');rect(c,x-40,y-5,80,6,'#49392d');label(c,t(occupied?'hiddenStatus':'boxSign'),x,y-83,10,'#ddcba8','sans-serif');return;}
 const x=b.x,y=GROUND;rect(c,x-40,y-61,80,61,'#887955');rect(c,x-35,y-56,70,49,'#6d694a');line(c,x-34,y-55,x+34,y-8,'#b7a273',5);line(c,x+34,y-55,x-34,y-8,'#a59367',5);rect(c,x-43,y-65,86,8,occupied?'#6d6346':'#b0a078');rect(c,x-40,y-5,80,7,'#4d583c');rect(c,x-32,y-45,64,1,'#c2ae7d55');if(occupied){rect(c,x-12,y-68,24,3,'#b1c197');label(c,t('hiddenStatus'),x,y-85,10,'#d3d5ab','sans-serif');}else label(c,t('boxSign'),x,y-83,9,'#c8c5a0','sans-serif');}

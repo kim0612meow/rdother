@@ -45,3 +45,7 @@ The foreground retaining wall is removed. A flat paving texture sampled solely f
 Inside a shop or gambling alley, walking left to local x<=100 automatically uses the exit. W remains available at the exit. Entry spawns at local x=150, avoiding immediate bounce-back. Existing pursuit restrictions apply; an attempted edge exit reports the block once instead of spamming it. Help and exit hints explain walking out in both languages.
 
 Built-in imagegen prompts, using the original painted-city-v1/backgrounds.png as style reference: modules -- two equal complete facade panels, shop and brick alley entry, one centred doorway reaching the bottom edge, whole side/upper windows, restrained warm plaster/brick/wood, strict orthographic view, no people/text/pavement/foundation. Room -- a single wide coherent general-store wall with one left open exit, centre shelves and right sales counter, wall-to-floor junction at bottom, human-scale doorway, no people/text/foreground foundation. Actual generated doorway dimensions are calibrated in ARCHITECTURE instead of assuming the prompt's fractions were exact. These are generated raster assets, not manually placed pixel art.
+
+## Grounded revision 5 / cover v8
+
+Current active theme: `grounded-v5`. See [assets, prompts and layout notes](grounded-v5/README.md). The street foreground is narrowed, crouching uses a dedicated four-pose atlas, indoor cover uses a stationary cupboard, and the gambling alley has complete upper floors. Existing cover ids and saved games remain compatible. Previous theme assets are preserved.

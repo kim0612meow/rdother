@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=ui-v7';
+import {controlText} from './settings.js?v=cover-v8';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -84,3 +84,6 @@ Object.assign(MESSAGES.en,{emptyCoin:'Empty coin slot',slotFresh:'Food',slotCoin
 
 Object.assign(MESSAGES.ko,{shellHint:'맞히면 2칸, 틀리면 −1칸 · E 사용으로 닫기',detected:'들켰어요! 짐수레 뒤에서 F 숨기를 쓰세요.',chaseHint:'짐수레 옆에서 F 숨기를 쓰세요.'});
 Object.assign(MESSAGES.en,{shellHint:'Win: 2 coins. Lose: −1 coin. E Use to close.',detected:'Spotted! Use F Hide behind a loaded cart.',chaseHint:'Use F Hide beside a loaded cart.'});
+
+Object.assign(MESSAGES.ko,{hidden:'몸을 낮춰 엄폐물 뒤에 숨었어요.',hiddenStatus:'숨어 있는 중',boxSign:'숨을 곳',detected:'들켰어요! 수레나 수납장 옆에서 F 숨기를 쓰세요.',chaseHint:'엄폐물 옆에서 F 숨기를 쓰세요.'});
+Object.assign(MESSAGES.en,{hidden:'You crouch behind cover.',hiddenStatus:'HIDDEN',boxSign:'COVER',detected:'Spotted! Use F Hide beside a cart or cupboard.',chaseHint:'Use F Hide beside cover.'});
