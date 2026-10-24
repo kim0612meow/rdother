@@ -1,5 +1,5 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=survival-v11';
-import {dayDifficulty} from './difficulty.js?v=survival-v11';
+import {ROBBERY,endingDuration} from './cinematics.js?v=clarity-v12';
+import {dayDifficulty} from './difficulty.js?v=clarity-v12';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,meal:3,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
@@ -55,7 +55,8 @@ export class Game{
  facingPlayer(n){return(this.player.x-n.x)*n.face>0;}
  isBehind(n){return!this.facingPlayer(n)&&distance(n,this.player)>=18;}
  isWatching(n){return(this.time+n.seed)%9<3.4;}
- nearest(){if(this.banned||this.chasers.length||this.player.x<630||this.player.hidden||this.coinFull)return null;return this.npcs.filter(n=>!n.stolen&&distance(n,this.player)<67).sort((a,b)=>distance(a,this.player)-distance(b,this.player))[0]||null;}
+ nearest(allowFull=false){if(this.banned||this.chasers.length||this.player.x<630||this.player.hidden||this.coinFull&&!allowFull)return null;return this.npcs.filter(n=>!n.stolen&&distance(n,this.player)<67).sort((a,b)=>distance(a,this.player)-distance(b,this.player))[0]||null;}
+ get fullPocketsTarget(){if(!this.coinFull)return null;const n=this.nearest(true);return n&&this.isBehind(n)?n:null;}
  // The shop counter the player is standing at, and what it sells.
  nearbyCounter(){const s=this.shop;if(!s||!SELLS[s.kind]||this.player.hidden||this.chasers.length||Math.abs(this.player.x-(s.x0+COUNTER))>60)return null;const item=SELLS[s.kind];return{shop:s,item,...PRICES[item]};}
  // Coins become fresh food portions. Medicine takes one point off the rotten-food sickness, which never wears off by itself.

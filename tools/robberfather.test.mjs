@@ -145,3 +145,14 @@ test('eating and notifications have no electronic beeps, while heartbeat remains
  const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape();s.context={};s.running=true;let tones=0,noises=0;s.tone=()=>tones++;s.noiseHit=()=>noises++;
  for(const type of ['eat','turnWarn','turnLook','frontOnly','stolen','bought','medicine','noMoney','notSick','betPlaced','betWon','betLost','save','night','start'])s.play(type);assert.equal(tones,0);assert.ok(noises>0);s.play({type:'heartbeat',tension:.5});assert.equal(tones,2);
 });
+
+test('a full purse explains the block only behind an eligible nearby NPC and never permits another theft',()=>{
+ const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.inventory=Array(5).fill('coin');assert.equal(g.nearest(),null);assert.equal(g.fullPocketsTarget?.id,0);tick(g,.2,{pick:true,trace:1});assert.equal(g.activeTarget,null);assert.equal(g.coins,5);
+ g.npcs[0].face=-1;assert.equal(g.fullPocketsTarget,null);g.npcs[0].face=1;g.player.x=600;assert.equal(g.fullPocketsTarget,null);g.player.x=748;g.chasers=[0];assert.equal(g.fullPocketsTarget,null);g.chasers=[];const copy=new Game(g.save());copy.start();assert.equal(copy.fullPocketsTarget?.id,0);g.inventory.pop();assert.equal(g.fullPocketsTarget,null);assert.equal(g.nearest()?.id,0);
+});
+test('the arrest holds the capture and keeps child and officer visible through the final escort',async()=>{
+ const {ARREST,arrestScene,endingDuration,endingPart}=await import('../games/robberfather/cinematics.js');const {viewportSize,fitZoom,cameraWindow,streetFocusY}=await import('../games/robberfather/framing.js');
+ assert.equal(endingDuration('arrest'),14);assert.equal(endingDuration('collapse'),8);assert.equal(endingPart('arrest',6.5),2);assert.equal(endingPart('arrest',9),3);const a=arrestScene(ARREST.caught),b=arrestScene(ARREST.escort-.01);assert.equal(a.childX,b.childX);assert.equal(a.policeX,b.policeX);
+ for(const [w,h]of [[1028,883],[1280,720],[2100,900]])for(const time of [3.5,6.2,7.8,8.5,11,12,14]){const s=arrestScene(time),v=viewportSize(w,h),zoom=fitZoom(s.zoom,v.width,v.height),cam=cameraWindow(zoom,s.focusX,streetFocusY(zoom),v.width,v.height);for(const x of [s.childX,...time>=6.2?[s.policeX]:[]]){const ratio=(x-cam.sx)*zoom/v.width;assert.ok(ratio>.15&&ratio<.85,`${w} at ${time}: ${ratio}`);}assert.ok(zoom>=2.3);}
+ const g=practice();g.mode='ending';g.ending='arrest';g.skipEnding();assert.equal(g.endingTime,ARREST.end);
+});

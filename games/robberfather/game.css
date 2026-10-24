@@ -125,26 +125,33 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 .modal button:not(.modal-close){min-height:42px;font-size:17px}
 .modal-close{position:absolute;right:16px;top:14px;background:none;font-size:25px}
 .modal>.primary-button{width:100%;margin-top:18px}
-.pause-menu .modal{width:300px;padding:22px}
+.pause-menu .modal{width:min(560px,calc(100vw - 40px));padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
 .pause-menu #modalBody{display:none}
 .pause-menu .primary-button{margin:0}
-.pause-menu #pauseChoices{display:grid;gap:10px;margin-top:10px}
+.pause-menu #modalAction{grid-column:1;grid-row:1}
+.pause-menu #pauseChoices{grid-column:1;grid-row:2;display:grid;gap:10px;margin-top:10px}
 .pause-menu #pauseChoices button{width:100%;background:#344d3e;color:#fff4de;padding:11px;font-size:19px}
+.pause-tools{grid-column:2;grid-row:1 / span 2;display:flex;flex-direction:column;gap:12px;border-left:1px solid #71866a66;padding-left:22px}
+.pause-tools>button,.pause-tools>select{width:100%;min-height:46px;border-radius:8px}
+.pause-tools #saveBtn{font-size:19px}
+.pause-tools #fullscreenBtn{background:#344d3e;color:#fff4de}
 .binding-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px}
 .binding-grid label{display:flex;gap:12px;align-items:center;justify-content:space-between;font-size:16px}
-.binding-grid button,.modalBody button{background:#38513f;color:#fff3dc;border:1px solid #7f9278;padding:7px 12px}
+.binding-grid button,#modalBody>button{background:#38513f;color:#fff3dc;border:1px solid #7f9278;padding:7px 12px}
 .binding-note{font-size:14px!important;margin:12px 0}
 .volume-setting{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:19px}
 .volume-setting input{width:100%;accent-color:#f1c77d}
-.pref-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}
-.pref-controls button,select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius:7px;border:1px solid #8b9a80}
-#preferences.volume .pref-controls,#preferences.controls #soundBtn{display:none}
+select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius:7px;border:1px solid #8b9a80}
 #soundBtn{margin-top:12px}
 .modal table{width:100%;border-collapse:collapse;font-size:16px}
 .modal th,.modal td{text-align:left;padding:9px 12px;border-bottom:1px solid #71866a66}
 .modal th{color:#f2d090}
 .is-intro .game-hud,.is-intro .bottom-hud,.is-intro .day-clock,.is-intro .pause-button,.is-morning .game-hud,.is-morning .bottom-hud,.is-morning .day-clock,.is-night .game-hud,.is-night .bottom-hud,.is-night .day-clock,.is-ending .game-hud,.is-ending .bottom-hud,.is-ending .day-clock{display:none}
 .is-stealing .target-card{display:none}
+.full-pockets-notice{position:absolute;left:50%;bottom:125px;transform:translateX(-50%);z-index:5;max-width:75%;padding:14px 20px;border-radius:12px;background:var(--panel);color:#ffdf99;font-size:18px;text-align:center}
+.is-arrest .ending-copy{left:24px;top:90px;padding:16px;max-width:370px}
+.is-arrest .ending-copy h2{font-size:26px;margin-bottom:10px}
+.is-arrest .ending-copy p{font-size:18px;line-height:1.55;margin-bottom:12px}
 @media(max-height:650px){.pickpocket{width:min(550px,80vw)}
 .pick-top p{font-size:16px;line-height:22px;height:44px}
 .bottom-hud{bottom:10px;padding:9px 12px}

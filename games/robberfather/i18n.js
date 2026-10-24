@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=survival-v11';
+import {controlText} from './settings.js?v=clarity-v12';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -87,6 +87,9 @@ Object.assign(MESSAGES.en,{shellHint:'Win: 2 coins. Lose: −1 coin. E Use to cl
 
 Object.assign(MESSAGES.ko,{hidden:'몸을 낮춰 엄폐물 뒤에 숨었어요.',hiddenStatus:'숨어 있는 중',boxSign:'숨을 곳',detected:'들켰어요! 수레나 수납장 옆에서 F 숨기를 쓰세요.',chaseHint:'엄폐물 옆에서 F 숨기를 쓰세요.'});
 Object.assign(MESSAGES.en,{hidden:'You crouch behind cover.',hiddenStatus:'HIDDEN',boxSign:'COVER',detected:'Spotted! Use F Hide beside a cart or cupboard.',chaseHint:'Use F Hide beside cover.'});
+
+Object.assign(MESSAGES.ko,{coinsFullNotice:'돈이 다 차서 훔칠 수 없습니다.',holdDiscard:'G 길게 · 썩은 음식 1칸 버리기',bind_discard:'썩은 음식 버리기',discardControl:'길게 눌러 썩은 음식 버리기',canvasLabel:'A/D 이동, Shift 달리기, W 출입, E 사용, Space 맞추기, F 숨기, G 길게 썩은 음식 버리기, M 귀가. Esc 메뉴.'});
+Object.assign(MESSAGES.en,{coinsFullNotice:'Your coin slots are full. You cannot steal more.',holdDiscard:'Hold G · Discard 1 rotten food portion',bind_discard:'Discard rotten food',discardControl:'Hold to discard rotten food',canvasLabel:'A/D Move, Shift Run, W Enter / exit, E Use, Space Time it, F Hide, Hold G to discard rotten food, M Go home. Escape Menu.'});
 
 Object.assign(MESSAGES.ko,{
  prologueCopy:'당신은 한 가장의 아버지입니다.\n아이를 먹여살리기 위해 더러운 일을 하고 있죠.',skipPrologue:'건너뛰기 · S',
