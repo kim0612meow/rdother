@@ -1,13 +1,13 @@
-import {settings,DEFAULT_BINDINGS} from './settings.js?v=story-v10';
-import {PocketInput} from './pocket-input.js?v=story-v10';
-import {ROBBERY,endingPart} from './cinematics.js?v=story-v10';
-import {Game,TYPES,RULES,TUTORIAL,PRICES} from './engine.js?v=story-v10';
-import {Pickpocket} from './pickpocket.js?v=story-v10';
-import {Shell} from './shell.js?v=story-v10';
-import {Renderer} from './scene.js?v=story-v10';
-import {Soundscape} from './audio.js?v=story-v10';
-import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=story-v10';
-import {getMorningLines,storyText} from './story.js?v=story-v10';
+import {settings,DEFAULT_BINDINGS} from './settings.js?v=survival-v11';
+import {PocketInput} from './pocket-input.js?v=survival-v11';
+import {ROBBERY,endingPart} from './cinematics.js?v=survival-v11';
+import {Game,TYPES,RULES,TUTORIAL,PRICES} from './engine.js?v=survival-v11';
+import {Pickpocket} from './pickpocket.js?v=survival-v11';
+import {Shell} from './shell.js?v=survival-v11';
+import {Renderer} from './scene.js?v=survival-v11';
+import {Soundscape} from './audio.js?v=survival-v11';
+import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=survival-v11';
+import {getMorningLines,storyText} from './story.js?v=survival-v11';
 const $=id=>document.getElementById(id),SAVE='one-more-meal-v3',LANG='one-more-meal-language';
 function getSaved(){try{const s=JSON.parse(localStorage.getItem(SAVE));if(s?.version===3&&Number.isInteger(s.day)&&s.day>0&&s.day<1000000&&Array.isArray(s.inventory))return s;}catch{}return null;}
 let saved=getSaved(),game=new Game(),renderer=new Renderer($('game')),held=new Set(),pendingPresses=new Set(),modalOpen=false,transitioning=false,lastTime=0,visualTime=0,toastUntil=0,tutorialUntil=0,lastSignature='',sound=true,soundscape=new Soundscape(),modalSpec=null,previousFocus=null,toastSpec=null;
@@ -58,7 +58,7 @@ const slotHtml=(kind,icon)=>{const name=t(kind==='empty'&&icon===COIN_ICON?'empt
 // A quick dip to dark when stepping through a shop door.
 function blink(){const fade=$('fade');fade.style.transition='none';fade.classList.add('active');requestAnimationFrame(()=>requestAnimationFrame(()=>{fade.style.transition='opacity .35s';fade.classList.remove('active');setTimeout(()=>fade.style.transition='',400);}));}
 function syncScene(){const mode=game.mode;$('stage').classList.toggle('is-intro',mode==='intro');$('stage').classList.toggle('is-prologue',mode==='prologue');$('prologue').hidden=mode!=='prologue';$('stage').classList.toggle('is-night',mode==='night');$('stage').classList.toggle('is-morning',mode==='morning');$('stage').classList.toggle('is-ending',mode==='ending');$('intro').hidden=mode!=='intro';$('cinema').hidden=mode!=='night';$('dialogue').hidden=mode!=='morning';$('endingOverlay').hidden=mode!=='ending';lastSignature='';hud();}
-async function begin(continuing=false){if(transitioning)return;unlockAudio();transitioning=true;held.clear();pendingPresses.clear();$('fade').classList.add('active');await sleep(650);game=new Game(continuing?saved:null);game.start({prologue:!continuing});renderer.camera=0;renderer.zoom=1;$('fade').classList.remove('active');transitioning=false;syncScene();persist();(game.mode==='prologue'?$('prologueSkip'):game.mode==='morning'?$('dialogueNext'):$('game')).focus({preventScroll:true});soundscape.play('start');}
+async function begin(continuing=false){if(transitioning)return;pick.close();pocketKeys.clear();unlockAudio();transitioning=true;held.clear();pendingPresses.clear();$('fade').classList.add('active');await sleep(650);game=new Game(continuing?saved:null);game.start({prologue:!continuing});renderer.camera=0;renderer.zoom=1;$('fade').classList.remove('active');transitioning=false;syncScene();persist();(game.mode==='prologue'?$('prologueSkip'):game.mode==='morning'?$('dialogueNext'):$('game')).focus({preventScroll:true});soundscape.play('start');}
 $('startBtn').addEventListener('click',()=>{if(saved)openModal({title:'newTitle',body:'newCopy',action:'newAction',onAction:()=>begin(false)});else begin(false);});$('continueBtn').addEventListener('click',()=>begin(true));
 function advanceMorning(){if(game.mode!=='morning'||transitioning||modalOpen)return;const started=game.advanceMorning();syncScene();if(started){persist();$('game').focus({preventScroll:true});}else $('dialogueNext').focus({preventScroll:true});}
 function skipPrologue(){game.skipPrologue();}
@@ -66,7 +66,7 @@ $('prologueSkip').addEventListener('click',skipPrologue);
 $('dialogueNext').addEventListener('click',advanceMorning);$('endingSkip').addEventListener('click',()=>{game.skipEnding();$('endingRestart').focus({preventScroll:true});});$('endingRestart').addEventListener('click',()=>{if(game.endingTime>=game.endingDuration)begin(false);});
 const keys=new Proxy({}, {get:(_,code)=>settings.action(code)});
 function canPick(){return game.mode==='day'&&!modalOpen&&!transitioning&&!pick.active&&!!game.target&&game.cooldown===0&&!game.player.hidden;}
-function openPick(){if(!canPick())return;if(!game.isBehind(game.target)){toast('frontOnly',{},true);soundscape.play('frontOnly');held.delete(settings.bindings.steal);return;}pocketKeys.clear();pick.open(game.target,game.day*31+game.target.id*7+game.time);held.delete(settings.bindings.steal);}
+function openPick(){if(!canPick())return;if(!game.isBehind(game.target)){toast('frontOnly',{},true);soundscape.play('frontOnly');held.delete(settings.bindings.steal);return;}pocketKeys.clear();pick.open(game.target,game.day*31+game.target.id*7+game.time,{day:game.day,practice:game.tutorial<TUTORIAL.done});held.delete(settings.bindings.steal);}
 // E again leaves the pocket window. The wallet stays where it was if you come back to the same pocket.
 function exitPick(){pocketKeys.exit(performance.now());game.dodge();pick.close(true);held.delete(settings.bindings.steal);}
 $('game').addEventListener('pointerdown',e=>{if(!canPick())return;const el=$('game'),r=el.getBoundingClientRect(),w=renderer.worldPoint((e.clientX-r.left)*el.width/r.width,(e.clientY-r.top)*el.height/r.height),n=game.target;if(w&&Math.abs(w.x-n.x)<70&&w.y>n.y-150&&w.y<n.y+20){e.preventDefault();openPick();}});

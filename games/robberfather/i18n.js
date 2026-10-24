@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=story-v10';
+import {controlText} from './settings.js?v=survival-v11';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={

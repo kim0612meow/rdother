@@ -91,26 +91,26 @@ export class Soundscape {
    }
    case'step':this.foot++;this.noiseHit(e.running?.12:.16,e.running?.19:.115,650+(this.foot%2)*260);this.tone(100+(this.foot%2)*15,.075,e.running?.07:.04,0,45);break;
    case'slip':this.noiseHit(.34,.14,620);this.tone(150,.14,.06,0,80);break;
-   case'turnWarn':this.tone(210,.09,.05,0,170);this.tone(230,.11,.05,.12,180);this.noiseHit(.08,.05,900,.05);break; // A throat clears.
-   case'turnLook':this.noiseHit(.2,.12,1300);this.tone(520,.18,.05,0,300,'triangle');break;
-   case'frontOnly':this.tone(180,.12,.04,0,150);break;
+   case'turnWarn':this.noiseHit(.1,.055,700);this.noiseHit(.14,.04,950,.13);break; // A dry throat-clear, without an electronic warning tone.
+   case'turnLook':this.noiseHit(.2,.10,1100);break;
+   case'frontOnly':break;
    case'rustle':this.noiseHit(.22,.07,1700);this.noiseHit(.13,.035,2400,.13);break;
-   case'stolen':this.noiseHit(.34,.19,1350);this.noiseHit(.18,.1,2400,.18);this.tone(780,.1,.017,.12,480,'triangle');break;
+   case'stolen':this.noiseHit(.34,.19,1350);this.noiseHit(.18,.1,2400,.18);break;
    case'detected':case'witnessed':case'recognized':this.director.alert();this.shout();this.noiseHit(.23,.16,900);break;
    case'shout':this.shout();break;
-   case'eat':this.tone(1750,.08,.027,0,1200,'triangle');this.noiseHit(.18,.07,700,.2);this.noiseHit(.16,.055,500,.48);this.noiseHit(.18,.04,650,.77);break;
+   case'eat':this.noiseHit(.18,.07,700,.2);this.noiseHit(.16,.055,500,.48);this.noiseHit(.18,.04,650,.77);break;
    case'hidden':case'unhidden':case'enterShop':case'exitShop':this.noiseHit(.38,.2,530);this.tone(110,.16,.045,.03,50);break;
-   case'bought':this.tone(660,.08,.03,0,660,'triangle');this.tone(990,.12,.025,.07,990,'triangle');break;case'medicine':this.tone(520,.14,.03,0,520);this.tone(780,.2,.025,.1,780);break;case'noMoney':case'notSick':this.tone(180,.14,.035,0,120);break;case'scavenged':case'discarded':this.noiseHit(.42,.18,1100);break;
+   case'bought':this.noiseHit(.12,.09,1900);this.noiseHit(.16,.065,1300,.13);break;case'medicine':this.noiseHit(.18,.08,1600);break;case'noMoney':case'notSick':break;case'scavenged':case'discarded':this.noiseHit(.42,.18,1100);break;
    case'caught':this.noiseHit(.3,.22,470);break;
-   case'betPlaced':this.tone(1320,.06,.03,0,1100,'triangle');this.tone(1760,.08,.02,.05,1500,'triangle');break;
+   case'betPlaced':this.noiseHit(.09,.07,1800);break;
    case'cupMove':this.noiseHit(.09,.07,900);break;
-   case'betWon':this.tone(880,.08,.03,0,880,'triangle');this.tone(1320,.14,.025,.08,1320,'triangle');break;
-   case'betLost':this.tone(160,.25,.04,0,110);break;
+   case'betWon':this.noiseHit(.1,.09,1800);this.noiseHit(.12,.07,2200,.12);break;
+   case'betLost':this.noiseHit(.18,.06,600);break;
    case'headStrike':this.noiseHit(.075,.25,1300);this.tone(930,.6,.16,0,420,'triangle');this.tone(1480,.4,.075,.008,750,'sine');this.tone(80,.18,.12,0,35);break;
    case'bodyStrike':this.noiseHit(.18,.22,290);this.tone(75,.15,.1,0,38);break;
-   case'save':this.tone(523,.16,.025);this.tone(659,.23,.02,.11);break;
-   case'night':this.tone(196,1.6,.028);this.tone(294,1.8,.02,.2);break;
-   case'start':this.tone(220,.8,.025);this.tone(330,1.1,.02,.2);break;
+   case'save':break;
+   case'night':break;
+   case'start':break;
   }
  }
  update(g,dt,active,locale){

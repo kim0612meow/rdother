@@ -119,3 +119,29 @@ test('the hiding lesson requires actual F cover, then explains memory before com
 test('each unfinished lesson saves and resumes without losing QTE credit, pursuit or face memory',()=>{
  const g=practice();reachWarning(g);g.dodge();tick(g,1.6);g.update(.02,{pick:true,trace:1});let copy=new Game(g.save());copy.start();assert.equal(copy.tutorial,TUTORIAL.caught);assert.equal(copy.tutorialQte,true);assert.equal(copy.npcs[0].knows,true);assert.equal(copy.caughtCount,1);copy.advanceTutorial();copy.player.x=1240;copy.update(.02,{hide:true});tick(copy,1.3);copy=new Game(copy.save());copy.start();assert.equal(copy.tutorial,TUTORIAL.memory);assert.equal(copy.player.hidden,true);copy.advanceTutorial();assert.equal(copy.tutorialDone,true);
 });
+
+test('daily pressure persists through saving and grows beyond the within-day cap',async()=>{
+ const {dayDifficulty}=await import('../games/robberfather/difficulty.js');
+ let previous=0;for(const day of [1,2,7,14,30,100]){const d=dayDifficulty(day);assert.ok(d.alert>previous);previous=d.alert;assert.ok(d.warning>0&&d.warning<=1);}
+ const g=practice();g.tutorialDone=true;g.tutorial=TUTORIAL.done;const first=g.wary;g.day=14;assert.ok(g.wary>first*1.9);const restored=new Game(g.save());restored.start();assert.equal(restored.wary,g.wary);assert.equal(restored.day,14);
+ assert.deepEqual(dayDifficulty(NaN),dayDifficulty(1));
+});
+test('Space zones narrow by day and actual success uses the narrower boundary',()=>{
+ for(const type of ['civilian','wealthy','police']){let previous=1;for(const day of [1,2,7,14,30,100]){const g=new Timing({type,seed:72,day});const width=g.zone[1]-g.zone[0];assert.ok(width<previous);assert.ok(width>.035);previous=width;g.running=true;g.pos=g.zone[1]+.001;assert.equal(g.tap(),false);g.flash=0;g.pos=(g.zone[0]+g.zone[1])/2;assert.equal(g.tap(),true);}}
+});
+test('a later day produces an earlier detection and shorter turn warning for the same input',()=>{
+ const make=day=>{const g=practice();g.day=day;g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.npcs[0].type='police';g.activeTarget=0;g.turn={phase:'wait',t:Infinity,face:1};return g;};
+ const early=make(1),late=make(20);tick(early,3,{pick:true,trace:0,grab:true});tick(late,3,{pick:true,trace:0,grab:true});assert.equal(early.caughtCount,0);assert.equal(late.caughtCount,1);
+ const a=make(1),b=make(20);a.update(.02,{pick:true,slip:.01});b.update(.02,{pick:true,slip:.01});assert.equal(a.turn.phase,'warn');assert.equal(b.turn.phase,'warn');assert.ok(b.turn.t<a.turn.t);
+});
+test('reopening a pocket preserves that day but never reuses an earlier day gauge',()=>{
+ const root={hidden:true,querySelector:()=>({})},p=Object.create(Pickpocket.prototype);Object.assign(p,{root,t:key=>key,render(){}});const target={type:'civilian',id:0};p.open(target,72,{day:1});p.game.index=20;const gauge=p.gauge;p.close(true);p.open(target,72,{day:1});assert.equal(p.gauge,gauge);assert.equal(p.game.index,20);p.close(true);p.open(target,72,{day:14});assert.notEqual(p.gauge,gauge);assert.ok(p.gauge.s.zone<gauge.s.zone);assert.equal(p.game.index,0);p.close();p.open(target,72,{day:14,practice:true});assert.equal(p.gauge.s.zone,gauge.s.zone);
+});
+test('meal characters stay together in the horizontal centre at every supported ratio',async()=>{
+ const {MEAL_LAYOUT,HOME_ZOOM,homeFocusY,viewportSize,fitZoom,cameraWindow}=await import('../games/robberfather/framing.js');const layout=MEAL_LAYOUT;
+ for(const [w,h]of [[1028,883],[1280,720],[2100,900]]){const size=viewportSize(w,h),zoom=fitZoom(HOME_ZOOM,size.width,size.height),v=cameraWindow(zoom,720,homeFocusY(zoom),size.width,size.height);const xs=[925,1040].map(x=>(layout.center+(x-layout.sourceCenter)*layout.scale-v.sx)*zoom/size.width);assert.ok(Math.abs((xs[0]+xs[1])/2-.5)<.001);assert.ok(xs[0]>.35&&xs[1]<.65);}
+});
+test('eating and notifications have no electronic beeps, while heartbeat remains',async()=>{
+ const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape();s.context={};s.running=true;let tones=0,noises=0;s.tone=()=>tones++;s.noiseHit=()=>noises++;
+ for(const type of ['eat','turnWarn','turnLook','frontOnly','stolen','bought','medicine','noMoney','notSick','betPlaced','betWon','betLost','save','night','start'])s.play(type);assert.equal(tones,0);assert.ok(noises>0);s.play({type:'heartbeat',tension:.5});assert.equal(tones,2);
+});

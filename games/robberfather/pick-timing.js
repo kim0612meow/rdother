@@ -1,4 +1,5 @@
-import {settings} from './settings.js?v=story-v10';
+import {settings} from './settings.js?v=survival-v11';
+import {dayDifficulty} from './difficulty.js?v=survival-v11';
 // Space gauge that runs on top of the wallet line while your hand is in the pocket.
 // Press Space while the white marker is in the gold zone. Pressing outside it, or letting the marker pass through untouched, is a mistake.
 // Every press throws the zone far away, so hammering the key never works.
@@ -7,7 +8,7 @@ import {settings} from './settings.js?v=story-v10';
 const STYLE={civilian:{zone:.2,sweep:1.0},wealthy:{zone:.16,sweep:.85},police:{zone:.12,sweep:.7}};
 const BAR={x:300,y:16,w:300,h:24};
 export class Timing{
- constructor({type,seed}){this.s=STYLE[type];this.r=seed;this.pos=0;this.dir=1;this.flash=0;this.hit=0;this.inside=false;this.pending=false;this.running=false;this.newZone();}
+ constructor({type,seed,day=1}){const base=STYLE[type],difficulty=dayDifficulty(day);this.s={zone:.035+(base.zone-.035)*difficulty.zone,sweep:base.sweep/difficulty.timing};this.r=seed;this.pos=0;this.dir=1;this.flash=0;this.hit=0;this.inside=false;this.pending=false;this.running=false;this.newZone();}
  rand(){this.r=(this.r*16807)%2147483647;return this.r/2147483647;}
  // The new zone always lands well away from the marker.
  newZone(){const w=this.s.zone;let a;do a=.04+this.rand()*(.92-w);while(Math.abs(a+w/2-this.pos)<.35);this.zone=[a,a+w];this.inside=false;}
