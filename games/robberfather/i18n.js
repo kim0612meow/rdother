@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=cover-v8';
+import {controlText} from './settings.js?v=viewport-v9';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={

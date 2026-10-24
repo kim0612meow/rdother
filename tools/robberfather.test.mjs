@@ -78,3 +78,20 @@ test('the new alley facade fills to the top and keeps the real door on its exit 
  assert.equal(calls.length,3);for(const a of calls){assert.equal(a[6],0);assert.equal(a[8],650);}
  const a=calls[1],centre=280;assert.ok(Math.abs(a[5]+(centre-a[1])*a[7]/a[3]-150)<.001);assert.ok(180*a[7]/a[3]>=100);
 });
+
+
+test('different window ratios fill the display with square pixels and a bounded camera',async()=>{
+ const {viewportSize,fitZoom,cameraWindow,streetFocusY}=await import('../games/robberfather/framing.js');
+ for(const [w,h]of [[1090,870],[1280,720],[1920,1080],[2560,1080],[3440,1080],[800,900]]){const v=viewportSize(w,h),z=fitZoom(1.5,v.width,v.height),r=cameraWindow(z,720,streetFocusY(z),v.width,v.height);assert.ok(Math.abs(w/v.width-h/v.height)<.002);assert.ok(r.sx>=0&&r.sy>=0);assert.ok(r.sx+r.w<=1440+.001&&r.sy+r.h<=840+.001);assert.ok(Math.abs((650-r.sy)*z/v.height-.85)<.001);}
+});
+test('mouse and world positions round-trip correctly after changing aspect ratio',async()=>{
+ const {viewportSize,fitZoom,cameraWindow,worldToCanvas,canvasToWorld}=await import('../games/robberfather/framing.js');
+ for(const [w,h]of [[1090,870],[1280,720],[2560,1080]]){const size=viewportSize(w,h),zoom=fitZoom(1.5,size.width,size.height),r=cameraWindow(zoom,720,430,size.width,size.height),v={...r,zoom,cam:900};for(const p of [{x:1200,y:650},{x:1600,y:590}]){const c=worldToCanvas(v,p.x,p.y),back=canvasToWorld(v,c.x,c.y);assert.ok(Math.abs(back.x-p.x)<.001&&Math.abs(back.y-p.y)<.001);}}
+});
+test('whole window storeys cover the top of the street at every camera position',async()=>{
+ const {Backgrounds}=await import('../games/robberfather/themes/backgrounds.js');const {SHOPS}=await import('../games/robberfather/engine.js');
+ for(const cam of [0,900,2100,2960]){const calls=[],ctx={fillRect(){},drawImage(...a){calls.push(a);}},bg={modules:{width:1774,height:887},panels:{street:{}},floor(){}};Backgrounds.prototype.moduleStreet.call(bg,ctx,cam,SHOPS);const top=calls.filter(a=>a[6]<=0&&a[6]+a[8]>0).sort((a,b)=>a[5]-b[5]);let covered=0;for(const a of top){if(a[5]+a[7]<0)continue;assert.ok(a[5]<=covered+.001,'gap above building');assert.ok(a[4]>300,'whole upper windows');covered=Math.max(covered,a[5]+a[7]);}assert.ok(covered>=1440);}
+});
+test('every indoor hiding place is central and old hidden saves move with the same cover id',async()=>{
+ const {Game,SHOPS,BOXES}=await import('../games/robberfather/engine.js');for(const b of BOXES.filter(b=>b.inside)){const shop=SHOPS.find(s=>b.x>=s.x0&&b.x<=s.x1);assert.equal(b.x,(shop.x0+shop.x1)/2);const g=practice();g.inventory=['coin','fresh'];g.player.x=shop.x0+1240;g.player.hidden=true;g.player.boxId=b.id;const copy=new Game(g.save());copy.start();assert.equal(copy.player.x,b.x);assert.equal(copy.player.boxId,b.id);assert.equal(copy.player.hidden,true);assert.equal(copy.coins,1);assert.equal(copy.food,1);}
+});

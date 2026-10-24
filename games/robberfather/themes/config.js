@@ -1,5 +1,5 @@
 // Choose 'painted-city-v1' for the previous art layout, or 'classic' for procedural art.
-export const ACTIVE_THEME='grounded-v5';
+export const ACTIVE_THEME='grounded-v6';
 const painted={
  props:new URL('./painted-city-v1/props.png',import.meta.url).href,
  atlas:new URL('./painted-city-v1/backgrounds.png',import.meta.url).href,
@@ -11,6 +11,7 @@ const grounded={...sideStreet,flatFloor:true,modules:new URL('./grounded-v4/modu
 export const THEMES={classic:null,'painted-city-v1':painted,'side-street-v2':sideStreet,
  'grounded-v4':grounded,
  'grounded-v5':{...grounded,alleyWall:new URL('./grounded-v5/alley.png',import.meta.url).href,storage:new URL('./grounded-v5/storage.png',import.meta.url).href},
+ 'grounded-v6':{...grounded,alleyWall:new URL('./grounded-v5/alley.png',import.meta.url).href,cover:new URL('./grounded-v6/cart.png',import.meta.url).href,storage:new URL('./grounded-v6/storage.png',import.meta.url).href},
  'lived-street-v3':{...sideStreet,facade:new URL('./lived-street-v3/facades.png',import.meta.url).href,cover:new URL('./lived-street-v3/cover-cart.png',import.meta.url).href}
 };
 // Atlas coordinates are calibrated to the centres of the pictured doors.

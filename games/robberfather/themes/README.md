@@ -49,3 +49,7 @@ Built-in imagegen prompts, using the original painted-city-v1/backgrounds.png as
 ## Grounded revision 5 / cover v8
 
 Current active theme: `grounded-v5`. See [assets, prompts and layout notes](grounded-v5/README.md). The street foreground is narrowed, crouching uses a dedicated four-pose atlas, indoor cover uses a stationary cupboard, and the gambling alley has complete upper floors. Existing cover ids and saved games remain compatible. Previous theme assets are preserved.
+
+## Grounded revision 6 / viewport v9
+
+Active theme: `grounded-v6`. [Asset files, edit prompts and validation](grounded-v6/README.md). Shadowed cart/cupboard sprites are separate from their originals. Indoor cover is at the exact room centre (x=720), with stable save ids. The canvas now matches the actual window ratio, upper window storeys fill the facade crowns, and pointer/dialogue projection and lighting buffers follow the viewport size.

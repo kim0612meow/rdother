@@ -1,5 +1,5 @@
-import {streetBays,facadeSlices} from './layout.js?v=cover-v8';
-import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=cover-v8';
+import {streetBays,facadeSlices} from './layout.js?v=viewport-v9';
+import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=viewport-v9';
 const W=1440,H=840,GROUND=650;
 export class Backgrounds{
  constructor(theme=ACTIVE_THEME){this.theme=THEMES[theme];this.panels={};this.props={};this.ready=false;if(!this.theme)return;this.loadStreetAssets();const img=new Image();img.onload=()=>{
@@ -56,9 +56,11 @@ export class Backgrounds{
   for(const bay of streetBays(shops)){
    if(bay.right<cam||bay.left>cam+W)continue;
    const col=bay.kind===5?1:0,height=ARCHITECTURE.doorHeight/ARCHITECTURE.moduleDoorFraction[col],top=GROUND-height;
-   this.crowns??=[];if(!this.crowns[col]){const tile=document.createElement('canvas');tile.width=24;tile.height=48;const ctx=tile.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.drawImage(this.modules,col*sw+sw*ARCHITECTURE.moduleDoor[col]-20,40,40,80,0,0,24,48);this.crowns[col]=tile;}c.fillStyle=c.createPattern(this.crowns[col],'repeat');c.fillRect(bay.left-cam,0,bay.right-bay.left,top);
-
    for(const part of facadeSlices(bay,sw,ARCHITECTURE.moduleDoor[col])){
+    // Extend complete window storeys up to the screen edge, rather than
+    // tiling a tiny patch of the wall above every building.
+    const row=sh*.425,rowHeight=height*.425;
+    for(let y=top-rowHeight;y>-rowHeight;y-=rowHeight)c.drawImage(this.modules,col*sw+part.sx,0,part.sw,row,part.dx-cam,y,part.dw,rowHeight);
     c.drawImage(this.modules,col*sw+part.sx,0,part.sw,sh,part.dx-cam,top,part.dw,height);
 
    }

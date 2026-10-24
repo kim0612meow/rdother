@@ -8,7 +8,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,canvas:focus-visib
 [hidden]{display:none!important}
 svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .game-stage{position:fixed;inset:0;width:100vw;height:100dvh;isolation:isolate;overflow:hidden;background:#17231f}
-#game{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;outline:none}
+#game{display:block;width:100%;height:100%;object-fit:fill;image-rendering:pixelated;outline:none}
 .pause-button{position:absolute;right:20px;top:18px;z-index:10;width:44px;height:44px;border-radius:12px;background:var(--panel);font-size:25px;color:#fff3da}
 .primary-button,button{border-radius:9px}
 .primary-button{background:var(--gold);color:#26352d;padding:13px 20px;font-weight:700;min-height:46px}
