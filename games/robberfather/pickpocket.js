@@ -1,9 +1,10 @@
+import {drawPocketBack} from './characters.js?v=pixel-v2';
 // The pocket window, seen over the victim's back. Draw the wallet out along a line with the mouse while keeping the Space gauge in time.
 // The street keeps moving underneath, so suspicion and witnesses still count while you play.
 // When the victim starts to turn (look, set by app.js) press E to leave the pocket; reopening the same pocket picks up where you stopped.
-import {TYPES} from './engine.js?v=20261024-13';
-import {Trace} from './pick-trace.js?v=20261024-13';
-import {Timing} from './pick-timing.js?v=20261024-13';
+import {TYPES} from './engine.js?v=pixel-v2';
+import {Trace} from './pick-trace.js?v=pixel-v2';
+import {Timing} from './pick-timing.js?v=pixel-v2';
 // The Space gauge runs alongside the line everywhere but the tutorial. Set to false to go back to the mouse alone.
 const GAUGE=true;
 const RUSH=.7,W=640,H=400,START={x:206,y:252},HEAD={x:104,y:74};
@@ -29,6 +30,7 @@ export class Pickpocket{
  render(){const c=this.c,s=LOOK[this.type],look=this.look;c.save();c.clearRect(0,0,W,H);if(this.shake>0)c.translate(Math.sin(this.shake*90)*6*this.shake/.35,0);
   // The street behind them, then their back filling the left of the view.
   c.fillStyle='#18211f';c.fillRect(0,0,W,H);c.fillStyle='#ffffff07';for(let x=20;x<W;x+=56)c.fillRect(x,0,3,H);
+  if(!drawPocketBack(c,this.type,look,performance.now()/1000)){
   const wobble=look==='warn'?Math.sin(performance.now()/45)*.09:0;
   c.fillStyle='#b98d6c';c.fillRect(HEAD.x-20,HEAD.y+20,40,44);
   c.save();c.beginPath();c.moveTo(-40,H);c.lineTo(-40,170);c.quadraticCurveTo(-30,124,40,116);c.lineTo(172,116);c.quadraticCurveTo(244,124,252,182);c.lineTo(246,H);c.closePath();c.fillStyle=s.coat;c.fill();c.clip();
@@ -43,6 +45,7 @@ export class Pickpocket{
   if(this.type==='police'){c.fillStyle='#16233d';c.fillRect(-46,-40,92,26);c.fillStyle='#0c1424';c.fillRect(-50,-18,100,8);}
   else if(this.type==='wealthy'){c.fillStyle='#1b1d24';c.beginPath();c.ellipse(0,-26,48,9,0,0,Math.PI*2);c.fill();c.fillRect(-30,-62,60,38);c.fillStyle='#7a2d2d';c.fillRect(-30,-34,60,6);}
   c.restore();
+  }
   if(look==='warn'){const on=Math.sin(performance.now()/70)>0;c.fillStyle=on?'#ffcf6a':'#f08a6c';c.font='bold 44px sans-serif';c.textAlign='center';c.fillText('?',HEAD.x+74,HEAD.y+18);}
   // Pocket opening around the wallet.
   c.fillStyle=s.lining;c.beginPath();c.ellipse(START.x-6,START.y,40,56,0,0,Math.PI*2);c.fill();c.strokeStyle='#00000066';c.lineWidth=5;c.stroke();c.strokeStyle='#ffffff22';c.lineWidth=2;c.setLineDash([6,6]);c.beginPath();c.ellipse(START.x-6,START.y,46,62,0,0,Math.PI*2);c.stroke();c.setLineDash([]);
