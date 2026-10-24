@@ -1,10 +1,10 @@
-import {Backgrounds} from './themes/backgrounds.js?v=city-v3';
-import {ROBBERY,kickReach} from './cinematics.js?v=city-v3';
-import {drawCharacter,drawChild,drawEating,spritesReady} from './characters.js?v=city-v3';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=city-v3';
+import {Backgrounds} from './themes/backgrounds.js?v=city-v4';
+import {ROBBERY,kickReach} from './cinematics.js?v=city-v4';
+import {drawCharacter,drawChild,drawEating,drawAction,spritesReady} from './characters.js?v=city-v4';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=city-v4';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=city-v3';
-import {HD2D} from './hd2d.js?v=city-v3';
+import {t,getLocale} from './i18n.js?v=city-v4';
+import {HD2D} from './hd2d.js?v=city-v4';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
@@ -111,13 +111,13 @@ export class Renderer{
  if(!props)return;if(shop.kind===ALLEY){const x=COUNTER;person(c,{type:'thug',id:1,x:x+10,y:GROUND-4,face:-1},false,1.3);if(!this.backgrounds.prop(c,'table',x,GROUND,200,94)){rect(c,x-94,GROUND-60,188,60,'#503e2c');rect(c,x-100,GROUND-66,200,10,'#8b704e');for(let i=0;i<3;i++){const xx=x-44+i*44;poly(c,[[xx-13,GROUND-67],[xx+13,GROUND-67],[xx+9,GROUND-86],[xx-9,GROUND-86]],'#ab8053');}}label(c,t('shellSign'),x,GROUND-132,17,'#e5d5b3','sans-serif');}
  else if(SELLS[shop.kind])label(c,t(SIGNS[SELLS[shop.kind]]),COUNTER,GROUND-180,21,'#e5d5b3','sans-serif');
  }
- streetBase(c,cam){if(this.backgrounds.draw(c,'street',cam)){
- for(const shop of SHOPS){if(shop.kind===ALLEY)continue;const x=shop.door-cam;if(x<0||x>W)continue;label(c,t(SHOP_NAMES[shop.kind]),x+35,GROUND-240,19,'#f0dfb8','Georgia');poly(c,[[x-7,GROUND-14],[x+7,GROUND-14],[x,GROUND-7]],'#e5cb8a');}
+ streetBase(c,cam){if(this.backgrounds.street(c,cam,SHOPS)){
+ for(const shop of SHOPS){if(shop.kind===ALLEY)continue;const x=shop.door-cam;if(x<0||x>W)continue;label(c,t(SHOP_NAMES[shop.kind]),x,GROUND-210,19,'#f0dfb8','Georgia');poly(c,[[x-7,GROUND-14],[x+7,GROUND-14],[x,GROUND-7]],'#e5cb8a');}
  for(const x0 of ALLEY_DOORS){const x=x0-cam;if(x>-60&&x<W+60){label(c,t('alleyDoor'),x,GROUND-120,15,'#b8b5a0','sans-serif');poly(c,[[x-6,GROUND-14],[x+6,GROUND-14],[x,GROUND-7]],'#b8b5a0');}}return;}
 rect(c,0,0,W,H,'#7e947d');const sky=c.createLinearGradient(0,0,0,640);sky.addColorStop(0,'#8d9d86');sky.addColorStop(1,'#b1b397');c.fillStyle=sky;c.fillRect(0,0,W,650);for(let i=-1;i<12;i++){const x=i*175-(cam*.22)%175,y=80+(i*71%170);rect(c,x,y,130,520-y,'#5a78675c');poly(c,[[x-8,y],[x+65,y-42],[x+139,y]],'#536f624d');for(let yy=y+20;yy<490;yy+=51)for(let xx=x+15;xx<x+125;xx+=34)rect(c,xx,yy,10,22,'#aec2a427');}c.drawImage(this.day,-cam,0,WORLD,H);}
  worldPoint(px,py){const v=this.view;return v?{x:v.cam+v.sx+px/v.zoom,y:v.sy+py/v.zoom}:null;}
  drawStreet(c,g,time,dt){const shop=areaAt(g.player.x),desired=shop?shop.x0:Math.max(0,Math.min(WORLD-W,g.player.x-W*.38));this.camera+=(desired-this.camera)*Math.min(1,dt*5);if(g.player.x===330||this.snap)this.camera=desired;const cam=Math.round(this.camera);if(shop)this.roomBackground(c,shop);else this.streetBase(c,cam);c.save();c.translate(-cam,0);
- for(const b of g.bins)this.bin(c,b);const chars=[...g.npcs,...(!g.player.hidden?[{...g.player,id:-1}]:[])].sort((a,b)=>a.y-b.y);for(const n of chars){if(n.x<cam-60||n.x>cam+W+60)continue;const isPlayer=n.id===-1;person(c,n,isPlayer);if(isPlayer)poly(c,[[n.x-5,n.y-96],[n.x+5,n.y-96],[n.x,n.y-90]],'#dfc184');else if(n.alert)label(c,'!',n.x,n.y-102,24,'#eca77f','sans-serif');else if(n.type==='wealthy')poly(c,[[n.x,n.y-104],[n.x+4,n.y-100],[n.x,n.y-96],[n.x-4,n.y-100]],'#d9bb77');else if(n.type==='police'){rect(c,n.x-4,n.y-100,8,7,'#b6c8b0');rect(c,n.x-2,n.y-98,4,5,'#5d7f73');}if(n.witness>.04&&!n.alert){const hot=n.witness>.6&&Math.sin(time*18)>0;const ex=n.x,ey=n.y-130;poly(c,[[ex-12,ey],[ex,ey-7],[ex+12,ey],[ex,ey+7]],hot?'#ff6a55':'#e23b2e');rect(c,ex-6,ey-3,12,6,'#fbe9df');rect(c,ex-3,ey-3,6,6,'#2a1512');rect(c,n.x-23,n.y-117,46,7,'#2a1512');rect(c,n.x-22,n.y-116,44*n.witness,5,hot?'#ff6a55':'#e23b2e');}}
+ for(const b of g.bins)this.bin(c,b);const chars=[...g.npcs,...(!g.player.hidden?[{...g.player,id:-1}]:[])].sort((a,b)=>a.y-b.y);for(const n of chars){if(n.x<cam-60||n.x>cam+W+60)continue;const isPlayer=n.id===-1;person(c,n,isPlayer,1.75);if(isPlayer)poly(c,[[n.x-5,n.y-132],[n.x+5,n.y-132],[n.x,n.y-126]],'#dfc184');else if(n.alert)label(c,'!',n.x,n.y-138,24,'#eca77f','sans-serif');else if(n.type==='wealthy')poly(c,[[n.x,n.y-140],[n.x+4,n.y-136],[n.x,n.y-132],[n.x-4,n.y-136]],'#d9bb77');else if(n.type==='police'){rect(c,n.x-4,n.y-136,8,7,'#b6c8b0');rect(c,n.x-2,n.y-134,4,5,'#5d7f73');}if(n.witness>.04&&!n.alert){const hot=n.witness>.6&&Math.sin(time*18)>0;const ex=n.x,ey=n.y-164;poly(c,[[ex-12,ey],[ex,ey-7],[ex+12,ey],[ex,ey+7]],hot?'#ff6a55':'#e23b2e');rect(c,ex-6,ey-3,12,6,'#fbe9df');rect(c,ex-3,ey-3,6,6,'#2a1512');rect(c,n.x-23,n.y-151,46,7,'#2a1512');rect(c,n.x-22,n.y-150,44*n.witness,5,hot?'#ff6a55':'#e23b2e');}}
  this.child(c,259,647,.88,time,false);for(const b of BOXES)this.box(c,b,g.player.hidden&&g.player.boxId===b.id);
  // Boarded doors of shops that caught you stealing.
  for(const id of g.closedShops){const x=SHOPS[id].door;line(c,x-44,470,x+44,620,'#6b4a2e',9);line(c,x+44,470,x-44,620,'#6b4a2e',9);rect(c,x-50,524,100,30,'#7a2219');label(c,t('barredSign'),x,545,15,'#f3d9c4','sans-serif');}
@@ -140,16 +140,17 @@ const x=b.x,y=GROUND;rect(c,x-40,y-61,80,61,'#887955');rect(c,x-35,y-56,70,49,'#
  poly(c,[[937,607],[1009,603],[997,632],[955,635]],'#b2ab80');rect(c,934,599,77,7,'#dbcb98');if(eating){rect(c,946,588,55,14,rotten?'#8b9f58':'#dec994');rect(c,956,581,34,10,rotten?'#a4ad66':'#e8d5a4');rect(c,959,591,13,3,rotten?'#567b42':'#bda778');rect(c,981,594,13,2,rotten?'#536c3a':'#c3ab7b');if(!this.reduced)for(let i=0;i<5;i++){const p=(tme*.24+i*.19)%1;rect(c,953+i*10+Math.sin(tme+i)*4,578-p*64,1,12,`rgba(223,220,183,${.3*(1-p)})`);}}else{rect(c,945,607,50,3,'#6e7454');line(c,965,609,1002,614,'#a5ac88',2);}
  const vignette=c.createRadialGradient(985,504,50,985,504,850);vignette.addColorStop(0,'#10282200');vignette.addColorStop(1,hungry?'#071922a0':'#081d255c');c.fillStyle=vignette;c.fillRect(0,0,W,H);if(!this.reduced)for(let i=0;i<27;i++){const x=(i*79+tme*12)%W,y=(i*43+tme*122)%760;line(c,x,y,x-3,y+15,'#a4c2b71c',1);}}
  walkingChild(c,x,y,walk,face=1){if(drawChild(c,x,y,1.05,walk,'walk',face))return;c.save();c.translate(x,y);const step=Math.sin(walk)*3;rect(c,-7,-14+step,5,15,'#4d6042');rect(c,4,-14-step,5,15,'#4d6042');rect(c,-9,-2+step,10,3,'#293d2d');rect(c,3,-2-step,10,3,'#293d2d');rect(c,-11,-37,24,26,'#a3a485');for(let yy=-33;yy<-12;yy+=4)rect(c,-7,yy,16,1,'#687b5b');rect(c,-7,-54,15,17,'#bda680');rect(c,-10,-56,21,7,'#695f42');rect(c,face>0?5:-6,-48,1,2,'#2d402f');rect(c,-14,-34,5,18,'#999e7c');rect(c,11,-34,5,18,'#999e7c');c.restore();}
- drawArrest(c,g,time){const phase=Math.min(12,g.endingTime);this.streetBase(c,0);rect(c,0,0,W,H,'#172c3430');person(c,{x:330,y:GROUND,face:1,walk:0},true,1.3);person(c,{id:2,type:'wealthy',x:1085,y:GROUND,face:1,walk:0},false,1.3);let childX=330+Math.min(1,phase/3.5)*716;let policeX=1535;if(phase>3.8)policeX=1535-Math.min(1,(phase-3.8)/2)*425;if(phase>6.1){policeX=1110+(phase-6.1)*92;childX=policeX-50;}this.walkingChild(c,childX,GROUND,phase*9);if(phase>3.3&&phase<5.9){line(c,childX+13,GROUND-28,1080,GROUND-39,'#c0a57b',3);rect(c,1076,GROUND-41,8,5,'#b7a26e');}person(c,{id:8,type:'police',x:policeX,y:GROUND,face:phase>6.1?1:-1,walk:phase*8},false,1.3);if(phase>4.6&&phase<6.4)label(c,'!',policeX,GROUND-111,23,'#dda07c','sans-serif');if(phase>6.1)line(c,policeX-15,GROUND-45,childX+10,GROUND-35,'#a5a37d',4);newspaper(c,233,625,75,33,-.05);if(phase>7)rect(c,0,0,W,H,`rgba(11,25,28,${Math.min(.45,(phase-7)*.07)})`);}
+ drawArrest(c,g,time){const phase=Math.min(12,g.endingTime);this.streetBase(c,0);rect(c,0,0,W,H,'#172c3430');person(c,{x:330,y:GROUND,face:1,walk:0},true,1.3);person(c,{id:2,type:'wealthy',x:1085,y:GROUND,face:1,walk:0},false,1.3);let childX=330+Math.min(1,phase/3.5)*716;let policeX=1535;if(phase>3.8)policeX=1535-Math.min(1,(phase-3.8)/2)*425;if(phase>6.1){policeX=1110+(phase-6.1)*92;childX=policeX-50;}if(phase>3.3&&phase<6.1){const frame=phase<3.65?0:phase<4.1?1:phase<4.7?2:3;if(!drawAction(c,'child',frame,childX,GROUND,1.05))this.walkingChild(c,childX,GROUND,0);}else this.walkingChild(c,childX,GROUND,phase*9);person(c,{id:8,type:'police',x:policeX,y:GROUND,face:phase>6.1?1:-1,walk:phase*8},false,1.3);if(phase>4.6&&phase<6.4)label(c,'!',policeX,GROUND-111,23,'#dda07c','sans-serif');newspaper(c,233,625,75,33,-.05);if(phase>7)rect(c,0,0,W,H,`rgba(11,25,28,${Math.min(.45,(phase-7)*.07)})`);}
  // Too lucky at the shell game: beaten in the alley, then the boy waiting alone until hunger takes him.
  drawRobbed(c,g,time){const p=g.endingTime;
  if(p<ROBBERY.home){this.roomBackground(c,SHOPS.find(s=>s.kind===ALLEY),false);
   if(p<ROBBERY.fall){
    person(c,{x:720,y:GROUND,pose:'seated',face:-1,walk:0},true,2.1);
    if(!this.backgrounds.prop(c,'table',650,GROUND,117,58)){rect(c,600,GROUND-37,97,37,'#66503a');for(let i=0;i<3;i++){const x=618+i*27;poly(c,[[x-8,GROUND-38],[x+8,GROUND-38],[x+5,GROUND-51],[x-5,GROUND-51]],'#af8051');}}
-   const approach=Math.min(1,p/1.7),x=900-approach*132;person(c,{type:'thug',id:4,x,y:GROUND,face:-1,walk:p<1.7?p*6:0},false,1.65);
-   const swing=Math.max(0,Math.min(1,(p-1.75)/.45));if(p>1.45){const hx=x-14,hy=GROUND-52;line(c,hx,hy,751-swing*15,GROUND-102+swing*40,'#ada79a',5);rect(c,747-swing*15,GROUND-108+swing*40,8,13,'#d1c7ad');}
-   if(p>=ROBBERY.hit&&p<ROBBERY.hit+.24){rect(c,0,0,W,H,'#e2d8bb24');label(c,'!',720,GROUND-110,25,'#e4c397','sans-serif');}
+   const approach=Math.min(1,p/1.7),x=900-approach*132;
+     if(p<1.7)person(c,{type:'thug',id:4,x,y:GROUND,face:-1,walk:p*6},false,1.65);
+     else {const frame=p<1.98?0:p<2.2?1:p<2.52?2:3;if(!drawAction(c,'thug',frame,x,GROUND,1.65))person(c,{type:'thug',x,y:GROUND,face:-1},false,1.65);}
+     if(p>=ROBBERY.hit&&p<ROBBERY.hit+.24){rect(c,0,0,W,H,'#e2d8bb24');label(c,'!',720,GROUND-110,25,'#e4c397','sans-serif');}
   }else{
    c.save();c.translate(766,GROUND-22);c.rotate(-Math.PI/2);person(c,{x:0,y:0,face:1,walk:0},true,1.3);c.restore();
    const away=p>ROBBERY.rob?(p-ROBBERY.rob)*110:0;

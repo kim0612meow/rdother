@@ -2,7 +2,7 @@
 // Generated source art is sampled onto a native pixel grid and reduced to 24 colours
 // per identity. Animation reuses whole-body poses, including eating utensils.
 const COLUMNS={father:0,child:1,civilian:2,worker:2,wealthy:3,police:4,thug:5};
-const frames={},meals={},palettes={},scans=new WeakMap();let loaded=false;
+const actions={},frames={},meals={},palettes={},scans=new WeakMap();let loaded=false;
 export const CHARACTER_PALETTES={father:{cloth:'#6b6547',skin:'#c59873'},child:{paper:'#d8c9a7',skin:'#c59873'}};
 export function characterKind(n,player=false){return player?'father':COLUMNS[n.type]!==undefined?n.type:'civilian';}
 const image=src=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});
@@ -34,8 +34,9 @@ function reduce(frame,palette){
 }
 export const ready=typeof Image==='undefined'?Promise.resolve():Promise.all([
  image(new URL('./assets/people-pixel-v2.png',import.meta.url).href),
- image(new URL('./assets/eating-pixel-v2.png',import.meta.url).href)
-]).then(([people,eating])=>{
+ image(new URL('./assets/eating-pixel-v2.png',import.meta.url).href),
+ image(new URL('./assets/actions-v3.png',import.meta.url).href)
+]).then(([people,eating,actionSheet])=>{
  const rows=[0,267,524,785,1006,1145],mealRows=[0,381,724,1062,1448],cw=people.width/6;
  for(const [kind,col]of Object.entries(COLUMNS)){
   if(kind==='worker')continue;
@@ -43,6 +44,9 @@ export const ready=typeof Image==='undefined'?Promise.resolve():Promise.all([
  }
  for(const [kind,col]of [['father',0],['child',1]])meals[kind]=mealRows.slice(0,-1).map((y,i)=>cut(eating,col*543,y,543,mealRows[i+1]-y,.135));
  for(const [kind,list]of Object.entries(frames)){const all=[...list,...(meals[kind]||[])];palettes[kind]=makePalette(all);for(const frame of all)reduce(frame,palettes[kind]);}
+ for(const [kind,row,height]of [['child',0,48],['thug',1,73]]){
+  actions[kind]=Array.from({length:4},(_,col)=>{const f=cut(actionSheet,Math.round(col*actionSheet.width/4),Math.round(row*actionSheet.height/2),Math.floor(actionSheet.width/4),Math.floor(actionSheet.height/2),1);const out=document.createElement('canvas');out.height=height;out.width=Math.round(f.width*height/f.height);const oc=out.getContext('2d');oc.imageSmoothingEnabled=false;oc.drawImage(f,0,0,out.width,out.height);reduce(out,palettes[kind]);return out;});
+ }
  frames.worker=frames.civilian;loaded=true;
 }).catch(error=>{console.error('Character sprite loading failed',error);});
 export function spritesReady(){return loaded;}
@@ -64,3 +68,5 @@ export function drawPocketBack(c,type,look,time){
  const twitch=look==='warn'?Math.round(Math.sin(time*14))*2:0;
  c.save();c.imageSmoothingEnabled=false;c.drawImage(frame,105-Math.floor(frame.width*scale/2)+twitch,-18,Math.round(frame.width*scale),520);c.restore();return true;
 }
+
+export function drawAction(c,kind,frame,x,y,scale=1){if(!loaded||!actions[kind])return false;const face=kind==='thug'&&frame!==2?-1:1;blit(c,actions[kind][frame],x,y,scale,face);return true;}

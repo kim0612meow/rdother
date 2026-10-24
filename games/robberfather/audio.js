@@ -26,13 +26,13 @@ export class SoundDirector {
 }
 
 export class Soundscape {
- constructor(createContext=()=>new (globalThis.AudioContext||globalThis.webkitAudioContext)()){this.createContext=createContext;this.enabled=true;this.running=false;this.context=null;this.sources=new Set();this.director=new SoundDirector();this.locale='en';this.voice=null;this.foot=0;}
+ constructor(createContext=()=>new (globalThis.AudioContext||globalThis.webkitAudioContext)()){this.createContext=createContext;this.volume=1;this.enabled=true;this.running=false;this.context=null;this.sources=new Set();this.director=new SoundDirector();this.locale='en';this.voice=null;this.foot=0;}
  unlock(){
   if(!this.enabled)return;
   try{
    if(!this.context){
     this.context=this.createContext();const c=this.context;
-    this.master=c.createGain();this.master.gain.value=.8;
+    this.master=c.createGain();this.master.gain.value=.8*this.volume;
     const limiter=c.createDynamicsCompressor();limiter.threshold.value=-12;limiter.knee.value=12;limiter.ratio.value=5;
     this.master.connect(limiter).connect(c.destination);
     this.noise=c.createBuffer(1,c.sampleRate*2,c.sampleRate);const data=this.noise.getChannelData(0);
@@ -44,6 +44,7 @@ export class Soundscape {
    this.context.resume().catch(()=>{});
   }catch{this.enabled=false;}
  }
+ setVolume(value){this.volume=Math.max(0,Math.min(1,Number(value)||0));if(this.master&&this.running)this.master.gain.setTargetAtTime(.8*this.volume,this.context.currentTime,.025);if(this.voice&&this.volume===0){globalThis.speechSynthesis?.cancel();this.voice=null;}}
  setEnabled(value){this.enabled=value;if(value)this.unlock();else this.quiet();}
  quiet(){
   this.running=false;
@@ -72,7 +73,7 @@ export class Soundscape {
   const voice=voices.find(v=>v.localService&&v.lang.toLowerCase().startsWith(this.locale));
   if(voice&&globalThis.SpeechSynthesisUtterance&&!speech.speaking){
    const line=new SpeechSynthesisUtterance(this.locale==='ko'?'거기 서! 도둑이야!':'Hey! Stop! Thief!');
-   line.voice=voice;line.lang=voice.lang;line.volume=.65;line.rate=1.15;line.pitch=.8;this.voice=line;
+   line.voice=voice;line.lang=voice.lang;line.volume=.65*this.volume;line.rate=1.15;line.pitch=.8;this.voice=line;
    line.onend=line.onerror=()=>{if(this.voice===line)this.voice=null;};speech.speak(line);
   }else{
    this.noiseHit(.08,.12,1400);
@@ -116,7 +117,7 @@ export class Soundscape {
   this.locale=locale;
   const audible=active&&this.enabled&&!!this.context;
   if(!audible){this.director.update(g,dt,false);if(this.running)this.quiet();return;}
-  if(!this.running){this.running=true;this.master.gain.setTargetAtTime(.8,this.context.currentTime,.025);}
+  if(!this.running){this.running=true;this.master.gain.setTargetAtTime(.8*this.volume,this.context.currentTime,.025);}
   this.air.gain.setTargetAtTime(g.mode==='day'?.013:.008,this.context.currentTime,.6);
   for(const event of this.director.update(g,dt))this.play(event);
  }
