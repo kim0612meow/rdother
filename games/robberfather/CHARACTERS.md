@@ -1,6 +1,6 @@
-# Pixel character art · revision 2
+# Character sprite assets · revision 2
 
-The rectangle-built character design was removed. Characters now use transparent raster sprite atlases, sampled onto a native pixel grid with a shared 24-colour palette for each identity. Whole-body poses preserve natural contours, bent limbs and cloth folds.
+These are generated raster images reduced in resolution and palette, rather than manually placed pixel art. The rectangle-built character design was removed. Characters now use transparent raster sprite atlases, sampled onto a native pixel grid with a shared 24-colour palette for each identity. Whole-body poses preserve natural contours, bent limbs and cloth folds.
 
 - `assets/people-pixel-v2.png`: father, son, passerby, wealthy man, police and alley tough. Standing, two walking phases, rear view and seated poses.
 - `assets/eating-pixel-v2.png`: four complete eating poses for father and son. Hands and spoons belong to each frame rather than being assembled over a body.

@@ -1,6 +1,7 @@
 // The shell game on the crate in a dark alley. Bet one coin, watch the ball go under a cup, follow the cups, click the right one.
 // The more you have won so far, the more swaps and the faster the hands. hooks: bet() -> bool, settle(win), sound(name).
 const W=640,H=360,SLOTS=[170,320,470],CUP_Y=270;
+export function shellDifficulty(net){const level=Math.max(-4,Math.min(4,net));return{swaps:Math.max(3,5+level),duration:.44-level*.045,show:1.4-level*.12};}
 const ease=k=>k<.5?2*k*k:1-2*(1-k)*(1-k);
 export class Shell{
  constructor(root,t,hooks){this.root=root;this.t=t;this.hooks=hooks;this.canvas=root.querySelector('canvas');this.c=this.canvas.getContext('2d');this.active=false;this.state='idle';this.hover=-1;this.slot=[0,1,2];this.ball=1;this.net=0;
@@ -12,15 +13,15 @@ export class Shell{
  close(){this.active=false;this.root.hidden=true;this.state='idle';}
  // A round is under way: the coin is already on the table.
  get busy(){return this.active&&this.state!=='idle';}
- bet(){if(!this.active||this.state!=='idle'||!this.hooks.bet())return;const lead=Math.max(0,this.net);this.ball=Math.floor(Math.random()*3);this.swaps=Array.from({length:Math.min(12,5+lead)},()=>{const a=Math.floor(Math.random()*3);return[a,(a+1+Math.floor(Math.random()*2))%3];});this.dur=Math.max(.17,.42-.04*lead);this.step=0;this.state='show';this.time=0;this.result=null;}
+ bet(){if(!this.active||this.state!=='idle'||!this.hooks.bet())return;const difficulty=shellDifficulty(this.net);this.showSeconds=difficulty.show;this.ball=Math.floor(Math.random()*3);this.swaps=Array.from({length:difficulty.swaps},()=>{const a=Math.floor(Math.random()*3);return[a,(a+1+Math.floor(Math.random()*2))%3];});this.dur=difficulty.duration;this.step=0;this.state='show';this.time=0;this.result=null;}
  choose(cup){this.chosen=cup;this.win=cup===this.ball;this.state='reveal';this.time=0;this.hooks.sound('cupMove');}
  update(dt){if(!this.active)return;this.time+=dt;
-  if(this.state==='show'&&this.time>1.3){this.state='shuffle';this.time=0;}
+  if(this.state==='show'&&this.time>this.showSeconds){this.state='shuffle';this.time=0;}
   else if(this.state==='shuffle'&&this.time>=this.dur){const [a,b]=this.swaps[this.step],ca=this.slot.indexOf(a),cb=this.slot.indexOf(b);this.slot[ca]=b;this.slot[cb]=a;this.step++;this.time=0;this.hooks.sound('cupMove');if(this.step>=this.swaps.length)this.state='pick';}
   else if(this.state==='reveal'&&this.time>1.5){this.state='idle';this.result=this.win;this.net+=this.win?1:-1;this.hooks.settle(this.win);}
   this.render();}
  cupX(cup){const base=SLOTS[this.slot[cup]];if(this.state!=='shuffle')return{x:base,y:0};const [a,b]=this.swaps[this.step],s=this.slot[cup];if(s!==a&&s!==b)return{x:base,y:0};const k=ease(Math.min(1,this.time/this.dur)),to=SLOTS[s===a?b:a];return{x:base+(to-base)*k,y:(s===a?-1:1)*Math.sin(k*Math.PI)*24};}
- lift(cup){const k=Math.min(1,this.time/.35);if(this.state==='show'&&cup===this.ball)return 70*(this.time<1?k:Math.max(0,1-(this.time-1)/.3));if(this.state==='reveal'&&(cup===this.chosen||cup===this.ball&&this.time>.5))return 70*(cup===this.chosen?k:Math.min(1,(this.time-.5)/.35));return 0;}
+ lift(cup){const k=Math.min(1,this.time/.35);if(this.state==='show'&&cup===this.ball)return 70*(this.time<this.showSeconds-.3?k:Math.max(0,1-(this.time-(this.showSeconds-.3))/.3));if(this.state==='reveal'&&(cup===this.chosen||cup===this.ball&&this.time>.5))return 70*(cup===this.chosen?k:Math.min(1,(this.time-.5)/.35));return 0;}
  cupAt(p){for(let cup=0;cup<3;cup++){const {x}=this.cupX(cup);if(Math.abs(p.x-x)<50&&p.y>CUP_Y-110&&p.y<CUP_Y+20)return cup;}return-1;}
  note(){if(this.state==='idle')return this.result===null?'shellIdle':this.result?'shellWin':'shellLose';return{show:'shellShow',shuffle:'shellShuffle',pick:'shellPick',reveal:this.win?'shellWin':'shellLose'}[this.state];}
  render(){const c=this.c;c.fillStyle='#1d2b22';c.fillRect(0,0,W,H);const glow=c.createRadialGradient(W/2,40,10,W/2,120,380);glow.addColorStop(0,'#f0c9703a');glow.addColorStop(1,'#f0c97000');c.fillStyle=glow;c.fillRect(0,0,W,H);

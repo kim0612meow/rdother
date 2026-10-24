@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#16201e"><meta name="description" content="A story of a pickpocket, a waiting son, and one more meal. A 2D survival game."><title>One More Meal</title>
  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2316201e'/%3E%3Cpath d='M12 32h40v8L42 50H22L12 40Z' fill='%23d6b77a'/%3E%3Cpath d='M22 25v-9m10 9V12m10 13v-9' stroke='%23d6b77a' stroke-width='4'/%3E%3C/svg%3E">
- <link rel="stylesheet" href="game.css?v=pixel-v2">
+ <link rel="stylesheet" href="game.css?v=city-v3">
 </head>
 <body id="top">
 <div class="shell">
@@ -16,7 +16,7 @@
   <div class="above-stage"><span><i class="live-dot"></i><span id="locationLabel"></span></span><span class="edition" data-i18n="edition"></span></div>
   <section class="game-stage is-intro" id="stage" aria-label="One More Meal">
    <canvas id="game" width="1440" height="840" tabindex="0" aria-label="2D survival game"></canvas><div class="scene-shade"></div>
-   <div class="game-hud" id="hud"><div class="day-hud"><div class="eyebrow" data-i18n="chapterNo"></div><h2 id="dayNumber"></h2><span id="dayBadge" class="day-badge"></span><p id="dayHint"></p><div class="story-state"><span id="hungerState"></span><span id="poisonState"></span></div></div><div class="food-hud"><div class="eyebrow" data-i18n="quotaTitle"></div><div class="food-slots" id="foodSlots" role="group"></div><div class="eyebrow coin-title" data-i18n="coinTitle"></div><div class="food-slots coin-slots" id="coinSlots" role="group"></div><div class="meal-hint" id="mealHint"></div><div class="discard-note" id="discardNote" hidden><span data-i18n="holdDiscard"></span><div><i id="discardBar"></i></div></div></div></div>
+   <div class="game-hud" id="hud"><div class="day-hud"><div class="eyebrow" data-i18n="chapterNo"></div><h2 id="dayNumber"></h2><span id="dayBadge" class="day-badge"></span><p id="dayHint"></p><div class="story-state"><span id="hungerState"></span><span id="poisonState"></span></div></div><div class="food-hud"><div class="eyebrow" data-i18n="quotaTitle"></div><div class="food-slots" id="foodSlots" role="group"></div><div class="eyebrow coin-title" data-i18n="coinTitle"></div><div class="food-slots coin-slots" id="coinSlots" role="group"></div><small id="coinHint" class="coin-hint"></small><div class="meal-hint" id="mealHint"></div><div class="discard-note" id="discardNote" hidden><span data-i18n="holdDiscard"></span><div><i id="discardBar"></i></div></div></div></div>
    <div class="day-clock" id="dayClock"><span data-i18n="untilDusk"></span><strong id="timeLeft">02:30</strong><i><b id="timeBar"></b></i></div>
    <div id="intro" class="intro"><div class="intro-content"><div class="intro-kicker"><i></i><span data-i18n="introKicker"></span></div><h1 data-i18n-html="introTitle"></h1><p class="intro-sub" data-i18n-html="introCopy"></p><button id="continueBtn" class="continue-button" hidden></button><button id="startBtn" class="primary-button"><span data-i18n="start"></span><b>↗</b></button><p class="intro-note" data-i18n="introNote"></p></div><div class="intro-foot"><span>✦</span><span data-i18n="introFoot"></span></div><div class="intro-scene-tag"><i></i><span data-i18n="nightTag"></span></div></div>
    <button id="homePrompt" class="home-prompt" hidden><kbd>M</kbd><div><strong id="homePromptTitle"></strong><small data-i18n="homeHint"></small></div><span>↗</span></button>
@@ -24,7 +24,7 @@
    <div id="toast" class="toast" role="status" aria-live="polite"></div>
    <div id="targetCard" class="target-card" hidden><div class="target-card-top"><kbd>E</kbd><div><strong id="targetName"></strong><small id="targetDetail"></small></div><b id="targetReward"></b></div><div class="steal-track"><i id="stealBar"></i></div><div class="suspicion-row"><span data-i18n="suspicion"></span><div><i id="suspicionBar"></i></div><span id="riskLabel"></span></div></div>
    <div id="tutorialShade" class="tutorial-shade" hidden></div><div id="tutorial" class="tutorial" role="status"><kbd class="tutorial-arrow" id="tutorialKey">↔</kbd><p id="tutorialText"></p><small class="tutorial-paused" data-i18n="tutorialPaused"></small></div>
-   <div class="bottom-hud"><div class="attempt-hud"><span class="eyebrow" data-i18n="quotaTitle"></span><div class="attempt-row"><div id="attempts"></div><strong id="attemptCount"></strong></div><p id="attemptHint"></p></div><div class="goal-hud"><span class="eyebrow" data-i18n="quotaTitle"></span><p id="goalText"></p><div class="goal-track"><i id="goalBar"></i></div><small data-i18n="homeEarly"></small></div></div>
+   <div class="bottom-hud"><div class="attempt-hud"><span class="eyebrow" data-i18n="coinTitle"></span><div class="attempt-row"><div id="attempts"></div><strong id="attemptCount"></strong></div><p id="attemptHint"></p></div><div class="goal-hud"><span class="eyebrow" data-i18n="quotaTitle"></span><p id="goalText"></p><div class="goal-track"><i id="goalBar"></i></div><small data-i18n="homeEarly"></small></div></div>
    <div class="stamina" id="staminaWrap" hidden><span id="staminaLabel"></span><div><i id="staminaBar"></i></div></div>
    <div id="cinema" class="cinema" hidden><div class="cinema-top"><span id="cinemaDay"></span><small data-i18n="nightKicker"></small></div><div class="cinema-copy"><i></i><h2 id="nightTitle"></h2><p id="mealCopy"></p><button id="nextDayBtn" class="primary-button"><span id="nextDayText"></span><b>→</b></button></div><div class="night-summary"><span><span data-i18n="nightEarned"></span> <b id="nightEarned"></b></span><span><span data-i18n="nightSpent"></span> <b id="nightSpent"></b></span></div></div>
    <div id="binCard" class="bin-card" hidden><span class="eyebrow" data-i18n="binTitle"></span><p data-i18n="binCopy"></p><div><span data-i18n="takeFood"></span><span data-i18n="leaveFood"></span></div></div>
@@ -43,7 +43,7 @@
  <footer><span>ONE MORE MEAL <b>·</b> <span data-i18n="localTitle"></span></span><span data-i18n="footer"></span><span>✦</span></footer>
 </div>
 <div class="modal-backdrop" id="modal" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1"><button id="closeModal" class="modal-close" aria-label="Close">×</button><span class="modal-kicker" id="modalKicker"></span><h2 id="modalTitle"></h2><div id="modalBody"></div><button id="modalAction" class="primary-button"><span></span><b>→</b></button></section></div>
-<script type="module" src="app.js?v=pixel-v2"></script>
+<script type="module" src="app.js?v=city-v3"></script>
 </body>
 </html>
 

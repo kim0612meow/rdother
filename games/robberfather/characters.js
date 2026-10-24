@@ -32,7 +32,7 @@ function reduce(frame,palette){
  for(let i=0;i<d.length;i+=4){if(d[i+3]<128){d[i+3]=0;continue;}let best=palette[0],dist=Infinity;for(const q of palette){const v=(d[i]-q[0])**2+(d[i+1]-q[1])**2*1.4+(d[i+2]-q[2])**2;if(v<dist){dist=v;best=q;}}d[i]=best[0];d[i+1]=best[1];d[i+2]=best[2];d[i+3]=255;}
  c.putImageData(pixels,0,0);
 }
-export const ready=Promise.all([
+export const ready=typeof Image==='undefined'?Promise.resolve():Promise.all([
  image(new URL('./assets/people-pixel-v2.png',import.meta.url).href),
  image(new URL('./assets/eating-pixel-v2.png',import.meta.url).href)
 ]).then(([people,eating])=>{

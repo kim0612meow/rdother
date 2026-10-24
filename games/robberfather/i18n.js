@@ -59,3 +59,6 @@ let locale=DEFAULT_LOCALE;
 export function getLocale(){return locale;}
 export function setLocale(value){locale=Object.hasOwn(MESSAGES,value)?value:DEFAULT_LOCALE;}
 export function t(key,vars={}){return(MESSAGES[locale][key]??MESSAGES.en[key]??key).replace(/\{(\w+)\}/g,(_,name)=>String(vars[name]??`{${name}}`));}
+
+Object.assign(MESSAGES.en,{coinCount:'{coins} / {max} coins',slotReward:'+{count} coins',portionsCount:'{count} coins',coachDodge:'STOP. The wallet is paused. Press E to leave before they turn. You must do this once.',robbedCaption1:'A blow from behind. The cups scatter. He cannot get up.',robbedCaption2:'The two men close around him. His winnings disappear into their pockets.'});
+Object.assign(MESSAGES.ko,{coinCount:'돈 {coins} / {max}칸',slotReward:'돈 +{count}칸',portionsCount:'돈 {count}칸',coachDodge:'멈춤! 지갑은 움직이지 않아요. 상대가 돌아보기 전에 반드시 E로 빠져나가세요.',robbedCaption1:'뒤통수를 내리친 둔탁한 소리. 컵이 흩어지고, 몸이 움직이지 않는다.',robbedCaption2:'두 사람이 아빠를 에워싼다. 딴 돈이 그들의 주머니로 사라진다.'});

@@ -62,3 +62,5 @@ html[lang=ko] h1{font-size:clamp(45px,5.6vw,83px);line-height:1.2;letter-spacing
 .shell-net{color:#c9a46a;font-size:13px;white-space:nowrap}
 .shell-bet{font-size:14px;padding:8px 14px;min-width:0}
 .shell-bet:disabled{opacity:.4;cursor:default}
+
+.coin-hint{display:block;text-align:right;color:#e1c996;font:13px/1.5 sans-serif;margin-top:5px}.attempt-hud #attempts{flex-wrap:nowrap}

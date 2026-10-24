@@ -105,7 +105,8 @@ export class Soundscape {
    case'cupMove':this.noiseHit(.09,.07,900);break;
    case'betWon':this.tone(880,.08,.03,0,880,'triangle');this.tone(1320,.14,.025,.08,1320,'triangle');break;
    case'betLost':this.tone(160,.25,.04,0,110);break;
-   case'beaten':for(let i=0;i<7;i++){this.noiseHit(.14,.24,260+(i%3)*90,i*.45);this.tone(70,.12,.08,i*.45,40);}break;
+   case'headStrike':this.noiseHit(.075,.25,1300);this.tone(930,.6,.16,0,420,'triangle');this.tone(1480,.4,.075,.008,750,'sine');this.tone(80,.18,.12,0,35);break;
+   case'bodyStrike':this.noiseHit(.18,.22,290);this.tone(75,.15,.1,0,38);break;
    case'save':this.tone(523,.16,.025);this.tone(659,.23,.02,.11);break;
    case'night':this.tone(196,1.6,.028);this.tone(294,1.8,.02,.2);break;
    case'start':this.tone(220,.8,.025);this.tone(330,1.1,.02,.2);break;

@@ -1,3 +1,4 @@
+import {ROBBERY,endingDuration} from './cinematics.js?v=city-v3';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,meal:3,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
@@ -29,6 +30,7 @@ const distance=(a,b)=>Math.abs(a.x-b.x);
 export class Game{
  constructor(save=null){this.day=clamp(Math.floor(valid(save?.day,1)),1,999999);this.hungerStreak=clamp(valid(save?.hungerStreak),0,2);this.rottenStreak=clamp(valid(save?.rottenStreak),0,2);this.lastMeal=['fresh','rotten','hungry','both'].includes(save?.lastMeal)?save.lastMeal:'fresh';this.stats={meals:Math.max(0,valid(save?.stats?.meals)),total:Math.max(0,valid(save?.stats?.total)),best:Math.max(0,valid(save?.stats?.best))};this.tutorialDone=!!save?.tutorialDone;this.closedShops=Array.isArray(save?.closedShops)?save.closedShops.filter(id=>SHOPS.some(s=>s.id===id)):[];this.gambleNet=clamp(Math.round(valid(save?.gambleNet)),-9999,GAMBLE.limit-1);this.time=0;this.events=[];this.resetDay();this.resumeMode='morning';if(save?.version===3)this.restore(save);this.mode='intro';}
  // Coins and food fill separate rows of slots.
+ get endingDuration(){return endingDuration(this.ending);}
  get coins(){return this.inventory.filter(x=>x==='coin').length;}get food(){return this.inventory.length-this.coins;}get coinFull(){return this.coins>=RULES.coinCap;}get foodFull(){return this.food>=RULES.foodCap;}get rottenCount(){return this.inventory.filter(x=>x==='rotten').length;}get quotaMet(){return this.food>=RULES.meal;}
  get caughtCount(){return this.attempts.filter(x=>x==='caught').length;}get banned(){return this.caughtCount>=RULES.maxCaught;}get shop(){return areaAt(this.player.x);}
  get wary(){return Math.min(WARY.max,WARY.start+WARY.step*this.attempts.filter(x=>x==='success').length);}
@@ -56,7 +58,7 @@ export class Game{
  nearbyDealer(){const s=this.shop;if(!s||s.kind!==ALLEY||this.player.hidden||this.chasers.length||Math.abs(this.player.x-(s.x0+COUNTER))>80)return null;return s;}
  placeBet(){if(!this.nearbyDealer())return false;if(this.coins<GAMBLE.stake){this.emit('noMoney',{price:GAMBLE.stake});return false;}if(this.coins-GAMBLE.stake+GAMBLE.pay>RULES.coinCap){this.emit('coinFullBet');return false;}this.inventory.splice(this.inventory.indexOf('coin'),1);this.emit('betPlaced');return true;}
  // Winnings and losses add up across days. Too far ahead and the men in the alley beat you and take everything; the boy waits all night and collapses.
- settleBet(win){if(win){this.add('coin',GAMBLE.pay);this.gambleNet+=GAMBLE.pay-GAMBLE.stake;}else this.gambleNet-=GAMBLE.stake;this.emit(win?'betWon':'betLost',{net:this.gambleNet});if(this.gambleNet>=GAMBLE.limit){this.inventory=this.inventory.filter(x=>x!=='coin');this.ending='robbed';this.endingTime=0;this.mode='ending';this.emit('beaten');this.emit('ending',{kind:'robbed'});}}
+ settleBet(win){if(win){this.add('coin',GAMBLE.pay);this.gambleNet+=GAMBLE.pay-GAMBLE.stake;}else this.gambleNet-=GAMBLE.stake;this.emit(win?'betWon':'betLost',{net:this.gambleNet});if(this.gambleNet>=GAMBLE.limit){this.ending='robbed';this.endingTime=0;this.mode='ending';this.emit('ending',{kind:'robbed'});}}
  nearbyBox(){return BOXES.find(b=>distance(b,this.player)<53)||null;}
  nearbyBin(){if(this.player.hidden||this.chasers.length)return null;return this.bins.filter(b=>!b.searched&&distance(b,this.player)<60).sort((a,b)=>distance(a,this.player)-distance(b,this.player))[0]||null;}
  // The shop door the player is standing at: a street entrance, or the exit inside a shop. barred: you were caught stealing in there once.
@@ -70,7 +72,7 @@ export class Game{
  toggleHide(){if(this.player.hidden){this.player.hidden=false;this.player.boxId=null;this.emit('unhidden');return true;}const b=this.nearbyBox();if(!b)return false;this.clearHold();this.player.hidden=true;this.player.boxId=b.id;this.player.x=b.x;this.escape=0;this.emit('hidden');return true;}
  // What the practice is waiting for before anything else can happen: 'move' (A/D) or 'steal' (E behind the target). null when nothing blocks.
  get tutorialHold(){const T=TUTORIAL,s=this.tutorial;if(s===T.move&&this.travel===0)return'move';if((s===T.approach||s===T.resume)&&this.activeTarget===null&&this.target&&this.isBehind(this.target)&&!(this.target.lookBack>0))return'steal';return null;}
- update(dt,input={}){dt=clamp(dt,0,.05);this.time+=dt;if(this.mode==='night'){this.nightTime+=dt;return;}if(this.mode==='ending'){this.endingTime+=dt;return;}if(this.mode!=='day')return;
+ update(dt,input={}){dt=clamp(dt,0,.05);this.time+=dt;if(this.mode==='night'){this.nightTime+=dt;return;}if(this.mode==='ending'){const before=this.endingTime;this.endingTime+=dt;if(this.ending==='robbed'){if(before<ROBBERY.hit&&this.endingTime>=ROBBERY.hit)this.emit('headStrike');for(const hit of ROBBERY.kicks)if(before<hit&&this.endingTime>=hit)this.emit('bodyStrike');if(before<ROBBERY.rob&&this.endingTime>=ROBBERY.rob){this.inventory=this.inventory.filter(x=>x!=='coin');this.emit('robberyTaken');}}return;}if(this.mode!=='day')return;
  const practice=this.tutorial<TUTORIAL.done;if(!practice){const priorTime=this.timeLeft;this.timeLeft=Math.max(0,this.timeLeft-dt);if(priorTime>30&&this.timeLeft<=30)this.emit('duskWarning');if(this.timeLeft===0){this.endChase();this.goHome('timeout');this.emit('timeout');return;}}
  this.cooldown=Math.max(0,this.cooldown-dt);const edge=key=>input[key]&&!this.previousInput[key];const dir=this.tutorialHold==='steal'?0:(input.right?1:0)-(input.left?1:0),p=this.player;
  if(edge('hide'))this.toggleHide();if(p.hidden&&dir)this.toggleHide();if(edge('enter'))this.useDoor();
@@ -82,7 +84,7 @@ export class Game{
  if(binPriority&&edge('steal'))this.takeBin(bin);else if(binPriority&&edge('leave')){bin.searched=true;this.emit('binLeft');}
  if(input.discard&&this.rottenCount&&!this.discardLatch){this.discardProgress+=dt;if(this.discardProgress>=RULES.discardHold){this.discardRotten();this.discardLatch=true;this.discardProgress=0;}}else if(!input.discard){this.discardProgress=0;this.discardLatch=false;}
  if(this.target&&this.tutorial===TUTORIAL.find)this.tutorial=TUTORIAL.approach;
- if(input.pick&&this.target&&!dir&&!p.hidden&&!input.discard&&this.cooldown===0&&(this.activeTarget===this.target.id||this.isBehind(this.target))){const n=this.target,kind=TYPES[n.type],watching=this.isWatching(n),tn=this.turn,slip=valid(input.slip);if(this.activeTarget!==n.id){this.activeTarget=n.id;this.progress=0;this.suspicion=0;tn.phase='wait';tn.t=practice?Infinity:(kind.wait[0]+Math.random()*(kind.wait[1]-kind.wait[0]))/this.wary;if(this.tutorial===TUTORIAL.approach||this.tutorial===TUTORIAL.dodge)this.tutorial=TUTORIAL.pull;}this.progress=clamp(valid(input.trace),0,1)*kind.hold;this.suspicion+=(slip+valid(input.risk))*(practice?1:this.wary);
+ if(input.pick&&this.target&&!dir&&!p.hidden&&!input.discard&&this.cooldown===0&&(this.activeTarget===this.target.id||this.isBehind(this.target))){const n=this.target,kind=TYPES[n.type],watching=this.isWatching(n),tn=this.turn,slip=valid(input.slip);if(this.activeTarget!==n.id){this.activeTarget=n.id;this.progress=0;this.suspicion=0;tn.phase='wait';tn.t=practice?Infinity:(kind.wait[0]+Math.random()*(kind.wait[1]-kind.wait[0]))/this.wary;if(this.tutorial===TUTORIAL.approach)this.tutorial=TUTORIAL.pull;if(this.tutorial===TUTORIAL.dodge){tn.phase='warn';tn.t=Infinity;}}this.progress=clamp(valid(input.trace),0,1)*kind.hold;if(practice&&this.tutorial!==TUTORIAL.resume)this.progress=Math.min(this.progress,kind.hold*.4);this.suspicion+=(slip+valid(input.risk))*(practice?1:this.wary);
  // A mistake makes the victim start to turn. In practice they turn once, part way through, and wait for your E.
  if(tn.phase==='wait'&&(slip>0||this.tutorial===TUTORIAL.pull&&this.progress>=kind.hold*.4))tn.t=0;
  // Leave the pocket (E) during the warning or be seen with your hand in their coat.
@@ -91,7 +93,7 @@ export class Game{
  if(input.grab)this.suspicion+=dt*this.wary*(kind.behind??kind.risk*.48*(watching?1.45:.9));
  if(practice)this.suspicion=Math.min(this.suspicion,.9);
  let detector=null;for(const w of this.npcs){if(practice||w.id===n.id)continue;const d=distance(w,p),range=w.type==='police'?420:310;if(d<range&&(this.facingPlayer(w)||d<100)){const close=d<150?1.8:1;w.witness=clamp(w.witness+dt*this.wary*(w.type==='police'?4:.42*close*(this.isWatching(w)?1.4:.85)),0,1);if(w.witness>=1)detector=w;}}
- if(this.suspicion>=1||detector){this.detect(detector||n,n,!!detector);}else if(this.progress>=kind.hold){const amount=this.add('coin',kind.slots);this.earned+=amount;this.stats.total+=amount;n.stolen=true;this.attempts.push('success');this.cooldown=.8;this.clearHold();this.finishTutorial();this.emit('stolen',{amount});}
+ if(this.suspicion>=1||detector){this.detect(detector||n,n,!!detector);}else if(this.progress>=kind.hold&&(!practice||this.tutorial===TUTORIAL.resume)){const amount=this.add('coin',kind.slots);this.earned+=amount;this.stats.total+=amount;n.stolen=true;this.attempts.push('success');this.cooldown=.8;this.clearHold();this.finishTutorial();this.emit('stolen',{amount});}
  }else this.clearHold();
  this.recognize(dt);
  for(const n of this.npcs){if(this.activeTarget===null&&!n.recognizing)n.witness=Math.max(0,n.witness-dt*.12);if(n.lookBack>0){n.lookBack-=dt;if(n.lookBack<=0)n.face=n.faceBack;continue;}if(practice||this.activeTarget===n.id||this.chasers.includes(n.id))continue;if(n.pause>0){n.pause-=dt;continue;}if(n.x<n.min)n.face=1;else if(n.x>n.max)n.face=-1;n.x+=n.face*TYPES[n.type].speed*dt;n.walk+=dt*5;if(Math.abs(n.x-n.min)<2||Math.abs(n.x-n.max)<2)n.pause=.8;}
@@ -100,7 +102,7 @@ export class Game{
  recognize(dt){const p=this.player,quiet=this.chasers.length||p.hidden;for(const n of this.npcs){n.recognizing=false;if(!n.knows||quiet)continue;if(n.calm>0){n.calm-=dt;continue;}const d=distance(n,p);if(d<280&&(this.facingPlayer(n)||d<90)){n.recognizing=true;n.witness=clamp(n.witness+dt*(d<140?.6:.38),0,1);if(n.witness>=1){this.clearHold();this.beginChase(n);this.emit('recognized');return;}}}}
  // Leaving the pocket. Done during the warning, the victim turns, finds nobody at their coat, and turns back.
  dodge(){const n=this.npcs.find(n=>n.id===this.activeTarget);if(n&&this.turn.phase==='warn'){n.faceBack=n.face;n.face=Math.sign(this.player.x-n.x)||-n.face;n.lookBack=RULES.lookTime;this.emit('turnLook');this.emit('dodged');if(this.tutorial===TUTORIAL.dodge)this.tutorial=TUTORIAL.resume;}this.clearHold();this.cooldown=Math.max(this.cooldown,.3);}
- skipEnding(){if(this.mode==='ending')this.endingTime=Math.max(this.endingTime,8);}
+ skipEnding(){if(this.mode==='ending')this.endingTime=Math.max(this.endingTime,this.endingDuration);}
  finishTutorial(){if(this.tutorial<TUTORIAL.done){this.tutorial=TUTORIAL.done;this.tutorialDone=true;this.emit('tutorialComplete');}}
  // Spotted inside a shop: that shop never lets you in again.
  detect(detector,victim,witnessed=false){this.attempts.push('caught');const s=this.shop;if(s&&!this.closedShops.includes(s.id)){this.closedShops.push(s.id);this.emit('shopClosed',{kind:s.kind});}this.beginChase(detector,victim);this.clearHold();this.finishTutorial();this.emit(witnessed?'witnessed':'detected');}
