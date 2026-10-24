@@ -3,8 +3,8 @@
 <h1>One More Meal · Pixel sprite studio · revision 2</h1><p>Raster dot sprites, sampled to native pixels with a shared 24-colour palette per person. Full-body animation; no rectangle-built bodies. Local QA fixtures replace only this preview origin's save.</p>
 <canvas id="sheet" width="1200" height="940"></canvas><p id="result"></p><div id="fixtures"></div>
 <script type="module">
-import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=cover-v15';
-import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=cover-v15';
+import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=shops-v16';
+import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=shops-v16';
 await ready;
 const c=document.getElementById('sheet').getContext('2d');c.fillStyle='#d8d4c7';c.fillRect(0,0,1200,630);c.imageSmoothingEnabled=false;
 const people=[['FATHER','father'],['SON','child'],['PASSERBY','civilian'],['WEALTHY','wealthy'],['POLICE','police'],['ALLEY MAN','thug']];
@@ -19,6 +19,10 @@ for(let i=0;i<people.length;i++){
 const fresh=()=>{const g=new Game();g.start();for(let i=0;i<3;i++)g.advanceMorning();g.tutorialDone=true;g.tutorial=TUTORIAL.done;return g;};
 const recovery=()=>{const g=fresh();g.goHome();g.beginNight();g.nextDay();for(let i=0;i<3;i++)g.advanceMorning();return g;};
 const scenarios={
+ 'V16 · store doorway arrow':()=>{const g=fresh();g.tutorialDone=false;g.tutorial=TUTORIAL.shop;g.player.x=SHOPS[1].door+100;g.player.stamina=15;g.inventory=['coin'];return g;},
+ 'V16 · indoor counter arrow':()=>{const g=fresh();g.tutorialDone=false;g.tutorial=TUTORIAL.counter;g.player.x=SHOPS[1].x0+780;g.player.stamina=15;g.inventory=['coin'];return g;},
+ 'V16 · purchase arrow and breath':()=>{const g=fresh();g.tutorialDone=false;g.tutorial=TUTORIAL.purchase;g.player.x=SHOPS[1].x0+1110;g.player.stamina=15;g.inventory=['coin'];return g;},
+ ...Object.fromEntries(['civilian','wealthy','police'].map(type=>['V16 · '+type+' reward and difficulty',()=>{const g=fresh();g.player.x=1300;const target=g.npcs.find(n=>n.type===type);for(const n of g.npcs)n.x=4300;Object.assign(target,{x:1342,face:1,pause:999});return g;}])),
  'V14 · hungry and ill morning':()=>{const g=recovery();g.rottenStreak=1;g.lastMeal='both';g.mode='morning';return g;},
  'V14 · hungry day three food':()=>{const g=recovery();g.inventory=Array(3).fill('fresh');return g;},
  'V14 · recovery five food dinner':()=>{const g=recovery();g.inventory=[...Array(5).fill('fresh'),'coin'];g.goHome();g.beginNight();return g;},

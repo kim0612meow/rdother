@@ -196,3 +196,13 @@ select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius
 .modal-cancel{display:block;width:100%;margin-top:10px;padding:11px 20px;background:#344d3e;color:#fff4de}
 
 .tutorial.cover-lesson{top:145px;bottom:auto}
+
+/* Keep lessons above the play area, clear of the moving breath gauge. */
+.tutorial{top:145px;bottom:auto}
+.shop-guide{padding:10px 15px}
+.target-heading{display:flex;align-items:center;gap:10px;margin-bottom:3px}
+.target-heading strong{font-size:20px}
+.difficulty-label{font-size:14px;font-weight:700;white-space:nowrap;border-radius:5px;padding:3px 7px;background:#314d3a;color:#bde8b3}
+.difficulty-label[data-level=normal]{background:#58492b;color:#ffdc91}
+.difficulty-label[data-level=hard]{background:#69382e;color:#ffd0b4}
+#targetReward{font-size:20px;white-space:nowrap}

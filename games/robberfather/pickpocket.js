@@ -1,11 +1,11 @@
-import {drawPocketBack} from './characters.js?v=cover-v15';
+import {drawPocketBack} from './characters.js?v=shops-v16';
 // The pocket window, seen over the victim's back. Draw the wallet out along a line with the mouse while keeping the Space gauge in time.
 // The street keeps moving underneath, so suspicion and witnesses still count while you play.
 // When the victim starts to turn (look, set by app.js) press E to leave the pocket; reopening the same pocket picks up where you stopped.
-import {dayDifficulty} from './difficulty.js?v=cover-v15';
-import {TYPES} from './engine.js?v=cover-v15';
-import {Trace} from './pick-trace.js?v=cover-v15';
-import {Timing} from './pick-timing.js?v=cover-v15';
+import {dayDifficulty} from './difficulty.js?v=shops-v16';
+import {TYPES} from './engine.js?v=shops-v16';
+import {Trace} from './pick-trace.js?v=shops-v16';
+import {Timing} from './pick-timing.js?v=shops-v16';
 // The Space gauge runs alongside the line including the tutorial. Set to false to go back to the mouse alone.
 const GAUGE=true;
 const RUSH=.7,W=640,H=400,START={x:206,y:252},HEAD={x:104,y:74};
@@ -19,7 +19,7 @@ export class Pickpocket{
   const up=()=>{if(this.active)this.game.up();};this.canvas.addEventListener('pointerup',up);this.canvas.addEventListener('pointercancel',up);}
  open(target,seed,{day=1,practice=false,multiplier=1}={}){const pressure=practice?1:multiplier,difficulty=dayDifficulty(practice?1:day,pressure);const type=target.type,memo=this.memo?.id===target.id&&this.memo.day===day&&this.memo.multiplier===pressure?this.memo:null;this.memo=null;this.type=type;this.day=day;this.multiplier=pressure;this.targetId=target.id;this.look='wait';this.lastLook='wait';this.shake=0;
   if(memo){this.game=memo.game;this.gauge=memo.gauge;this.game.resume();}else{const s=Math.floor(seed*7919)%2147483646+1;this.game=new Trace({type,hold:TYPES[type].hold*difficulty.pull,seed:s,start:START,W,H});this.gauge=GAUGE?new Timing({type,seed:s,day:practice?1:day,multiplier:pressure}):null;}
-  this.active=true;this.paused=false;this.root.hidden=false;this.root.querySelector('[data-pick-title]').textContent=this.t('pickTitle',{name:this.t(type)});this.root.querySelector('[data-pick-hint]').textContent=this.t(this.gauge?'pickHintDual':'pickHintTrace');this.render();}
+  this.active=true;this.paused=false;this.root.hidden=false;this.root.querySelector('[data-pick-title]').textContent=this.t('pickTitle',{name:this.t(type),coins:TYPES[type].slots,difficulty:this.t('difficulty_'+TYPES[type].difficulty)});this.root.querySelector('[data-pick-hint]').textContent=this.t(this.gauge?'pickHintDual':'pickHintTrace');this.render();}
  close(keep=false){this.memo=keep&&this.active?{id:this.targetId,day:this.day,multiplier:this.multiplier,game:this.game,gauge:this.gauge}:null;this.active=false;this.root.hidden=true;}
  get fraction(){return this.active?this.game.fraction:0;}
  get touching(){return this.active&&this.game.touching;}

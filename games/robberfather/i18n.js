@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=cover-v15';
+import {controlText} from './settings.js?v=shops-v16';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -180,4 +180,17 @@ Object.assign(MESSAGES.en,{
  practiceCoverTitle:'HIDE HERE · CART',practiceCoverAction:'Hide behind the cart',practiceCoverNow:'Press now to hide!',
  tutorialCaught:'Spotted! {left} chances remain. The glowing cart is your hiding place. E Use to practise the chase!',
  tutorialEscape:'Move to the glowing cart. When close, press F Hide to crouch behind its load.'
+});
+
+Object.assign(MESSAGES.ko,{
+ practiceShopDoor:'식료품점 입구로 이동',practiceShopEnter:'식료품점 들어가기',practiceShopCounter:'이 구매대로 이동',practiceBuyHere:'길게 눌러 구매',
+ tutorialShop:'화살표가 가리키는 식료품점 문 앞으로 가서 W 출입을 누르세요.',tutorialCounter:'화살표가 가리키는 구매대로 이동하세요.',
+ difficulty_easy:'쉬움',difficulty_normal:'보통',difficulty_hard:'어려움',pickTitle:'{name} · 주머니 · 돈 +{coins} · {difficulty}',
+ helpShort4:'행인 1칸·쉬움 / 부자 2칸·보통 / 경찰 3칸·어려움. 주변 사람도 훔치는 걸 볼 수 있어요. 금색 기회가 남은 횟수예요.'
+});
+Object.assign(MESSAGES.en,{
+ practiceShopDoor:'TO THE STORE ENTRANCE',practiceShopEnter:'ENTER CORNER STORE',practiceShopCounter:'MOVE TO THIS COUNTER',practiceBuyHere:'HOLD TO BUY',
+ tutorialShop:'Go to the corner store door marked by the arrow and press W Enter / exit.',tutorialCounter:'Move to the shop counter marked by the arrow.',
+ difficulty_easy:'Easy',difficulty_normal:'Normal',difficulty_hard:'Hard',pickTitle:'{name} · Pocket · +{coins} coins · {difficulty}',
+ helpShort4:'Passerby: 1 coin, Easy. Wealthy: 2, Normal. Police: 3, Hard. Bystanders can spot you; gold icons show chances left.'
 });

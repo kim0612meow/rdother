@@ -1,12 +1,12 @@
-import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=cover-v15';
-import {ARCHITECTURE} from './themes/config.js?v=cover-v15';
-import {Backgrounds} from './themes/backgrounds.js?v=cover-v15';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=cover-v15';
-import {drawCharacter,drawChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=cover-v15';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=cover-v15';
+import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=shops-v16';
+import {ARCHITECTURE} from './themes/config.js?v=shops-v16';
+import {Backgrounds} from './themes/backgrounds.js?v=shops-v16';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=shops-v16';
+import {drawCharacter,drawChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=shops-v16';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=shops-v16';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=cover-v15';
-import {HD2D} from './hd2d.js?v=cover-v15';
+import {t,getLocale} from './i18n.js?v=shops-v16';
+import {HD2D} from './hd2d.js?v=shops-v16';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
@@ -123,10 +123,14 @@ rect(c,0,0,W,H,'#7e947d');const sky=c.createLinearGradient(0,0,0,640);sky.addCol
  drawStreet(c,g,time,dt){this.updateCover(g,dt);const shop=areaAt(g.player.x),desired=shop?shop.x0:Math.max(0,Math.min(WORLD-W,g.player.x-W*.38));this.camera+=(desired-this.camera)*Math.min(1,dt*5);if(g.player.x===330||this.snap)this.camera=desired;const cam=Math.round(this.camera);if(shop)this.roomBackground(c,shop);else this.streetBase(c,cam);c.save();c.translate(-cam,0);
  for(const b of g.bins)this.bin(c,b);const chars=[...g.npcs,...(!g.player.hidden&&!this.coverMotion?[{...g.player,id:-1}]:[])].sort((a,b)=>a.y-b.y);for(const n of chars){if(n.x<cam-60||n.x>cam+W+60)continue;const isPlayer=n.id===-1;person(c,n,isPlayer,ARCHITECTURE.actorScale);if(isPlayer)poly(c,[[n.x-5,n.y-164],[n.x+5,n.y-164],[n.x,n.y-158]],'#dfc184');else if(n.alert)label(c,'!',n.x,n.y-170,24,'#eca77f','sans-serif');else if(n.type==='wealthy')poly(c,[[n.x,n.y-172],[n.x+4,n.y-168],[n.x,n.y-164],[n.x-4,n.y-168]],'#d9bb77');else if(n.type==='police'){rect(c,n.x-4,n.y-168,8,7,'#b6c8b0');rect(c,n.x-2,n.y-166,4,5,'#5d7f73');}if(n.witness>.04&&!n.alert){const hot=n.witness>.6&&Math.sin(time*18)>0;const ex=n.x,ey=n.y-196;poly(c,[[ex-12,ey],[ex,ey-7],[ex+12,ey],[ex,ey+7]],hot?'#ff6a55':'#e23b2e');rect(c,ex-6,ey-3,12,6,'#fbe9df');rect(c,ex-3,ey-3,6,6,'#2a1512');rect(c,n.x-23,n.y-183,46,7,'#2a1512');rect(c,n.x-22,n.y-182,44*n.witness,5,hot?'#ff6a55':'#e23b2e');}}
  this.child(c,259,647,1.7,time,false);for(const b of BOXES){if(b.x<cam-180||b.x>cam+W+180)continue;const motion=this.coverMotion?.id===b.id?this.coverMotion:null;this.box(c,b,!!motion,motion?.amount||0,g.player.face);if(g.tutorialCover?.id===b.id)this.coverHighlight(c,b,time);}
+ if(g.tutorialWaypoint)this.waypointHighlight(c,g.tutorialWaypoint,time);
  // Boarded doors of shops that caught you stealing.
  for(const id of g.closedShops){const x=SHOPS[id].door;line(c,x-44,470,x+44,620,'#6b4a2e',9);line(c,x+44,470,x-44,620,'#6b4a2e',9);rect(c,x-50,524,100,30,'#7a2219');label(c,t('barredSign'),x,545,15,'#f3d9c4','sans-serif');}
  if(g.target){const n=g.target;c.strokeStyle='#dcc58a';c.lineWidth=1.5;c.beginPath();c.ellipse(n.x,n.y+2,26,6,0,0,Math.PI*2);c.stroke();if(g.progress){const px=n.x+8*n.face,py=n.y-62;c.strokeStyle=g.suspicion>.65?'#e0a078':'#ead095';c.lineWidth=2;c.beginPath();c.arc(px,py,12,-Math.PI/2,-Math.PI/2+Math.PI*2*g.progress/TYPES[n.type].hold);c.stroke();}else{const px=n.x+8*n.face,py=n.y-62,pulse=.5+.5*Math.sin(time*6);c.strokeStyle=`rgba(240,206,128,${.45+.5*pulse})`;c.lineWidth=2;c.strokeRect(px-7-pulse*2,py-6-pulse*2,14+pulse*4,12+pulse*4);}}
  c.restore();if(g.chasers.length)rect(c,0,0,W,H,'#a04f3217');const dusk=1-g.timeLeft/RULES.daySeconds;if(dusk>.45)rect(c,0,0,W,H,`rgba(92,53,32,${(dusk-.45)*.38})`);if(!this.reduced)for(let i=0;i<18;i++){const x=(i*131+time*(7+i%4)-cam*.1)%W,y=320+(i*43+Math.sin(time+i)*12)%370;rect(c,x,y,1,2,'#e2d7a64b');}}
+ waypointHighlight(c,point,time){
+  const pulse=this.reduced?1:.84+.16*Math.sin(time*5);c.save();c.strokeStyle='#ffe3a3';c.lineWidth=4;c.shadowColor='#ffe3a3';c.shadowBlur=this.reduced?0:10*pulse;c.globalAlpha=pulse;c.strokeRect(point.x-point.width/2,GROUND-point.height,point.width,point.height);c.restore();
+ }
  coverHighlight(c,b,time){
   const img=this.backgrounds.props[b.inside?'storage':'cover'],p=coverPlacement(b,img?img.height/img.width:.72),pulse=this.reduced?1:.84+.16*Math.sin(time*5);
   c.save();c.strokeStyle='#ffe3a3';c.lineWidth=4;c.shadowColor='#ffe3a3';c.shadowBlur=this.reduced?0:12*pulse;c.globalAlpha=pulse;c.strokeRect(b.x-p.width/2-7,GROUND-p.height-7,p.width+14,p.height+14);

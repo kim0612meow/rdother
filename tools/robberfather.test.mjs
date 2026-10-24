@@ -239,3 +239,20 @@ test('the chase lesson points at the real cart until F hides the player, includi
 test('normal gameplay and other lessons never mark the tutorial cart',()=>{
  const g=practice();assert.equal(g.tutorialCover,null);g.tutorial=TUTORIAL.done;assert.equal(g.tutorialCover,null);g.tutorial=TUTORIAL.escape;g.mode='night';assert.equal(g.tutorialCover,null);
 });
+
+test('the shop guide points at an actual available market doorway and switches to its real counter',async()=>{
+ const {SHOPS,COUNTER}=await import('../games/robberfather/engine.js');const g=survivalDay();g.tutorialDone=false;g.tutorial=TUTORIAL.shop;g.player.x=SHOPS[1].door+100;assert.equal(g.tutorialWaypoint.kind,'door');assert.equal(g.tutorialWaypoint.x,SHOPS[1].door);assert.equal(g.tutorialWaypoint.ready,false);g.player.x=SHOPS[1].door;assert.equal(g.tutorialWaypoint.ready,true);g.useDoor();assert.equal(g.tutorialWaypoint.kind,'counter');assert.equal(g.tutorialWaypoint.x,SHOPS[1].x0+COUNTER);assert.equal(g.tutorialWaypoint.ready,false);g.player.x=SHOPS[1].x0+COUNTER;g.add('coin',1);g.update(.02);assert.equal(g.tutorial,TUTORIAL.purchase);assert.equal(g.tutorialWaypoint.ready,true);const restored=new Game(g.save());restored.start();assert.deepEqual(restored.tutorialWaypoint,g.tutorialWaypoint);g.buy();assert.equal(g.tutorial,TUTORIAL.meal);assert.equal(g.tutorialWaypoint,null);
+});
+
+test('door guidance skips barred shops and remains absent outside shopping lessons',async()=>{
+ const {SHOPS}=await import('../games/robberfather/engine.js');const g=survivalDay();assert.equal(g.tutorialWaypoint,null);g.tutorial=TUTORIAL.shop;g.closedShops=[SHOPS[1].id];g.player.x=SHOPS[1].door;assert.equal(g.tutorialWaypoint.shopId,SHOPS.find(s=>s.kind===1&&s.id!==SHOPS[1].id).id);g.mode='night';assert.equal(g.tutorialWaypoint,null);
+});
+
+test('civilian, wealthy and police reward 1, 2 and 3 actual coins while respecting purse capacity',async()=>{
+ const {TYPES}=await import('../games/robberfather/engine.js');for(const [type,amount,level]of [['civilian',1,'easy'],['wealthy',2,'normal'],['police',3,'hard']]){assert.equal(TYPES[type].difficulty,level);const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.npcs[0].type=type;g.update(.02,{pick:true,trace:1});assert.equal(g.coins,amount);assert.equal(g.drainEvents().find(e=>e.type==='stolen').amount,amount);assert.equal(g.earned,amount);}
+ const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.add('coin',4);g.npcs[0].type='police';g.update(.02,{pick:true,trace:1});assert.equal(g.coins,5);
+});
+
+test('the pocket title shows the same nominal reward and difficulty as the street for every NPC type',async()=>{
+ const {TYPES}=await import('../games/robberfather/engine.js');for(const type of ['civilian','wealthy','police']){const title={},hint={},root={hidden:true,querySelector:s=>s==='[data-pick-title]'?title:hint},p=Object.create(Pickpocket.prototype);Object.assign(p,{root,t:(key,vars)=>key==='pickTitle'?JSON.stringify(vars):key,render(){}});p.open({type,id:0},72,{day:1});const vars=JSON.parse(title.textContent);assert.equal(vars.coins,TYPES[type].slots);assert.equal(vars.difficulty,'difficulty_'+TYPES[type].difficulty);}
+});
