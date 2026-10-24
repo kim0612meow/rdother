@@ -1,12 +1,12 @@
-import {MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=clarity-v12';
-import {ARCHITECTURE} from './themes/config.js?v=clarity-v12';
-import {Backgrounds} from './themes/backgrounds.js?v=clarity-v12';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=clarity-v12';
-import {drawCharacter,drawChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=clarity-v12';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=clarity-v12';
+import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=lessons-v13';
+import {ARCHITECTURE} from './themes/config.js?v=lessons-v13';
+import {Backgrounds} from './themes/backgrounds.js?v=lessons-v13';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=lessons-v13';
+import {drawCharacter,drawChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=lessons-v13';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,BINS,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=lessons-v13';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=clarity-v12';
-import {HD2D} from './hd2d.js?v=clarity-v12';
+import {t,getLocale} from './i18n.js?v=lessons-v13';
+import {HD2D} from './hd2d.js?v=lessons-v13';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
@@ -28,6 +28,7 @@ function building(c,x,w,kind){const colors=['#a3a484','#9a9a77','#87977c','#aea9
  for(let i=0;i<(w-40)/29;i++){poly(c,[[x+20+i*29,430],[x+49+i*29,430],[x+56+i*29,469],[x+13+i*29,469]],i%2?'#beb58d':'#6c7e59');rect(c,x+13+i*29,469,30,12,i%2?'#b4ad83':'#5d7350');}rect(c,x+22,GROUND-17,w-44,7,'#b3b391');
  if(kind%2===0)plant(c,x+w-72,616);
 }
+function shopSign(c,str,x,y,size){c.save();c.font='bold '+size+'px Georgia';c.textAlign='center';c.lineWidth=1.3;c.lineJoin='round';c.strokeStyle='#efd7a3';c.strokeText(str,x,y);c.fillStyle='#352719';c.fillText(str,x,y);c.restore();}
 function doorway(c,x){bricks(c,x-85,85,170,555,'#526b50','#294a363b');rect(c,x-53,395,106,248,'#2a4334');poly(c,[[x-53,415],[x-53,395],[x-36,374],[x+36,374],[x+53,395],[x+53,415]],'#294233');rect(c,x-44,410,88,233,'#172f29');rect(c,x-36,419,72,224,'#20392e');rect(c,x-43,640,86,7,'#74866a');rect(c,x-46,360,92,21,'#899375');label(c,t('alleyDoor'),x,375,10,'#344f39','sans-serif');}
 function dayBackground(){const el=canvas(WORLD,H),c=el.getContext('2d');seed=914;c.clearRect(0,0,WORLD,H);
  // The home alley opens into a long, continuous street.
@@ -109,12 +110,12 @@ export class Renderer{
  }
  homeBackground(c){if(!this.backgrounds.draw(c,'home'))c.drawImage(this.night,0,0,W,H);}
  roomBackground(c,shop,props=true){if(!this.backgrounds.draw(c,shop.kind===ALLEY?'alley':'shop')){c.drawImage(this.rooms[shop.id],0,0);return;}
- label(c,t(SHOP_NAMES[shop.kind]),W/2,140,29,'#e5d5b3','Georgia');label(c,t(shop.kind===ALLEY?'alleyExit':'exitSign'),INSIDE_DOOR,GROUND-205,20,'#e8d9b5','sans-serif');
+ shopSign(c,t(SHOP_NAMES[shop.kind]),W/2,140,29);label(c,t(shop.kind===ALLEY?'alleyExit':'exitSign'),INSIDE_DOOR,GROUND-205,20,'#e8d9b5','sans-serif');
  if(!props)return;if(shop.kind===ALLEY){const x=COUNTER;person(c,{type:'thug',id:1,x:x+10,y:GROUND-4,face:-1},false,ARCHITECTURE.actorScale);if(!this.backgrounds.prop(c,'table',x,GROUND,200,94)){rect(c,x-94,GROUND-60,188,60,'#503e2c');rect(c,x-100,GROUND-66,200,10,'#8b704e');for(let i=0;i<3;i++){const xx=x-44+i*44;poly(c,[[xx-13,GROUND-67],[xx+13,GROUND-67],[xx+9,GROUND-86],[xx-9,GROUND-86]],'#ab8053');}}label(c,t('shellSign'),x,GROUND-132,17,'#e5d5b3','sans-serif');}
- else if(SELLS[shop.kind])label(c,t(SIGNS[SELLS[shop.kind]]),COUNTER,GROUND-180,21,'#e5d5b3','sans-serif');
+ else if(SELLS[shop.kind])shopSign(c,t(SIGNS[SELLS[shop.kind]]),COUNTER,GROUND-180,21);
  }
  streetBase(c,cam){if(this.backgrounds.street(c,cam,SHOPS)){
- for(const shop of SHOPS){if(shop.kind===ALLEY)continue;const x=shop.door-cam;if(x<0||x>W)continue;label(c,t(SHOP_NAMES[shop.kind]),x,GROUND-210,19,'#f0dfb8','Georgia');poly(c,[[x-7,GROUND-14],[x+7,GROUND-14],[x,GROUND-7]],'#e5cb8a');}
+ for(const shop of SHOPS){if(shop.kind===ALLEY)continue;const x=shop.door-cam;if(x<0||x>W)continue;shopSign(c,t(SHOP_NAMES[shop.kind]),x,GROUND-210,19);poly(c,[[x-7,GROUND-14],[x+7,GROUND-14],[x,GROUND-7]],'#e5cb8a');}
  for(const x0 of ALLEY_DOORS){const x=x0-cam;if(x>-60&&x<W+60){label(c,t('alleyDoor'),x,GROUND-120,15,'#b8b5a0','sans-serif');poly(c,[[x-6,GROUND-14],[x+6,GROUND-14],[x,GROUND-7]],'#b8b5a0');}}return;}
 rect(c,0,0,W,H,'#7e947d');const sky=c.createLinearGradient(0,0,0,640);sky.addColorStop(0,'#8d9d86');sky.addColorStop(1,'#b1b397');c.fillStyle=sky;c.fillRect(0,0,W,650);for(let i=-1;i<12;i++){const x=i*175-(cam*.22)%175,y=80+(i*71%170);rect(c,x,y,130,520-y,'#5a78675c');poly(c,[[x-8,y],[x+65,y-42],[x+139,y]],'#536f624d');for(let yy=y+20;yy<490;yy+=51)for(let xx=x+15;xx<x+125;xx+=34)rect(c,xx,yy,10,22,'#aec2a427');}c.drawImage(this.day,-cam,0,WORLD,H);}
  worldPoint(px,py){return this.view?canvasToWorld(this.view,px,py):null;}
@@ -186,5 +187,5 @@ const x=b.x,y=GROUND;rect(c,x-40,y-61,80,61,'#887955');rect(c,x-35,y-56,70,49,'#
  if(p<ROBBERY.collapse)this.child(c,1060,626,2.1,0,false);else{c.save();c.translate(1054,624);c.rotate(Math.PI/2);this.child(c,0,0,2.1,0,false);c.restore();}
  poly(c,[[937,627],[1009,623],[997,652],[955,655]],'#a79d7e');rect(c,945,627,50,3,'#626755');
  }
- drawCollapse(c,g,time){this.homeBackground(c);rect(c,0,0,W,H,'#8da78c16');c.save();c.translate(1054,624);c.rotate(Math.PI/2);this.child(c,0,0,1.7,0,false);c.restore();newspaper(c,1023,605,65,26,.02);person(c,{x:967,y:635,walk:0,face:1,pose:'seated'},true,2.3);poly(c,[[934,641],[995,641],[987,659],[947,661]],'#b0a77c');rect(c,943,631,43,10,'#d4c18d');}
+ drawCollapse(c,g,time){this.homeBackground(c);rect(c,0,0,W,H,'#8da78c16');c.save();c.translate(COLLAPSE_LAYOUT.center,GROUND);c.scale(COLLAPSE_LAYOUT.scale,COLLAPSE_LAYOUT.scale);c.translate(-COLLAPSE_LAYOUT.sourceCenter,-GROUND);c.save();c.translate(1054,624);c.rotate(Math.PI/2);this.child(c,0,0,1.7,0,false);c.restore();newspaper(c,1023,605,65,26,.02);person(c,{x:967,y:635,walk:0,face:1,pose:'seated'},true,2.3);poly(c,[[934,641],[995,641],[987,659],[947,661]],'#b0a77c');rect(c,943,631,43,10,'#d4c18d');c.restore();}
 }

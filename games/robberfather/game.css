@@ -20,12 +20,13 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 .intro p{font-size:19px;margin:0 0 28px}
 .intro button{display:block;width:100%;margin-top:12px;font-size:19px}
 .intro button:last-child:not(:first-of-type){background:#253a30;color:#fff4dd;border:1px solid #8b9b83}
-.prologue{position:absolute;inset:0;z-index:8;pointer-events:none}
-.prologue>p{position:absolute;left:7%;top:24%;max-width:460px;margin:0;padding:26px;border-radius:16px;background:#14251cf2;color:#fff8e7;font-size:clamp(22px,2.3vw,30px);line-height:1.8;word-break:keep-all;white-space:pre-line;animation:prologue-in .8s ease-out}
+.prologue{position:absolute;inset:0;z-index:8;cursor:pointer;user-select:none}
+.prologue-copy{position:absolute;left:7%;top:24%;max-width:460px;margin:0;padding:26px;border-radius:16px;background:#14251cf2;color:#fff8e7;font-size:clamp(22px,2.3vw,30px);line-height:1.8;word-break:keep-all;white-space:pre-line;animation:prologue-in .8s ease-out;text-align:left}
+.prologue-copy small{display:block;font-size:16px;color:#efd099;margin-top:16px}
 .prologue-skip{position:absolute;right:24px;top:24px;pointer-events:auto;padding:13px 20px;border-radius:10px;background:#21382ff2;color:#fff0cc;border:1px solid #9ca890;font-size:18px}
 .is-prologue #hud,.is-prologue #resourceHud,.is-prologue #dayClock,.is-prologue #pauseBtn{display:none}
 @keyframes prologue-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){.prologue>p{animation:none}}
+@media(prefers-reduced-motion:reduce){.prologue-copy{animation:none}}
 .game-hud{position:absolute;left:20px;top:20px;z-index:3;display:flex;gap:12px;align-items:center;pointer-events:none}
 .game-hud>span{background:var(--panel);padding:8px 13px;border-radius:10px;font-size:20px;font-weight:700}
 #healthNote{font-size:16px;color:#f6ca92}
@@ -36,6 +37,11 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 .day-clock.urgent{color:#ffb497}
 .bottom-hud{position:absolute;bottom:18px;left:20px;z-index:4;display:flex;gap:28px;background:var(--panel);padding:13px 18px;border-radius:14px;pointer-events:none}
 .hud-group>span{display:block;font-size:16px;margin-bottom:7px;font-weight:700}
+.hud-highlight .food-slot{animation:hud-border 1s ease-in-out infinite}
+.hud-highlight .chance.used{opacity:1;animation:lost-chance 1s ease-in-out infinite}
+@keyframes hud-border{0%,100%{border-color:#bfa56d;box-shadow:0 0 0 1px #dcb57a44}50%{border-color:#fff6c0;box-shadow:0 0 0 3px #ffe29e,0 0 17px #ffe29e88}}
+@keyframes lost-chance{0%,100%{border-color:#c46243;box-shadow:0 0 0 1px #e8855b66}50%{border-color:#ffd0a1;box-shadow:0 0 0 3px #ffb273,0 0 18px #ef774aaa}}
+@media(prefers-reduced-motion:reduce){.hud-highlight .food-slot,.hud-highlight .chance.used{animation:none;border-color:#fff1b0;box-shadow:0 0 0 3px #efb86c}}
 .hud-slots{display:flex;gap:7px;align-items:center}
 .food-slot,.chance{display:grid;place-items:center;width:30px;height:32px;border:1px solid #b2b6a35c;border-radius:6px;color:#b0baaa;background:#17251f}
 .food-slot svg{width:25px;height:25px;opacity:.55}
@@ -70,6 +76,7 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 .suspicion-row i{display:block;height:100%;background:#ef6b55}
 .tutorial{position:absolute;left:50%;bottom:125px;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:14px;max-width:75%;padding:13px 20px;border-radius:12px;background:var(--panel)}
 .tutorial p{font-size:18px;line-height:1.5;margin:0}
+.tutorial.purchase,.hide-prompt.shop-prompt{background:linear-gradient(90deg,#695b34 var(--hold-progress,0%),var(--panel) var(--hold-progress,0%))}
 .tutorial kbd{font-size:23px;color:var(--gold);white-space:nowrap}
 .tutorial-shade{display:none}
 .stamina{position:absolute;top:79%;left:38%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;z-index:4;background:var(--panel);padding:7px 11px;border-radius:8px;font-size:14px}

@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=clarity-v12';
+import {controlText} from './settings.js?v=lessons-v13';
 // All visible text lives here. Add a matching dictionary to support a new language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -114,4 +114,29 @@ Object.assign(MESSAGES.en,{
  tutorialWait:'You are hidden. Wait a moment for your pursuer to give up.',
  tutorialMemory:'You escaped, but he remembers your face. Meet him again and a red gauge fills before he chases. E Use to finish!',
  finishPractice:'Finish the hiding practice first.'
+});
+
+Object.assign(MESSAGES.ko,{
+ prologueLine1:'당신은 한 가장의 아버지입니다.',prologueLine2:'아이를 먹여살리기 위해 더러운 일을 하고 있죠.',clickNext:'클릭하여 다음 →',
+ tutorialMemory:'그는 얼굴을 기억해요. 다시 만나면 빨간 게이지가 차고 쫓아와요. E 사용으로 밥 사는 법을 배워요.',
+ tutorialBuyIntro:'돈은 음식이 아니에요. 식료품점에서 돈 1칸으로 감자 1칸을 살 수 있어요. E 사용으로 가 보세요.',
+ tutorialShop:'왼쪽 식료품점 문으로 이동하고 W 출입으로 들어가세요.',tutorialCounter:'가게 오른쪽 카운터까지 이동하세요.',
+ tutorialPurchase:'돈 1칸을 음식으로 바꿔요. E 사용을 0.65초 꾹 눌러 감자를 사세요.',
+ tutorialMeal:'음식 1칸이 생겼어요! 저녁에는 3칸이 필요해요. 더 챙기러 가 봐요. E 사용으로 연습 완료.',
+ tutorialMarketOnly:'이번에는 식료품점에서 구매를 연습해요.',tutorialSteal:'뒤에 왔어요. E 사용을 짧게 눌렀다 떼서 주머니를 여세요.',tutorialAgain:'다시 E 사용을 짧게 눌렀다 떼세요.',
+ hold:'짧게 눌렀다 떼기 · 소매치기',holdToBuy:'구매는 E 사용을 0.65초 꾹 누르세요.',
+ buyBread:'E 사용 길게 · 빵 {price}원',buyPotato:'E 사용 길게 · 감자 {price}원',buyMedicine:'E 사용 길게 · 약 {price}원',bind_steal:'사용 · 짧게 / 길게',
+ binLeft:'음식을 그대로 뒀어요. 나중에 다시 챙길 수 있어요.',helpShort2:'E 사용: 짧게 눌렀다 떼면 소매치기, 0.65초 꾹 누르면 구매. 소매치기는 뒤에서만!'
+});
+Object.assign(MESSAGES.en,{
+ prologueLine1:'You are a father, the head of a family.',prologueLine2:'You do dirty work to keep your child fed.',clickNext:'Click to continue →',
+ tutorialMemory:'He remembers your face. Meet him again and a red gauge fills before he chases. E Use to learn how to buy food.',
+ tutorialBuyIntro:'Coins are not food. At the corner store, 1 coin buys 1 portion of potatoes. E Use to try it.',
+ tutorialShop:'Go left to the corner store door and press W Enter / exit.',tutorialCounter:'Move right to the shop counter.',
+ tutorialPurchase:'Turn 1 coin into food. Hold E Use for 0.65 seconds to buy potatoes.',
+ tutorialMeal:'You bought 1 portion! Dinner needs 3. Head out to get more. E Use to finish practice.',
+ tutorialMarketOnly:'Practise buying food at the corner store first.',tutorialSteal:'You are behind them. Tap and release E Use to open the pocket.',tutorialAgain:'Tap and release E Use to open it again.',
+ hold:'Tap and release · Pick a pocket',holdToBuy:'Hold E Use for 0.65 seconds to buy.',
+ buyBread:'Hold E Use · Bread: {price} coins',buyPotato:'Hold E Use · Potatoes: {price} coin',buyMedicine:'Hold E Use · Medicine: {price} coins',bind_steal:'Use · tap / hold',
+ binLeft:'You left the food here. You can take it later.',helpShort2:'E Use: tap and release to pick a pocket; hold 0.65 seconds to buy. Steal only from behind!'
 });

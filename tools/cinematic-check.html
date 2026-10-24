@@ -1,8 +1,8 @@
 <!doctype html><html><meta charset="utf-8"><title>Robbery scene review</title><style>body{background:#19211f;color:#e8d8b7;font:16px system-ui;margin:20px}button{padding:12px;margin:4px;background:#4e5d4c;color:#fff;border:1px solid #a09072}canvas{width:min(100%,1440px);display:block;margin-top:16px;image-rendering:pixelated}p{max-width:1000px}</style>
 <h1>Robbery · scene and contact review</h1><p>Fixed checkpoints use the game's actual renderer, assets and timeline. The father remains centred at x=720. Body strikes alternate sides and the camera stays long enough to read the action.</p><div id="controls"></div><p id="phase"></p><canvas id="view" width="1440" height="840"></canvas>
 <script type="module">
-import {Game,SHOPS,GROUND,BOXES} from '/games/robberfather/engine.js?v=clarity-v12';
-import {Renderer} from '/games/robberfather/scene.js?v=clarity-v12';
+import {Game,SHOPS,GROUND,BOXES} from '/games/robberfather/engine.js?v=lessons-v13';
+import {Renderer} from '/games/robberfather/scene.js?v=lessons-v13';
 const g=new Game(),r=new Renderer(document.getElementById('view'));g.mode='ending';g.ending='robbed';g.endingTime=0;
 for(const [name,time]of [['Approach at the cups',1.7],['Head strike',2.2],['Left contact',4.1],['Right contact',5.55],['Last contact',9.9],['Boy waiting',13.5],['Boy collapsed',17.5]]){const b=document.createElement('button');b.textContent=name;b.onclick=()=>{g.mode='ending';g.ending='robbed';g.endingTime=time;document.getElementById('phase').textContent=name+' · '+time+' seconds';};document.getElementById('controls').append(b);}
 for(const [name,mode,x,time]of [['Side alley','day',SHOPS.find(s=>s.kind===5).x0+650,0],['Shop entrance','day',SHOPS[1].door,0],['Shop interior','day',SHOPS[1].x0+600,0],['Child reaching','ending',330,4.25],['Child caught','ending',330,7],['Child escorted','ending',330,10.5],['Arrest final shot','ending',330,14]]){const b=document.createElement('button');b.textContent=name;b.onclick=()=>{g.mode=mode;g.player.x=x;g.player.y=GROUND;g.ending='arrest';g.endingTime=time;r.snap=true;};document.getElementById('controls').append(b);}

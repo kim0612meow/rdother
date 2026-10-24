@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#16201e"><meta name="description" content="A story of a pickpocket, a waiting son, and one more meal. A 2D survival game."><title>One More Meal</title>
  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2316201e'/%3E%3Cpath d='M12 32h40v8L42 50H22L12 40Z' fill='%23d6b77a'/%3E%3Cpath d='M22 25v-9m10 9V12m10 13v-9' stroke='%23d6b77a' stroke-width='4'/%3E%3C/svg%3E">
- <link rel="stylesheet" href="game.css?v=clarity-v12">
+ <link rel="stylesheet" href="game.css?v=lessons-v13">
 </head>
 <body>
   <section class="game-stage is-intro" id="stage" aria-label="One More Meal">
@@ -12,7 +12,7 @@
    <div id="hud" class="game-hud"><span id="dayNumber"></span><span id="healthNote" hidden></span></div>
    <div class="day-clock" id="dayClock"><span data-i18n="untilDusk"></span><strong id="timeLeft">02:30</strong><i><b id="timeBar"></b></i></div>
    <div id="intro" class="intro"><div class="intro-content"><h1 data-i18n="title"></h1><p data-i18n="introOneLine"></p><button id="continueBtn" class="primary-button" hidden></button><button id="startBtn" class="primary-button" data-i18n="start"></button></div></div>
-   <section id="prologue" class="prologue" aria-label="Opening scene" hidden><p data-i18n="prologueCopy"></p><button id="prologueSkip" class="prologue-skip" data-i18n="skipPrologue"></button></section>
+   <section id="prologue" class="prologue" aria-label="Opening scene" hidden><button id="prologueNext" class="prologue-copy"><span id="prologueText"></span><small data-i18n="clickNext"></small></button><button id="prologueSkip" class="prologue-skip" data-i18n="skipPrologue"></button></section>
    <button id="homePrompt" class="home-prompt" hidden><kbd data-control="home">M</kbd><div><strong id="homePromptTitle"></strong></div></button>
    <div id="chaseTag" class="chase-tag" hidden><strong data-i18n="chase"></strong></div>
    <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -35,12 +35,12 @@
    <section id="dialogue" class="dialogue" role="dialog" aria-labelledby="sonSpeaker" hidden><div class="dialogue-top"><span id="sonSpeaker" data-i18n="son"></span><small id="dialogueCount"></small></div><p id="sonLine"></p><div class="dialogue-bottom"><button id="dialogueNext" class="primary-button"><span></span><b>→</b></button></div></section>
    <div id="endingOverlay" class="ending-overlay" hidden><div class="cinema-top"><span data-i18n="endingLabel"></span></div><div class="ending-copy"><i></i><h2 id="endingTitle"></h2><p id="endingCaption"></p><button id="endingSkip" class="ending-skip" data-i18n="skipEnding"></button><button id="endingRestart" class="primary-button" disabled><span data-i18n="overAction"></span><b>→</b></button></div></div>
    <div id="fade" class="fade"></div>
-  </section>
 <div class="modal-backdrop" id="modal" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
 <button id="closeModal" class="modal-close" aria-label="Back">←</button><h2 id="modalTitle"></h2><div id="modalBody"></div>
 <div id="preferences" hidden><button id="soundBtn" data-i18n="toggleSound"></button></div>
 <button id="modalAction" class="primary-button"><span></span></button><div id="pauseChoices" hidden><button id="volumeTab" data-i18n="volume"></button><button id="controlsTab" data-i18n="controlsTitle"></button><button id="helpBtn" data-i18n="guide"></button></div>
 <aside id="pauseTools" class="pause-tools" hidden><button id="saveBtn" class="primary-button" data-i18n="save"></button><select id="localeSelect" aria-label="Language"><option value="en">EN</option><option value="ko">한국어</option></select><button id="fullscreenBtn" data-i18n="fullscreen"></button></aside>
 </section></div>
-<script type="module" src="app.js?v=clarity-v12"></script>
+</section>
+<script type="module" src="app.js?v=lessons-v13"></script>
 </body></html>
