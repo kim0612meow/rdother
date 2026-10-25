@@ -1,12 +1,12 @@
-import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=ui-text-v27';
-import {ARCHITECTURE} from './themes/config.js?v=ui-text-v27';
-import {Backgrounds} from './themes/backgrounds.js?v=ui-text-v27';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=ui-text-v27';
-import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=ui-text-v27';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=ui-text-v27';
+import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=ui-add-v28';
+import {ARCHITECTURE} from './themes/config.js?v=ui-add-v28';
+import {Backgrounds} from './themes/backgrounds.js?v=ui-add-v28';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=ui-add-v28';
+import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=ui-add-v28';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=ui-add-v28';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=ui-text-v27';
-import {HD2D} from './hd2d.js?v=ui-text-v27';
+import {t,getLocale} from './i18n.js?v=ui-add-v28';
+import {HD2D} from './hd2d.js?v=ui-add-v28';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
