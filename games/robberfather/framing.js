@@ -1,4 +1,4 @@
-import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=audio-bin-v20';
+import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=quiet-foley-v21';
 
 // Keep a narrow walkable foreground at every street/room camera scale.
 export const FOOT_LINE=.85;

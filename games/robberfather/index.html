@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#16201e"><meta name="description" content="A story of a pickpocket, a waiting son, and one more meal. A 2D survival game."><title>One More Meal</title>
  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2316201e'/%3E%3Cpath d='M12 32h40v8L42 50H22L12 40Z' fill='%23d6b77a'/%3E%3Cpath d='M22 25v-9m10 9V12m10 13v-9' stroke='%23d6b77a' stroke-width='4'/%3E%3C/svg%3E">
- <link rel="stylesheet" href="game.css?v=audio-bin-v20">
+ <link rel="stylesheet" href="game.css?v=quiet-foley-v21">
 </head>
 <body>
   <section class="game-stage is-intro" id="stage" aria-label="One More Meal">
@@ -30,6 +30,7 @@
    <div class="discard-note" id="discardNote" hidden><span data-i18n="holdDiscard"></span><div><i id="discardBar"></i></div></div>
    <div class="stamina" id="staminaWrap" hidden><span id="staminaLabel"></span><div><i id="staminaBar"></i></div></div>
    <div id="cinema" class="cinema" hidden><div class="cinema-top"><span id="cinemaDay"></span><small data-i18n="nightKicker"></small></div><div class="cinema-copy"><i></i><h2 id="nightTitle"></h2><p id="mealCopy"></p><button id="nextDayBtn" class="primary-button"><span id="nextDayText"></span><b>→</b></button></div><div class="night-summary"><span><span data-i18n="nightEarned"></span> <b id="nightEarned"></b></span><span><span data-i18n="nightSpent"></span> <b id="nightSpent"></b></span></div></div>
+   <button id="binGuide" class="cover-guide bin-guide" hidden><span><kbd data-control="hide">F</kbd> <span data-i18n="inspectBinAction"></span></span><b id="binGuideArrow" aria-hidden="true">↓</b></button>
    <div id="binCard" class="bin-card" hidden><span class="eyebrow" data-i18n="binTitle"></span><p id="binContents"></p><div><button id="binTake" data-i18n="takeFood"></button><button id="binLeave" data-i18n="leaveFood"></button></div></div>
    <div id="hidePrompt" class="hide-prompt" hidden></div>
    <div id="doorPrompt" class="hide-prompt door-prompt" hidden></div><div id="shopPrompt" class="hide-prompt door-prompt shop-prompt" hidden></div>
@@ -45,5 +46,5 @@
 <aside id="pauseTools" class="pause-tools" hidden><button id="saveBtn" class="primary-button" data-i18n="save"></button><select id="localeSelect" aria-label="Language"><option value="en">EN</option><option value="ko">한국어</option></select><button id="fullscreenBtn" data-i18n="fullscreen"></button></aside>
 </section></div>
 </section>
-<script type="module" src="app.js?v=audio-bin-v20"></script>
+<script type="module" src="app.js?v=quiet-foley-v21"></script>
 </body></html>

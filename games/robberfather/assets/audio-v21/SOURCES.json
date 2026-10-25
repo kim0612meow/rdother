@@ -1,0 +1,46 @@
+[
+  {
+    "file": "chase.mp3",
+    "title": "Chase Pulse Faster",
+    "author": "Kevin MacLeod",
+    "url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100384",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "download": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Chase%20Pulse%20Faster.mp3",
+    "checkedOn": "2026-10-25",
+    "sha256": "d99c253192ac62a580a8b0c2bd174e5a0c9cdd460eb395e30ca7e9dc0aae9bc8"
+  },
+  {
+    "file": "qte.mp3",
+    "title": "Wooden Click",
+    "author": "BenjaminNelan",
+    "url": "https://freesound.org/people/BenjaminNelan/sounds/321083/",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "download": "https://cdn.freesound.org/previews/321/321083_1196020-hq.mp3",
+    "checkedOn": "2026-10-25",
+    "sha256": "c7d729b995f891f342fdaf5dd4a81c2927cd89a0604565a2636ee3e16f67009e"
+  },
+  {
+    "file": "pocket.mp3",
+    "title": "Clothing: Rustling 2 (Phone out of Pocket)",
+    "author": "Sheyvan",
+    "url": "https://freesound.org/people/Sheyvan/sounds/476804/",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "download": "https://cdn.freesound.org/previews/476/476804_3248005-hq.mp3",
+    "checkedOn": "2026-10-25",
+    "sha256": "9b5f2cc5661361c76730e815758139cd6b2c63a9d1c34112b4e600d6a46694d0"
+  },
+  {
+    "file": "cutlery.mp3",
+    "title": "plate with cutlery.wav",
+    "author": "hinzebeat",
+    "url": "https://freesound.org/people/hinzebeat/sounds/275585/",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "download": "https://cdn.freesound.org/previews/275/275585_3191786-hq.mp3",
+    "checkedOn": "2026-10-25",
+    "sha256": "a7ea765dc429b54c2529de280185aa773c2c3eca118e3b40d3e72e1aa029cb51"
+  }
+]

@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=audio-bin-v20';
+import {controlText} from './settings.js?v=quiet-foley-v21';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -21,6 +21,8 @@ export const MESSAGES={
     "betWatched": "You won. The men in the alley are eyeing your pockets…",
     "betWon": "You won 2 coins at the shell game.",
     "inspectBin": "F Inspect bin",
+    "inspectBinAction": "Inspect bin",
+    "audioCredits": "Audio credits",
     "binEmpty": "The bin is empty.",
     "binCopy": "Rotten food. It fills a green portion, but it can make your son ill.",
     "bind_discard": "Discard rotten food",
@@ -140,7 +142,7 @@ export const MESSAGES={
     "helpShort3": "Pull with the mouse and Space to time it. ? means E Use to close.",
     "helpShort4": "Passerby: 1 coin, Easy. Wealthy: 2, Normal. Police: 1, Hard. Bystanders can spot you; gold icons show chances left.",
     "helpShort5": "Dinner needs 3 portions; after a hungry night it needs 5 and pickpocketing is 1.5× harder. F2 saves; Escape opens the menu.",
-    "helpShort6": "Rotten food causes lasting sickness. E Use takes it, Q Leave it, hold G Discard. Medicine helps.",
+    "helpShort6": "Rotten food causes lasting sickness. F opens bins, E Use takes food, Q leaves it. Hold G Discard. Medicine helps.",
     "helpSteal": "You can only steal from behind. Stop behind someone and press E or click their pocket. Draw the wallet out along a line with the mouse, and at the same time press Space whenever the white marker sits in the gold zone. Letting the marker pass the gold zone, pressing outside it, leaving the line or pulling too fast are mistakes. A mistake makes them start to turn: a ? appears over their head, and you must press E to leave the pocket before they finish turning or you are caught. They also turn now and then on their own. When they look away again, press E behind them to carry on. Passersby give 1 coin, wealthy people 2, police 1; police turn fastest. Spotted three times in one day and you cannot steal again until tomorrow. The first theft of the day is the easiest: every theft makes the street warier, so people turn sooner, grow suspicious faster and notice more. The rooms (inn) are full of wealthy guests.",
     "helpSurvive": "Fewer than 3 portions is a hungry night. Eating rotten food raises sickness, and it never goes down by itself, only with medicine. Two hungry nights in a row: the boy is taken away. Sickness 2: he collapses.",
     "helpTitle": "A small guide to staying.",
@@ -355,6 +357,8 @@ export const MESSAGES={
     "betWatched": "땄습니다. 골목 사람들이 당신 주머니를 힐끔거립니다…",
     "betWon": "야바위에서 돈 2칸을 받았습니다.",
     "inspectBin": "F 쓰레기통 확인",
+    "inspectBinAction": "쓰레기통 확인",
+    "audioCredits": "사운드 출처",
     "binEmpty": "쓰레기통이 비어 있어요.",
     "binCopy": "썩은 음식입니다. 초록색 한 칸을 채우지만 아들을 아프게 할 수 있습니다.",
     "bind_discard": "썩은 음식 버리기",

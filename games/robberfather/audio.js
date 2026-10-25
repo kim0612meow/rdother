@@ -1,7 +1,7 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=audio-bin-v20';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=quiet-foley-v21';
 // Sound timing is separate from synthesis so pauses and story states stay silent.
 export class SoundDirector {
- constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.bite=0;this.shout=0;}
+ constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.progress=0;this.bite=0;this.shout=0;}
  update(g,dt,active=true){
   if(!active){this.x=null;this.beat=0;this.rustle=0;return [];}
   const out=[],p=g.player,changed=this.mode!==g.mode;
@@ -18,7 +18,7 @@ export class SoundDirector {
    const tension=holding?Math.max(g.suspicion,Math.min(1,g.progress/3.3)):.65;
    this.beat-=dt;if(this.beat<=0){out.push({type:'heartbeat',tension});this.beat=.92-.43*tension;}
   }else this.beat=0;
-  if(holding){this.rustle-=dt;if(this.rustle<=0){out.push({type:'rustle'});this.rustle=.43;}}else this.rustle=0;
+  const moved=holding&&g.progress>this.progress+.001;this.progress=holding?g.progress:0;this.rustle=Math.max(0,this.rustle-dt);if(moved&&this.rustle===0){out.push({type:'rustle'});this.rustle=.4;}
   if(g.mode==='day'&&g.chasers.length&&this.shout===0){out.push({type:'shout'});this.shout=4.8;}
   if(g.mode==='night'&&(g.fed||g.ateRotten)){this.bite-=dt;if(this.bite<=0){out.push({type:'eat',spoiled:g.ateRotten});this.bite=2.35;}}
   return out;
@@ -97,11 +97,12 @@ export class Soundscape {
    case'turnWarn':this.noiseHit(.1,.055,700);this.noiseHit(.14,.04,950,.13);break; // A dry throat-clear, without an electronic warning tone.
    case'turnLook':this.noiseHit(.2,.10,1100);break;
    case'frontOnly':break;
-   case'rustle':this.noiseHit(.22,.07,1700);this.noiseHit(.13,.035,2400,.13);break;
+   case'qteSuccess':{const source=this.samples?.effect('qte');if(source)this.track(source);break;}
+   case'rustle':if(this.samples?.has('pocket')){this.track(this.samples.effect('pocket'));break;}this.noiseHit(.22,.07,1700);this.noiseHit(.13,.035,2400,.13);break;
    case'stolen':this.noiseHit(.34,.19,1350);this.noiseHit(.18,.1,2400,.18);break;
    case'detected':case'witnessed':case'recognized':this.director.alert();this.shout();this.noiseHit(.23,.16,900);break;
    case'shout':this.shout();break;
-   case'eat':this.noiseHit(.18,.07,700,.2);this.noiseHit(.16,.055,500,.48);this.noiseHit(.18,.04,650,.77);break;
+   case'eat':if(this.samples?.has('cutlery')){this.track(this.samples.effect('cutlery'));break;}this.noiseHit(.18,.07,700,.2);this.noiseHit(.16,.055,500,.48);this.noiseHit(.18,.04,650,.77);break;
    case'hidden':case'unhidden':case'enterShop':case'exitShop':this.noiseHit(.38,.2,530);this.tone(110,.16,.045,.03,50);break;
    case'bought':this.noiseHit(.12,.09,1900);this.noiseHit(.16,.065,1300,.13);break;case'medicine':this.noiseHit(.18,.08,1600);break;case'noMoney':case'notSick':break;case'scavenged':if(!this.samples?.has('bin'))this.noiseHit(.42,.18,1100);break;case'discarded':this.noiseHit(.42,.18,1100);break;
    case'caught':this.noiseHit(.3,.22,470);break;
