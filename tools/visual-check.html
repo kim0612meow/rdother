@@ -3,8 +3,8 @@
 <h1>One More Meal · Pixel sprite studio · revision 2</h1><p>Raster dot sprites, sampled to native pixels with a shared 24-colour palette per person. Full-body animation; no rectangle-built bodies. Local QA fixtures replace only this preview origin's save.</p>
 <canvas id="sheet" width="1200" height="940"></canvas><p id="result"></p><div id="fixtures"></div>
 <script type="module">
-import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=cleanup-v30';
-import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=cleanup-v30';
+import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=tutorial-meals-v31';
+import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=tutorial-meals-v31';
 await ready;
 const c=document.getElementById('sheet').getContext('2d');c.fillStyle='#d8d4c7';c.fillRect(0,0,1200,630);c.imageSmoothingEnabled=false;
 const people=[['FATHER','father'],['SON','child'],['PASSERBY','civilian'],['WEALTHY','wealthy'],['POLICE','police'],['ALLEY MAN','thug']];
@@ -20,6 +20,8 @@ const savedPractice=JSON.parse(localStorage.getItem('one-more-meal-v3')||'null')
 const fresh=()=>{const g=new Game();g.start();for(let i=0;i<3;i++)g.advanceMorning();g.tutorialDone=true;g.tutorial=TUTORIAL.done;return g;};
 const recovery=()=>{const g=fresh();g.goHome();g.beginNight();g.nextDay();for(let i=0;i<3;i++)g.advanceMorning();return g;};
 const scenarios={
+ 'V31 · four-portion recovery':()=>{const g=fresh();g.inventory=['fresh','fresh'];g.goHome();g.beginNight();g.nextDay();for(let i=0;i<3;i++)g.advanceMorning();g.player.x=850;return g;},
+ 'V31 · child waiting left':()=>{const g=fresh();g.player.x=400;return g;},
  'V29 · bulk food purchase':()=>{const g=fresh();g.player.x=SHOPS[1].x0+1110;g.inventory=Array(5).fill('coin');g.npcs.forEach(n=>n.pause=999);return g;},
  'V29 · known face red dot':()=>{const g=fresh();g.player.x=1150;g.npcs.forEach(n=>n.x=4200);Object.assign(g.npcs[0],{x:1250,face:1,pause:999,knows:true,calm:3});Object.assign(g.npcs[1],{x:1580,face:1,pause:999,knows:false});return g;},
  'V25 · finish tutorial near familiar face':()=>{const g=fresh();g.tutorialDone=false;g.tutorial=TUTORIAL.meal;g.tutorialVictim=0;g.player.x=SHOPS[1].x0+1110;g.npcs[0].x=SHOPS[1].door+20;g.npcs[0].knows=true;g.npcs[0].witness=.95;g.attempts=['success','caught'];g.inventory=['fresh'];return g;},

@@ -1,12 +1,12 @@
-import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=cleanup-v30';
-import {ARCHITECTURE} from './themes/config.js?v=cleanup-v30';
-import {Backgrounds} from './themes/backgrounds.js?v=cleanup-v30';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=cleanup-v30';
-import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=cleanup-v30';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=cleanup-v30';
+import {WAITING_CHILD,COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=tutorial-meals-v31';
+import {ARCHITECTURE} from './themes/config.js?v=tutorial-meals-v31';
+import {Backgrounds} from './themes/backgrounds.js?v=tutorial-meals-v31';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=tutorial-meals-v31';
+import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=tutorial-meals-v31';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=tutorial-meals-v31';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=cleanup-v30';
-import {HD2D} from './hd2d.js?v=cleanup-v30';
+import {t,getLocale} from './i18n.js?v=tutorial-meals-v31';
+import {HD2D} from './hd2d.js?v=tutorial-meals-v31';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
@@ -123,7 +123,7 @@ rect(c,0,0,W,H,'#7e947d');const sky=c.createLinearGradient(0,0,0,640);sky.addCol
  screenPoint(x,y){if(!this.view)return {x:.5,y:.5};const p=worldToCanvas(this.view,x,y);return {x:p.x/this.el.width,y:p.y/this.el.height};}
  drawStreet(c,g,time,dt){this.updateCover(g,dt);const shop=areaAt(g.player.x),desired=shop?shop.x0:Math.max(0,Math.min(WORLD-W,g.player.x-W*.38));this.camera+=(desired-this.camera)*Math.min(1,dt*5);if(g.player.x===330||this.snap)this.camera=desired;const cam=Math.round(this.camera);if(shop)this.roomBackground(c,shop);else this.streetBase(c,cam);c.save();c.translate(-cam,0);
  for(const b of g.bins)this.bin(c,b);const chars=[...g.npcs,...(!g.player.hidden&&!this.coverMotion?[{...g.player,id:-1}]:[])].sort((a,b)=>a.y-b.y);for(const n of chars){if(n.x<cam-60||n.x>cam+W+60)continue;const isPlayer=n.id===-1;person(c,n,isPlayer,ARCHITECTURE.actorScale);if(isPlayer)poly(c,[[n.x-5,n.y-164],[n.x+5,n.y-164],[n.x,n.y-158]],'#dfc184');else if(n.alert)label(c,'!',n.x,n.y-170,24,'#eca77f','sans-serif');else if(n.type==='wealthy')poly(c,[[n.x,n.y-172],[n.x+4,n.y-168],[n.x,n.y-164],[n.x-4,n.y-168]],'#d9bb77');else if(n.type==='police'){rect(c,n.x-4,n.y-168,8,7,'#b6c8b0');rect(c,n.x-2,n.y-166,4,5,'#5d7f73');}if(!isPlayer)drawRecognitionDot(c,n);if(n.witness>.04&&!n.alert){const hot=n.witness>.6&&Math.sin(time*18)>0;const ex=n.x,ey=n.y-196;poly(c,[[ex-12,ey],[ex,ey-7],[ex+12,ey],[ex,ey+7]],hot?'#ff6a55':'#e23b2e');rect(c,ex-6,ey-3,12,6,'#fbe9df');rect(c,ex-3,ey-3,6,6,'#2a1512');rect(c,n.x-23,n.y-183,46,7,'#2a1512');rect(c,n.x-22,n.y-182,44*n.witness,5,hot?'#ff6a55':'#e23b2e');}}
- this.child(c,259,647,1.7,time,false);for(const b of BOXES){if(b.x<cam-180||b.x>cam+W+180)continue;const motion=this.coverMotion?.id===b.id?this.coverMotion:null;this.box(c,b,!!motion,motion?.amount||0,g.player.face);if(g.tutorialCover?.id===b.id)this.coverHighlight(c,b,time);}
+ this.child(c,WAITING_CHILD.x,WAITING_CHILD.y,1.7,time,false);for(const b of BOXES){if(b.x<cam-180||b.x>cam+W+180)continue;const motion=this.coverMotion?.id===b.id?this.coverMotion:null;this.box(c,b,!!motion,motion?.amount||0,g.player.face);if(g.tutorialCover?.id===b.id)this.coverHighlight(c,b,time);}
  if(g.tutorialWaypoint)this.waypointHighlight(c,g.tutorialWaypoint,time);
  // Boarded doors of shops that caught you stealing.
  for(const id of g.closedShops){const x=SHOPS[id].door;line(c,x-44,470,x+44,620,'#6b4a2e',9);line(c,x+44,470,x-44,620,'#6b4a2e',9);rect(c,x-50,524,100,30,'#7a2219');label(c,t('barredSign'),x,545,15,'#f3d9c4','sans-serif');}

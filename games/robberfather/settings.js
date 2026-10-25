@@ -1,4 +1,4 @@
-export const DEFAULT_BINDINGS=Object.freeze({left:'KeyA',right:'KeyD',enter:'KeyW',run:'ShiftLeft',steal:'KeyE',gauge:'Space',leave:'KeyQ',hide:'KeyF',discard:'KeyG',home:'KeyM',buyMax:'KeyR'});
+export const DEFAULT_BINDINGS=Object.freeze({left:'KeyA',right:'KeyD',enter:'KeyW',run:'ShiftLeft',steal:'KeyE',gauge:'Space',leave:'KeyQ',hide:'KeyF',discard:'KeyG',home:'KeyM',buyMax:'KeyR',skipTutorial:'KeyT'});
 export const DEFAULT_VOLUMES=Object.freeze({background:1,effects:1,voice:1});
 const volumeValue=(value,fallback=1)=>Number.isFinite(value)?Math.max(0,Math.min(1,value)):fallback;
 export const SETTINGS_KEY='one-more-meal-settings-v1';
@@ -15,4 +15,4 @@ export class Settings{
 }
 let saved;try{saved=JSON.parse(globalThis.localStorage?.getItem(SETTINGS_KEY)||'{}');}catch{}
 export const settings=new Settings(saved);
-export function controlText(text){const labels={A:settings.label('left'),D:settings.label('right'),W:settings.label('enter'),E:settings.label('steal'),Q:settings.label('leave'),F:settings.label('hide'),G:settings.label('discard'),M:settings.label('home'),R:settings.label('buyMax'),Shift:settings.label('run'),SHIFT:settings.label('run'),Space:settings.label('gauge'),SPACE:settings.label('gauge')};return text.replace(/A( and | ?\/ ?|와 |, )D|\b(Shift|SHIFT|Space|SPACE|W|R|E|Q|F|G|M)\b/g,(_,join,key)=>join?labels.A+join+labels.D:labels[key]);}
+export function controlText(text){const labels={A:settings.label('left'),D:settings.label('right'),W:settings.label('enter'),E:settings.label('steal'),Q:settings.label('leave'),F:settings.label('hide'),G:settings.label('discard'),M:settings.label('home'),R:settings.label('buyMax'),T:settings.label('skipTutorial'),Shift:settings.label('run'),SHIFT:settings.label('run'),Space:settings.label('gauge'),SPACE:settings.label('gauge')};return text.replace(/A( and | ?\/ ?|와 |, )D|\b(Shift|SHIFT|Space|SPACE|W|R|T|E|Q|F|G|M)\b/g,(_,join,key)=>join?labels.A+join+labels.D:labels[key]);}

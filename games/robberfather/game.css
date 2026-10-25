@@ -207,3 +207,5 @@ select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius
 .bin-guide.learned{border:1px solid #82917c;box-shadow:none;background:#1c302be8;color:#e2e6d6}.bin-guide.learned kbd{background:transparent;color:#e2e6d6;animation:none}.bin-guide.learned>b{animation:none;color:#c5cbbb;text-shadow:none}
 
 .volume-setting+.volume-setting{margin-top:20px}.shell-exit{background:#2e4438;color:#f3dfad;border:1px solid #9ca584;border-radius:8px;padding:11px 15px;font:700 17px system-ui;white-space:nowrap}.shell-exit kbd{font:inherit}.shell [data-shell-exit-note]{flex-basis:100%;font-size:14px;color:#e6c7a1}
+
+.tutorial-skip{position:absolute;right:20px;top:80px;z-index:11;padding:10px 14px;background:var(--panel);border:1px solid #a39c76;border-radius:10px;font-size:15px;color:#ffe2a0;pointer-events:none}.tutorial-skip kbd{font:700 18px system-ui;margin-right:5px}.tutorial-skip>div{height:3px;background:#7e896055;margin-top:7px;border-radius:2px;overflow:hidden}.tutorial-skip i{display:block;height:100%;width:0;background:#f5d594}

@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#16201e"><meta name="description" content="A story of a pickpocket, a waiting son, and one more meal. A 2D survival game."><title>One More Meal</title>
  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2316201e'/%3E%3Cpath d='M12 32h40v8L42 50H22L12 40Z' fill='%23d6b77a'/%3E%3Cpath d='M22 25v-9m10 9V12m10 13v-9' stroke='%23d6b77a' stroke-width='4'/%3E%3C/svg%3E">
- <link rel="stylesheet" href="game.css?v=cleanup-v30">
+ <link rel="stylesheet" href="game.css?v=tutorial-meals-v31">
 </head>
 <body>
   <section class="game-stage is-intro" id="stage" aria-label="One More Meal">
@@ -22,6 +22,7 @@
    <div id="coverGuide" class="cover-guide" role="status" hidden><strong data-i18n="practiceCoverTitle"></strong><span><kbd id="coverGuideKey"></kbd><span id="coverGuideAction"></span></span><b id="coverGuideArrow" aria-hidden="true">↓</b></div>
    <div id="shopGuide" class="cover-guide shop-guide" role="status" hidden><span><kbd id="shopGuideKey"></kbd><span id="shopGuideText"></span></span><b id="shopGuideArrow" aria-hidden="true">↓</b></div>
    <div id="tutorial" class="tutorial" role="status"><kbd class="tutorial-arrow" id="tutorialKey">↔</kbd><p id="tutorialText"></p></div>
+   <div id="tutorialSkip" class="tutorial-skip" role="progressbar" aria-label="Hold to skip tutorial" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><span><kbd data-control="skipTutorial">T</kbd> <span data-i18n="tutorialSkipHint"></span></span><div><i id="tutorialSkipBar"></i></div></div>
    <div class="bottom-hud" id="resourceHud">
     <div class="hud-group"><span data-i18n="coinTitle"></span><div class="hud-slots" id="coinSlots" role="group"></div></div>
     <div class="hud-group"><span id="mealTarget"></span><div class="hud-slots" id="foodSlots" role="group"></div></div>
@@ -46,5 +47,5 @@
 <aside id="pauseTools" class="pause-tools" hidden><button id="saveBtn" class="primary-button" data-i18n="save"></button><select id="localeSelect" aria-label="Language"><option value="en">EN</option><option value="ko">한국어</option></select><button id="fullscreenBtn" data-i18n="fullscreen"></button></aside>
 </section></div>
 </section>
-<script type="module" src="app.js?v=cleanup-v30"></script>
+<script type="module" src="app.js?v=tutorial-meals-v31"></script>
 </body></html>

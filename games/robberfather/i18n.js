@@ -1,5 +1,5 @@
 import {UI_TEXT} from './ui-editor/text-overrides.js';
-import {controlText} from './settings.js?v=cleanup-v30';
+import {controlText} from './settings.js?v=tutorial-meals-v31';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -35,6 +35,9 @@ export const MESSAGES={
     "bind_run": "Run",
     "bind_steal": "Use · tap / hold",
     "bind_buyMax": "Buy maximum food",
+    "bind_skipTutorial": "Hold to skip tutorial",
+    "tutorialSkipHint": "Hold 1.5s · Skip tutorial",
+    "tutorialSkipped": "Tutorial skipped.",
     "boughtMax": "Bought {portions} food portions for {spent} coins.",
     "foodOnly": "R Buy max works at food counters.",
     "bindingHint": "Choose a key to change it. Escape opens the menu.",
@@ -125,7 +128,7 @@ export const MESSAGES={
     "helpShort2": "E Use: tap and release to pick a pocket; hold 0.65 seconds to buy, or R Buy max food. Steal only from behind!",
     "helpShort3": "Pull with the mouse and Space to time it. ? means E Use to close.",
     "helpShort4": "Passerby: 1 coin, Easy. Wealthy: 2, Normal. Police: 1, Hard. Bystanders can spot you; gold icons show chances left.",
-    "helpShort5": "Dinner needs 3 portions; after a hungry night it needs 5 and pickpocketing is 1.5× harder. F2 saves; Escape opens the menu.",
+    "helpShort5": "Dinner needs 3 portions. Eat only 2: tomorrow needs 4; eat 0–1: it needs 5. Hunger makes stealing 1.5× harder. F2 saves; Escape opens the menu.",
     "helpShort6": "Rotten food causes lasting sickness. F opens bins, E Use takes food, Q leaves it. Hold G Discard. Medicine helps.",
     "hidden": "You crouch behind cover.",
     "hiddenStatus": "HIDDEN",
@@ -335,6 +338,9 @@ export const MESSAGES={
     "bind_run": "달리기",
     "bind_steal": "사용 · 짧게 / 길게",
     "bind_buyMax": "음식 최대 구매",
+    "bind_skipTutorial": "길게 눌러 튜토리얼 스킵",
+    "tutorialSkipHint": "1.5초 꾹 · 튜토리얼 스킵",
+    "tutorialSkipped": "튜토리얼을 건너뛰었습니다.",
     "boughtMax": "{spent}원으로 음식 {portions}칸을 샀습니다.",
     "foodOnly": "R 최대 구매는 음식 상점에서 사용할 수 있습니다.",
     "bindingHint": "키를 눌러 변경하세요. Esc는 메뉴를 엽니다.",
@@ -425,7 +431,7 @@ export const MESSAGES={
     "helpShort2": "E 사용: 짧게 떼면 소매치기, 0.65초 꾹 누르면 구매. R 음식 최대 구매. 소매치기는 뒤에서만!",
     "helpShort3": "마우스로 지갑을 꺼내며 Space 맞추기. ?가 뜨면 E 사용으로 닫으세요.",
     "helpShort4": "행인 1칸·쉬움 / 부자 2칸·보통 / 경찰 1칸·어려움. 주변 사람도 훔치는 걸 볼 수 있어요. 금색 기회가 남은 횟수예요.",
-    "helpShort5": "보통은 음식 3칸. 굶은 다음 날은 5칸이 필요하고 소매치기가 1.5배 어려워요. F2 저장, Esc 메뉴.",
+    "helpShort5": "보통 3칸. 2칸만 먹으면 다음 날 4칸, 0~1칸 먹으면 5칸. 굶으면 소매치기 난이도 1.5배. F2 저장, Esc 메뉴.",
     "helpShort6": "썩은 음식은 병을 남겨요. E 사용으로 챙기기, Q 두고 가기, G 길게 버리기. 병에는 약이 필요해요.",
     "hidden": "몸을 낮춰 엄폐물 뒤에 숨었어요.",
     "hiddenStatus": "숨어 있는 중",
