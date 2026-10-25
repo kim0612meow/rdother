@@ -1,4 +1,4 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=quiet-foley-v21';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=interaction-sounds-v22';
 // Sound timing is separate from synthesis so pauses and story states stay silent.
 export class SoundDirector {
  constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.progress=0;this.bite=0;this.shout=0;}
@@ -11,7 +11,7 @@ export class SoundDirector {
   if(['day','return'].includes(g.mode)&&!p.hidden&&distance>0&&distance<40){
    this.steps+=distance;
    const running=distance/Math.max(dt,.001)>180;
-   if(this.steps>=(running?43:36)){this.steps=0;out.push({type:'step',running});}
+   const stride=running?52:44;if(this.steps>=stride){this.steps%=stride;out.push({type:'step',running,surface:g.shop&&g.shop.kind!==5?'wood':'concrete'});}
   }
   const holding=g.mode==='day'&&g.activeTarget!==null;
   if(holding||g.chasers.length&&g.mode==='day'){
@@ -92,19 +92,21 @@ export class Soundscape {
     const v=.13+e.tension*.06;this.tone(76,.115,v,0,39);this.noiseHit(.04,.025,180);
     this.tone(65,.14,v*.65,.16,34);break;
    }
-   case'step':this.foot++;this.noiseHit(e.running?.12:.16,e.running?.19:.115,650+(this.foot%2)*260);this.tone(100+(this.foot%2)*15,.075,e.running?.07:.04,0,45);break;
+   case'step':{const source=this.samples?.step(e.surface,e.running);if(source){this.track(source);break;}}this.foot++;this.noiseHit(e.running?.12:.16,e.running?.19:.115,650+(this.foot%2)*260);this.tone(100+(this.foot%2)*15,.075,e.running?.07:.04,0,45);break;
    case'slip':this.noiseHit(.34,.14,620);this.tone(150,.14,.06,0,80);break;
    case'turnWarn':this.noiseHit(.1,.055,700);this.noiseHit(.14,.04,950,.13);break; // A dry throat-clear, without an electronic warning tone.
    case'turnLook':this.noiseHit(.2,.10,1100);break;
-   case'frontOnly':break;
+   case'frontOnly':case'noMoney':case'notSick':case'foodFull':case'shopBarred':case'doorBlocked':case'blocked':case'coinFullBet':{const now=this.context.currentTime||0;if(now<(this.blockedUntil||0))break;this.blockedUntil=now+.22;this.tone(260,.11,.07,0,210,'sine');break;}
    case'qteSuccess':{const source=this.samples?.effect('qte');if(source)this.track(source);break;}
    case'rustle':if(this.samples?.has('pocket')){this.track(this.samples.effect('pocket'));break;}this.noiseHit(.22,.07,1700);this.noiseHit(.13,.035,2400,.13);break;
    case'stolen':this.noiseHit(.34,.19,1350);this.noiseHit(.18,.1,2400,.18);break;
    case'detected':case'witnessed':case'recognized':this.director.alert();this.shout();this.noiseHit(.23,.16,900);break;
    case'shout':this.shout();break;
    case'eat':if(this.samples?.has('cutlery')){this.track(this.samples.effect('cutlery'));break;}this.noiseHit(.18,.07,700,.2);this.noiseHit(.16,.055,500,.48);this.noiseHit(.18,.04,650,.77);break;
-   case'hidden':case'unhidden':case'enterShop':case'exitShop':this.noiseHit(.38,.2,530);this.tone(110,.16,.045,.03,50);break;
-   case'bought':this.noiseHit(.12,.09,1900);this.noiseHit(.16,.065,1300,.13);break;case'medicine':this.noiseHit(.18,.08,1600);break;case'noMoney':case'notSick':break;case'scavenged':if(!this.samples?.has('bin'))this.noiseHit(.42,.18,1100);break;case'discarded':this.noiseHit(.42,.18,1100);break;
+   case'enterShop':case'exitShop':{const source=this.samples?.effect('door');if(source)this.track(source);break;}
+   case'pocketOpened':{const source=this.samples?.effect('pocketOpen');if(source)this.track(source);break;}
+   case'hidden':case'unhidden':this.noiseHit(.38,.2,530);this.tone(110,.16,.045,.03,50);break;
+   case'bought':case'medicine':{const source=this.samples?.effect('buy');if(source)this.track(source);break;}case'scavenged':if(!this.samples?.has('bin'))this.noiseHit(.42,.18,1100);break;case'discarded':this.noiseHit(.42,.18,1100);break;
    case'caught':this.noiseHit(.3,.22,470);break;
    case'betPlaced':this.noiseHit(.09,.07,1800);break;
    case'cupMove':this.noiseHit(.09,.07,900);break;

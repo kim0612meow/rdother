@@ -203,3 +203,5 @@ select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius
 #targetReward{font-size:20px;white-space:nowrap}
 
 .bin-guide{pointer-events:auto;font:700 19px system-ui;cursor:pointer;max-width:300px}.bin-guide kbd{font:700 22px system-ui;color:#ffe4a1}.bin-guide b{display:block;font-size:28px;line-height:1.1}
+
+.bin-guide.learned{border:1px solid #82917c;box-shadow:none;background:#1c302be8;color:#e2e6d6}.bin-guide.learned kbd{background:transparent;color:#e2e6d6;animation:none}.bin-guide.learned>b{animation:none;color:#c5cbbb;text-shadow:none}

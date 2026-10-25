@@ -1,12 +1,12 @@
-import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=quiet-foley-v21';
-import {ARCHITECTURE} from './themes/config.js?v=quiet-foley-v21';
-import {Backgrounds} from './themes/backgrounds.js?v=quiet-foley-v21';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=quiet-foley-v21';
-import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=quiet-foley-v21';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=quiet-foley-v21';
+import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=interaction-sounds-v22';
+import {ARCHITECTURE} from './themes/config.js?v=interaction-sounds-v22';
+import {Backgrounds} from './themes/backgrounds.js?v=interaction-sounds-v22';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=interaction-sounds-v22';
+import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=interaction-sounds-v22';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=interaction-sounds-v22';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=quiet-foley-v21';
-import {HD2D} from './hd2d.js?v=quiet-foley-v21';
+import {t,getLocale} from './i18n.js?v=interaction-sounds-v22';
+import {HD2D} from './hd2d.js?v=interaction-sounds-v22';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};

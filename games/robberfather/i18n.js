@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=quiet-foley-v21';
+import {controlText} from './settings.js?v=interaction-sounds-v22';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
