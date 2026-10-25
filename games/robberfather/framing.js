@@ -1,4 +1,4 @@
-import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=qte-recovery-v25';
+import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=ui-editor-v26';
 
 // Keep a narrow walkable foreground at every street/room camera scale.
 export const FOOT_LINE=.85;
