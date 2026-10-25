@@ -1,6 +1,6 @@
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=ui-add-v28';
-import {createLayoutRuntime} from './runtime.js?v=ui-add-v28';
-import {EDITOR_CSS} from './styles.js?v=ui-add-v28';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=bulk-memory-v29';
+import {createLayoutRuntime} from './runtime.js?v=bulk-memory-v29';
+import {EDITOR_CSS} from './styles.js?v=bulk-memory-v29';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=true;
 const copy=value=>JSON.parse(JSON.stringify(value));

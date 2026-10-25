@@ -1,4 +1,4 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=ui-add-v28';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=bulk-memory-v29';
 // Sound timing is separate from synthesis so pauses and story states stay silent.
 export class SoundDirector {
  constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.progress=0;this.bite=0;this.shout=0;}
@@ -99,7 +99,7 @@ export class Soundscape {
    case'slip':this.noiseHit(.34,.14,620);this.tone(150,.14,.06,0,80);break;
    case'turnWarn':this.noiseHit(.1,.055,700);this.noiseHit(.14,.04,950,.13);break; // A dry throat-clear, without an electronic warning tone.
    case'turnLook':this.noiseHit(.2,.10,1100);break;
-   case'frontOnly':case'noMoney':case'notSick':case'foodFull':case'shopBarred':case'doorBlocked':case'blocked':case'coinFullBet':{const now=this.context.currentTime||0;if(now<(this.blockedUntil||0))break;this.blockedUntil=now+.22;this.tone(260,.11,.07,0,210,'sine');break;}
+   case'frontOnly':case'noMoney':case'notSick':case'foodFull':case'shopBarred':case'doorBlocked':case'blocked':case'coinFullBet':case'foodOnly':{const now=this.context.currentTime||0;if(now<(this.blockedUntil||0))break;this.blockedUntil=now+.22;this.tone(260,.11,.07,0,210,'sine');break;}
    case'dialogueTick':if(this.volumes.voice>0){const now=this.context.currentTime;if(now>=(this.dialogueTickAt||0)){this.dialogueTickAt=now+.065;this.noiseHit(.025,.018,650,0,'voice');this.tone(210+((this.dialogueTickIndex=(this.dialogueTickIndex||0)+1)%3)*28,.032,.019,0,170,'triangle',650,'voice');}}break;
    case'qteSuccess':{const source=this.samples?.effect('qte');if(source)this.track(source);break;}
    case'rustle':if(this.samples?.has('pocket')){this.track(this.samples.effect('pocket'));break;}this.noiseHit(.22,.07,1700);this.noiseHit(.13,.035,2400,.13);break;

@@ -1,5 +1,5 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=ui-add-v28';
-import {dayDifficulty} from './difficulty.js?v=ui-add-v28';
+import {ROBBERY,endingDuration} from './cinematics.js?v=bulk-memory-v29';
+import {dayDifficulty} from './difficulty.js?v=bulk-memory-v29';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,hideLock:.55,meal:3,recoveryMeal:5,hungerDifficulty:1.5,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
@@ -63,7 +63,8 @@ export class Game{
  // The shop counter the player is standing at, and what it sells.
  nearbyCounter(){const s=this.shop;if(!s||!SELLS[s.kind]||this.player.hidden||this.chasers.length||Math.abs(this.player.x-(s.x0+COUNTER))>60)return null;const item=SELLS[s.kind];return{shop:s,item,...PRICES[item]};}
  // Coins become fresh food portions. Medicine takes one point off the rotten-food sickness, which never wears off by itself.
- buy(){const c=this.nearbyCounter();if(!c||this.tutorial<TUTORIAL.done&&this.tutorial!==TUTORIAL.purchase)return false;if(c.item==='medicine'&&!this.rottenStreak){this.emit('notSick');return false;}if(this.coins<c.price){this.emit('noMoney',{price:c.price});return false;}if(this.food+c.food>RULES.foodCap){this.emit('foodFull');return false;}const before=this.food;for(let i=0;i<c.price;i++)this.inventory.splice(this.inventory.indexOf('coin'),1);if(c.food){for(let i=0;i<c.food;i++)this.inventory.push('fresh');this.emit('bought',{item:c.item});if(this.tutorial===TUTORIAL.purchase)this.tutorial=TUTORIAL.meal;if(before<this.mealRequired&&this.food>=this.mealRequired)this.emit('goal');}else{this.rottenStreak--;this.emit('medicine');}return true;}
+ buy(maximum=false){if(this.mode!=='day')return false;const c=this.nearbyCounter();if(!c||this.tutorial<TUTORIAL.done&&this.tutorial!==TUTORIAL.purchase)return false;if(maximum&&!c.food){this.emit('foodOnly');return false;}if(c.item==='medicine'&&!this.rottenStreak){this.emit('notSick');return false;}if(this.coins<c.price){this.emit('noMoney',{price:c.price});return false;}if(this.food+c.food>RULES.foodCap){this.emit('foodFull');return false;}const quantity=maximum?Math.min(Math.floor(this.coins/c.price),Math.floor((RULES.foodCap-this.food)/c.food)):1,before=this.food;for(let i=0;i<c.price*quantity;i++)this.inventory.splice(this.inventory.indexOf('coin'),1);if(c.food){for(let i=0;i<c.food*quantity;i++)this.inventory.push('fresh');this.emit('bought',{item:c.item,quantity,portions:c.food*quantity,spent:c.price*quantity});if(this.tutorial===TUTORIAL.purchase)this.tutorial=TUTORIAL.meal;if(before<this.mealRequired&&this.food>=this.mealRequired)this.emit('goal');}else{this.rottenStreak--;this.emit('medicine');}return true;}
+ buyMax(){return this.buy(true);}
  // The shell-game table in a dark alley.
  nearbyDealer(){const s=this.shop;if(!s||s.kind!==ALLEY||this.player.hidden||this.chasers.length||Math.abs(this.player.x-(s.x0+COUNTER))>80)return null;return s;}
  placeBet(){if(!this.nearbyDealer())return false;if(this.coins<GAMBLE.stake){this.emit('noMoney',{price:GAMBLE.stake});return false;}if(this.coins-GAMBLE.stake+GAMBLE.pay>RULES.coinCap){this.emit('coinFullBet');return false;}this.inventory.splice(this.inventory.indexOf('coin'),1);this.emit('betPlaced');return true;}
