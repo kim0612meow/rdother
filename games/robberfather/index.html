@@ -3,25 +3,25 @@
 <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#16201e"><meta name="description" content="A story of a pickpocket, a waiting son, and one more meal. A 2D survival game."><title>One More Meal</title>
  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2316201e'/%3E%3Cpath d='M12 32h40v8L42 50H22L12 40Z' fill='%23d6b77a'/%3E%3Cpath d='M22 25v-9m10 9V12m10 13v-9' stroke='%23d6b77a' stroke-width='4'/%3E%3C/svg%3E">
- <link rel="stylesheet" href="game.css?v=shops-v16">
+ <link rel="stylesheet" href="game.css?v=cleanup-v17">
 </head>
 <body>
   <section class="game-stage is-intro" id="stage" aria-label="One More Meal">
    <canvas id="game" width="1440" height="840" tabindex="0" aria-label="2D survival game"></canvas>
    <button id="pauseBtn" class="pause-button" aria-label="Pause">Ⅱ</button>
    <div id="hud" class="game-hud"><span id="dayNumber"></span><span id="healthNote" hidden></span></div>
-   <div class="day-clock" id="dayClock"><span data-i18n="untilDusk"></span><strong id="timeLeft">02:30</strong><i><b id="timeBar"></b></i></div>
+   <div class="day-clock" id="dayClock"><span data-i18n="untilDusk"></span><strong id="timeLeft">02:30</strong></div>
    <div id="intro" class="intro"><div class="intro-content"><h1 data-i18n="title"></h1><p data-i18n="introOneLine"></p><button id="continueBtn" class="primary-button" hidden></button><button id="startBtn" class="primary-button" data-i18n="start"></button></div></div>
    <section id="prologue" class="prologue" aria-label="Opening scene" hidden><button id="prologueNext" class="prologue-copy"><span id="prologueText"></span><small data-i18n="clickNext"></small></button><button id="prologueSkip" class="prologue-skip" data-i18n="skipPrologue"></button></section>
    <button id="homePrompt" class="home-prompt" hidden><kbd data-control="home">M</kbd><div><strong id="homePromptTitle"></strong></div></button>
    <div id="chaseTag" class="chase-tag" hidden><strong data-i18n="chase"></strong></div>
    <section id="dayNotice" class="day-notice" role="status" aria-live="polite" hidden><strong id="dayNoticeTitle"></strong><p id="dayNoticeCopy"></p></section>
    <div id="toast" class="toast" role="status" aria-live="polite"></div>
-   <div id="targetCard" class="target-card" hidden><div class="target-card-top"><kbd data-control="steal">E</kbd><div><div class="target-heading"><strong id="targetName"></strong><span id="targetLevel" class="difficulty-label"></span></div><small id="targetDetail"></small></div><b id="targetReward"></b></div><div class="steal-track"><i id="stealBar"></i></div><div class="suspicion-row"><span data-i18n="suspicion"></span><div><i id="suspicionBar"></i></div><span id="riskLabel"></span></div></div>
+   <div id="targetCard" class="target-card" hidden><div class="target-card-top"><kbd data-control="steal">E</kbd><div><div class="target-heading"><strong id="targetName"></strong><span id="targetLevel" class="difficulty-label"></span></div><small id="targetDetail"></small></div><b id="targetReward"></b></div><div class="suspicion-row"><span data-i18n="suspicion"></span><div><i id="suspicionBar"></i></div><span id="riskLabel"></span></div></div>
    <div id="fullPocketsNotice" class="full-pockets-notice" role="status" data-i18n="coinsFullNotice" hidden></div>
    <div id="coverGuide" class="cover-guide" role="status" hidden><strong data-i18n="practiceCoverTitle"></strong><span><kbd id="coverGuideKey"></kbd><span id="coverGuideAction"></span></span><b id="coverGuideArrow" aria-hidden="true">↓</b></div>
    <div id="shopGuide" class="cover-guide shop-guide" role="status" hidden><span><kbd id="shopGuideKey"></kbd><span id="shopGuideText"></span></span><b id="shopGuideArrow" aria-hidden="true">↓</b></div>
-   <div id="tutorialShade" class="tutorial-shade" hidden></div><div id="tutorial" class="tutorial" role="status"><kbd class="tutorial-arrow" id="tutorialKey">↔</kbd><p id="tutorialText"></p></div>
+   <div id="tutorial" class="tutorial" role="status"><kbd class="tutorial-arrow" id="tutorialKey">↔</kbd><p id="tutorialText"></p></div>
    <div class="bottom-hud" id="resourceHud">
     <div class="hud-group"><span data-i18n="coinTitle"></span><div class="hud-slots" id="coinSlots" role="group"></div></div>
     <div class="hud-group"><span id="mealTarget"></span><div class="hud-slots" id="foodSlots" role="group"></div></div>
@@ -45,5 +45,5 @@
 <aside id="pauseTools" class="pause-tools" hidden><button id="saveBtn" class="primary-button" data-i18n="save"></button><select id="localeSelect" aria-label="Language"><option value="en">EN</option><option value="ko">한국어</option></select><button id="fullscreenBtn" data-i18n="fullscreen"></button></aside>
 </section></div>
 </section>
-<script type="module" src="app.js?v=shops-v16"></script>
+<script type="module" src="app.js?v=cleanup-v17"></script>
 </body></html>

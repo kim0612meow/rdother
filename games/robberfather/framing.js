@@ -1,4 +1,4 @@
-import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=shops-v16';
+import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=cleanup-v17';
 
 // Keep a narrow walkable foreground at every street/room camera scale.
 export const FOOT_LINE=.85;
