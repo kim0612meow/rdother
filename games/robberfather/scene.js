@@ -1,12 +1,12 @@
-import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=cleanup-v17';
-import {ARCHITECTURE} from './themes/config.js?v=cleanup-v17';
-import {Backgrounds} from './themes/backgrounds.js?v=cleanup-v17';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=cleanup-v17';
-import {drawCharacter,drawChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=cleanup-v17';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=cleanup-v17';
+import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=home-police-v18';
+import {ARCHITECTURE} from './themes/config.js?v=home-police-v18';
+import {Backgrounds} from './themes/backgrounds.js?v=home-police-v18';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=home-police-v18';
+import {drawCharacter,drawChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=home-police-v18';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=home-police-v18';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=cleanup-v17';
-import {HD2D} from './hd2d.js?v=cleanup-v17';
+import {t,getLocale} from './i18n.js?v=home-police-v18';
+import {HD2D} from './hd2d.js?v=home-police-v18';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};

@@ -91,7 +91,7 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 .bin-card{bottom:auto;top:30%;max-width:360px}
 .bin-card p{line-height:1.6}
 .bin-card>div{display:flex;gap:24px;color:#e3c989}
-.discard-note{position:absolute;right:20px;bottom:90px;background:var(--panel);padding:8px 12px;border-radius:10px;font-size:14px;z-index:4}
+.discard-note{position:absolute;right:20px;bottom:158px;background:var(--panel);padding:8px 12px;border-radius:10px;font-size:14px;z-index:4}
 .discard-note>div{height:3px;background:#718d6044}
 .discard-note i{display:block;height:100%;background:#b5d78f}
 .pickpocket{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(640px,calc(100vw - 40px));z-index:7;border-radius:14px;padding:12px;background:#192b25;border:1px solid #dac796;box-shadow:0 12px 40px #0006}
@@ -175,6 +175,8 @@ select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius
 .day-clock{left:auto;right:70px;transform:none}
 .binding-grid{grid-template-columns:1fr}
 .home-prompt{right:10px;bottom:105px}
+.game-stage:has(#homePrompt:not([hidden])) :is(#hidePrompt,#doorPrompt,#shopPrompt){bottom:173px}
+.discard-note{bottom:231px}
 .dialogue{width:65vw}
 .cinema-copy,.ending-copy{max-width:80%;top:20%}
 }

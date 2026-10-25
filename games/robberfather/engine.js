@@ -1,12 +1,12 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=cleanup-v17';
-import {dayDifficulty} from './difficulty.js?v=cleanup-v17';
+import {ROBBERY,endingDuration} from './cinematics.js?v=home-police-v18';
+import {dayDifficulty} from './difficulty.js?v=home-police-v18';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,hideLock:.55,meal:3,recoveryMeal:5,hungerDifficulty:1.5,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
 // The street grows warier with every theft today: suspicion, turning around and witnesses all scale by this. Starts easy, caps out hard.
 export const WARY={start:.7,step:.13,max:1.6};
-// behind: fixed suspicion per second while your hand is in the pocket (police fill it fast and pay three coins). wait: seconds between the victim turning around. warn: seconds you get to press E.
-export const TYPES={civilian:{slots:1,difficulty:'easy',hold:3.0,risk:.36,speed:40,wait:[2.4,4.6],warn:.75},wealthy:{slots:2,difficulty:'normal',hold:3.9,risk:.48,speed:33,wait:[1.9,3.9],warn:.6},police:{slots:3,difficulty:'hard',hold:4.0,risk:.62,speed:48,behind:.22,wait:[1.3,2.6],warn:.42}};
+// behind: fixed suspicion per second while your hand is in the pocket (police fill it fast and pay one coin). wait: seconds between the victim turning around. warn: seconds you get to press E.
+export const TYPES={civilian:{slots:1,difficulty:'easy',hold:3.0,risk:.36,speed:40,wait:[2.4,4.6],warn:.75},wealthy:{slots:2,difficulty:'normal',hold:3.9,risk:.48,speed:33,wait:[1.9,3.9],warn:.6},police:{slots:1,difficulty:'hard',hold:4.0,risk:.62,speed:48,behind:.22,wait:[1.3,2.6],warn:.42}};
 // First-day practice: mouse, Space, E withdrawal, one real detection, F cover and face memory. The clock/crowd wait; the practice pursuit is slow.
 export const TUTORIAL={move:0,find:1,approach:2,pull:3,qte:4,dodge:5,resume:6,caught:7,escape:8,memory:9,buyIntro:10,shop:11,counter:12,purchase:13,meal:14,done:15};
 export const PROLOGUE_SECONDS=10;

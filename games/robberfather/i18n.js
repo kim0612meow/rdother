@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=cleanup-v17';
+import {controlText} from './settings.js?v=home-police-v18';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -129,14 +129,14 @@ export const MESSAGES={
     "helpHome": "M returns home at any time outside a chase. Have 3 food portions before the 2:30 clock runs out. Coins are not food: buy potatoes first.",
     "helpKicker": "HOW TO PLAY",
     "helpMove": "A / D · Walk left and right. Reassign keys in the Escape menu.",
-    "helpRisk": "Stealing face to face is noticed. Police take 4 seconds, pay only 1 portion and grow suspicious very fast; if a police officer sees you steal from anyone, they chase you almost at once. A slip or a too-fast pull raises suspicion sharply. Anyone who saw you will remember: if they see you again, a red gauge fills and they give chase.",
+    "helpRisk": "Stealing face to face is noticed. Police take 4 seconds, pay only 1 coin and grow suspicious very fast; if a police officer sees you steal from anyone, they chase you almost at once. A slip or a too-fast pull raises suspicion sharply. Anyone who saw you will remember: if they see you again, a red gauge fills and they give chase.",
     "helpRun": "Shift runs for about 1.6 seconds. F crouches behind a loaded delivery cart or leaves cover. The sacks and cart screen you from pursuit; after a moment, they lose you.",
     "helpSave": "At bins, E takes a green rotten portion and Q leaves it. Hold G to discard one carried green portion. Save preserves your bag, timer and story state; mornings also auto-save.",
     "helpShop": "W enters a shop at its door. Walk to the left edge inside to leave automatically, or press W near the exit. Doors are blocked during pursuit. Being caught stealing inside permanently boards up that shop.",
     "helpShort1": "A / D Move · Shift Run · W Enter / exit · F Hide · M Go home.",
     "helpShort2": "E Use: tap and release to pick a pocket; hold 0.65 seconds to buy. Steal only from behind!",
     "helpShort3": "Pull with the mouse and Space to time it. ? means E Use to close.",
-    "helpShort4": "Passerby: 1 coin, Easy. Wealthy: 2, Normal. Police: 3, Hard. Bystanders can spot you; gold icons show chances left.",
+    "helpShort4": "Passerby: 1 coin, Easy. Wealthy: 2, Normal. Police: 1, Hard. Bystanders can spot you; gold icons show chances left.",
     "helpShort5": "Dinner needs 3 portions; after a hungry night it needs 5 and pickpocketing is 1.5× harder. F2 saves; Escape opens the menu.",
     "helpShort6": "Rotten food causes lasting sickness. E Use takes it, Q Leave it, hold G Discard. Medicine helps.",
     "helpSteal": "You can only steal from behind. Stop behind someone and press E or click their pocket. Draw the wallet out along a line with the mouse, and at the same time press Space whenever the white marker sits in the gold zone. Letting the marker pass the gold zone, pressing outside it, leaving the line or pulling too fast are mistakes. A mistake makes them start to turn: a ? appears over their head, and you must press E to leave the pocket before they finish turning or you are caught. They also turn now and then on their own. When they look away again, press E behind them to carry on. Passersby give 1 coin, wealthy people 2, police 1; police turn fastest. Spotted three times in one day and you cannot steal again until tomorrow. The first theft of the day is the easiest: every theft makes the street warier, so people turn sooner, grow suspicious faster and notice more. The rooms (inn) are full of wealthy guests.",
@@ -468,7 +468,7 @@ export const MESSAGES={
     "helpShort1": "A / D 이동 · Shift 달리기 · W 출입 · F 숨기 · M 귀가.",
     "helpShort2": "E 사용: 짧게 눌렀다 떼면 소매치기, 0.65초 꾹 누르면 구매. 소매치기는 뒤에서만!",
     "helpShort3": "마우스로 지갑을 꺼내며 Space 맞추기. ?가 뜨면 E 사용으로 닫으세요.",
-    "helpShort4": "행인 1칸·쉬움 / 부자 2칸·보통 / 경찰 3칸·어려움. 주변 사람도 훔치는 걸 볼 수 있어요. 금색 기회가 남은 횟수예요.",
+    "helpShort4": "행인 1칸·쉬움 / 부자 2칸·보통 / 경찰 1칸·어려움. 주변 사람도 훔치는 걸 볼 수 있어요. 금색 기회가 남은 횟수예요.",
     "helpShort5": "보통은 음식 3칸. 굶은 다음 날은 5칸이 필요하고 소매치기가 1.5배 어려워요. F2 저장, Esc 메뉴.",
     "helpShort6": "썩은 음식은 병을 남겨요. E 사용으로 챙기기, Q 두고 가기, G 길게 버리기. 병에는 약이 필요해요.",
     "helpSteal": "소매치기는 등 뒤에서만 할 수 있습니다. 사람 뒤에 멈춰 E를 누르거나 주머니를 클릭하세요. 마우스로 지갑을 잡고 선을 따라 빼내면서, 동시에 위쪽 하얀 막대가 금색 칸에 들어올 때마다 Space를 눌러야 합니다. 금색 칸을 그냥 지나치거나, 칸 밖에서 누르거나, 선을 벗어나거나, 너무 빨리 끌면 실수입니다. 실수하면 상대가 돌아보려 하며 머리 위에 ?가 뜹니다. 다 돌아보기 전에 E를 눌러 손을 빼야 하고, 창이 열려 있으면 들킵니다. 실수하지 않아도 가끔 돌아봅니다. 상대가 다시 돌아서면 등 뒤에서 E를 눌러 이어 갈 수 있습니다. 행인 돈 1칸, 부유층 2칸, 경찰 1칸이고 경찰이 가장 빨리 돌아봅니다. 하루에 세 번 들키면 그날은 더 훔칠 수 없습니다. 그날 첫 소매치기가 가장 쉽고, 훔칠 때마다 거리 사람들이 경계해서 더 빨리 돌아보고, 의심도 빨리 차고, 더 잘 알아챕니다. 여인숙에는 부자 손님만 있습니다.",

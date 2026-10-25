@@ -248,9 +248,9 @@ test('door guidance skips barred shops and remains absent outside shopping lesso
  const {SHOPS}=await import('../games/robberfather/engine.js');const g=survivalDay();assert.equal(g.tutorialWaypoint,null);g.tutorial=TUTORIAL.shop;g.closedShops=[SHOPS[1].id];g.player.x=SHOPS[1].door;assert.equal(g.tutorialWaypoint.shopId,SHOPS.find(s=>s.kind===1&&s.id!==SHOPS[1].id).id);g.mode='night';assert.equal(g.tutorialWaypoint,null);
 });
 
-test('civilian, wealthy and police reward 1, 2 and 3 actual coins while respecting purse capacity',async()=>{
- const {TYPES}=await import('../games/robberfather/engine.js');for(const [type,amount,level]of [['civilian',1,'easy'],['wealthy',2,'normal'],['police',3,'hard']]){assert.equal(TYPES[type].difficulty,level);const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.npcs[0].type=type;g.update(.02,{pick:true,trace:1});assert.equal(g.coins,amount);assert.equal(g.drainEvents().find(e=>e.type==='stolen').amount,amount);assert.equal(g.earned,amount);}
- const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.add('coin',4);g.npcs[0].type='police';g.update(.02,{pick:true,trace:1});assert.equal(g.coins,5);
+test('civilian, wealthy and police reward 1, 2 and 1 actual coins while respecting purse capacity',async()=>{
+ const {TYPES}=await import('../games/robberfather/engine.js');for(const [type,amount,level]of [['civilian',1,'easy'],['wealthy',2,'normal'],['police',1,'hard']]){assert.equal(TYPES[type].difficulty,level);const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.npcs[0].type=type;g.update(.02,{pick:true,trace:1});assert.equal(g.coins,amount);assert.equal(g.drainEvents().find(e=>e.type==='stolen').amount,amount);assert.equal(g.earned,amount);}
+ const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.add('coin',4);g.npcs[0].type='wealthy';g.update(.02,{pick:true,trace:1});assert.equal(g.coins,5);assert.equal(g.drainEvents().find(e=>e.type==='stolen').amount,1);
 });
 
 test('the pocket title shows the same nominal reward and difficulty as the street for every NPC type',async()=>{

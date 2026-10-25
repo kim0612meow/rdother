@@ -1,14 +1,14 @@
-import {settings,DEFAULT_BINDINGS} from './settings.js?v=cleanup-v17';
-import {UseInput} from './use-input.js?v=cleanup-v17';
-import {PocketInput} from './pocket-input.js?v=cleanup-v17';
-import {ROBBERY,endingPart} from './cinematics.js?v=cleanup-v17';
-import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=cleanup-v17';
-import {Pickpocket} from './pickpocket.js?v=cleanup-v17';
-import {Shell} from './shell.js?v=cleanup-v17';
-import {Renderer} from './scene.js?v=cleanup-v17';
-import {Soundscape} from './audio.js?v=cleanup-v17';
-import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=cleanup-v17';
-import {getMorningLines,storyText} from './story.js?v=cleanup-v17';
+import {settings,DEFAULT_BINDINGS} from './settings.js?v=home-police-v18';
+import {UseInput} from './use-input.js?v=home-police-v18';
+import {PocketInput} from './pocket-input.js?v=home-police-v18';
+import {ROBBERY,endingPart} from './cinematics.js?v=home-police-v18';
+import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=home-police-v18';
+import {Pickpocket} from './pickpocket.js?v=home-police-v18';
+import {Shell} from './shell.js?v=home-police-v18';
+import {Renderer} from './scene.js?v=home-police-v18';
+import {Soundscape} from './audio.js?v=home-police-v18';
+import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=home-police-v18';
+import {getMorningLines,storyText} from './story.js?v=home-police-v18';
 const $=id=>document.getElementById(id),SAVE='one-more-meal-v3',LANG='one-more-meal-language';
 function getSaved(){try{const s=JSON.parse(localStorage.getItem(SAVE));if(s?.version===3&&Number.isInteger(s.day)&&s.day>0&&s.day<1000000&&Array.isArray(s.inventory))return s;}catch{}return null;}
 let saved=getSaved(),game=new Game(),renderer=new Renderer($('game')),held=new Set(),pendingPresses=new Set(),modalOpen=false,transitioning=false,lastTime=0,visualTime=0,toastUntil=0,tutorialUntil=0,lastSignature='',sound=true,soundscape=new Soundscape(),modalSpec=null,previousFocus=null,toastSpec=null;
@@ -107,7 +107,7 @@ function hud(){
   $('homePromptTitle').textContent=t('home');
   $('cinemaDay').textContent=t('nightDay',{day:game.day});const late=game.returnReason==='timeout';$('nightTitle').textContent=t(game.fed?(game.ateRotten?'rottenTitle':'nightTitle'):game.ateRotten?'scrapsTitle':game.eaten>0?'partialMealTitle':'poorTitle');$('mealCopy').textContent=t(game.fed?(game.ateRotten?(late?'lateRottenCopy':'rottenCopy'):'nightCopy'):game.ateRotten?(late?'lateScrapsCopy':'scrapsCopy'):game.eaten>0?'partialMealCopy':late?'timeoutCopy':'poorCopy',{count:game.eaten,required:game.mealRequired});$('nightEarned').textContent=t('portionsCount',{count:game.earned});$('nightSpent').textContent=t(game.fed?(game.ateRotten?'nightRotten':'nightFresh'):game.ateRotten?'nightScraps':'nightHungry',{count:game.eaten});$('nextDayText').textContent=t('nextDay');const lines=getMorningLines(game.day,game.lastMeal);$('sonLine').textContent=storyText(lines[game.morningIndex],getLocale());$('dialogueCount').textContent=`${game.morningIndex+1} / 3`;$('dialogueNext').querySelector('span').textContent=t('dialogueNext');
  }
- $('saveBtn').disabled=transitioning||['intro','prologue'].includes(game.mode);$('timeLeft').textContent=clock(game.timeLeft);$('dayClock').classList.toggle('urgent',game.timeLeft<=30);$('homePrompt').hidden=!game.quotaMet||game.mode!=='day'||modalOpen||transitioning||game.chasers.length>0;$('chaseTag').hidden=!game.chasers.length||game.mode!=='day';
+ $('saveBtn').disabled=transitioning||['intro','prologue'].includes(game.mode);$('timeLeft').textContent=clock(game.timeLeft);$('dayClock').classList.toggle('urgent',game.timeLeft<=30);$('homePrompt').hidden=!game.canHome()||modalOpen||transitioning||pick.active||shell.active;$('chaseTag').hidden=!game.chasers.length||game.mode!=='day';
  const n=game.target,day=game.mode==='day'&&!modalOpen&&!transitioning,show=!!n&&day;const practiceNow=game.tutorial<TUTORIAL.done;$('fullPocketsNotice').hidden=!day||practiceNow||pick.active||shell.active||!game.fullPocketsTarget;$('targetCard').hidden=!show||practiceNow;if(show){const kind=TYPES[n.type];$('targetName').textContent=t(n.type);$('targetLevel').textContent=t('difficulty_'+kind.difficulty);$('targetLevel').dataset.level=kind.difficulty;$('targetReward').textContent=t('slotReward',{count:kind.slots});$('targetDetail').textContent=t(game.isBehind(n)?'hold':'front');const seen=Math.max(game.suspicion,...game.npcs.filter(w=>!w.alert).map(w=>w.witness));$('suspicionBar').style.width=`${100*Math.min(1,seen)}%`;$('riskLabel').textContent=t(seen>.7?'danger':n.type==='police'?'high':n.type==='wealthy'?'medium':'low');}
  const bin=game.nearbyBin();$('binCard').hidden=!day||practiceNow||!bin||!!n;const box=game.nearbyBox(),door=day&&(!practiceNow||game.tutorial>=TUTORIAL.shop)&&!game.chasers.length&&game.activeTarget===null?game.nearbyDoor():null;$('doorPrompt').hidden=practiceNow||!door;const counter=day&&(!practiceNow||game.tutorial>=TUTORIAL.counter)&&game.activeTarget===null?game.nearbyCounter():null;const dealer=day&&!practiceNow&&!shell.active&&game.activeTarget===null?game.nearbyDealer():null;$('shopPrompt').hidden=practiceNow||(!counter&&!dealer);if(dealer)$('shopPrompt').textContent=t('shellPrompt',{coins:game.coins});$('shopPrompt').style.setProperty('--hold-progress',(useKey.fraction(performance.now())*100)+'%');if(counter)$('shopPrompt').textContent=t({bread:'buyBread',potato:'buyPotato',medicine:'buyMedicine'}[counter.item],{price:counter.price,coins:game.coins});if(door)$('doorPrompt').textContent=t(door.exit?'exitShop':door.barred?'barredShop':'enterShop',{name:t(shopName(door.shop.kind))});$('doorPrompt').classList.toggle('unsafe',!!door?.barred);$('hidePrompt').hidden=!day||practiceNow||(!box&&!game.player.hidden)||game.activeTarget!==null;$('hidePrompt').textContent=t(game.player.hidden?'leaveBox':'hideBox');$('discardNote').hidden=!day||!game.rottenCount;$('discardBar').style.width=`${game.discardProgress/RULES.discardHold*100}%`;$('stage').classList.toggle('is-stealing',game.activeTarget!==null);
  // The street lesson gives way to the pocket coach during the minigame.
