@@ -375,3 +375,15 @@ test('skip hold progress never survives release or a save reload, and a skipped 
 test('the waiting child and speech anchor share a position clear of the home doorway',async()=>{
  const {WAITING_CHILD}=await import('../games/robberfather/framing.js');assert.equal(WAITING_CHILD.x,180);assert.ok(WAITING_CHILD.x+45<250);const scene=await readFile(new URL('../games/robberfather/scene.js',import.meta.url),'utf8'),app=await readFile(new URL('../games/robberfather/app.js',import.meta.url),'utf8');assert.match(scene,/this.child\(c,WAITING_CHILD.x,WAITING_CHILD.y/);assert.match(app,/screenPoint\(WAITING_CHILD.x,WAITING_CHILD.speechY\)/);
 });
+test('day-opening notices end on a pocket or popup interruption and cannot restart the same day',async()=>{
+ const {DayNotice}=await import('../games/robberfather/day-notice.js');const n=new DayNotice(),spec={title:'dayHungryTitle'};n.start(2,spec);assert.equal(n.update(1,true),true);assert.equal(n.remaining,7);assert.equal(n.update(.05,false,true),false);assert.equal(n.update(.05,true),false);n.start(2,spec);assert.equal(n.update(.05,true),false);n.start(3,spec);assert.equal(n.update(.05,true),true);n.dismiss();assert.equal(n.update(.05,true),false);
+});
+test('a day notice expires once, and resuming a saved day starts without a new notice',async()=>{
+ const {DayNotice}=await import('../games/robberfather/day-notice.js');const n=new DayNotice();assert.equal(n.update(.05,true),false);n.start(2,{title:'x'});assert.equal(n.update(8,true),false);assert.equal(n.update(1,true),false);n.reset();assert.equal(n.update(.1,true),false);
+});
+test('returning with three portions warns against both four- and five-portion recovery quotas',()=>{
+ for(const [previous,required]of [[0,5],[2,4]]){let g=survivalDay();g.add('fresh',previous);g.goHome();g.beginNight();g.nextDay();for(let i=0;i<3;i++)g.advanceMorning();g.add('fresh',3);const bag=[...g.inventory];assert.deepEqual(g.homeWarning,{have:3,required,missing:required-3,finalNight:true});assert.deepEqual(g.inventory,bag);assert.equal(g.mode,'day');g=new Game(g.save());g.start();assert.equal(g.homeWarning.required,required);g.add('fresh',required-3);assert.equal(g.homeWarning,null);}
+});
+test('normal-day partial food also warns, while a full meal does not',()=>{
+ const g=survivalDay();assert.deepEqual(g.homeWarning,{have:0,required:3,missing:3,finalNight:false});g.add('fresh',2);assert.deepEqual(g.homeWarning,{have:2,required:3,missing:1,finalNight:false});g.add('rotten',1);assert.equal(g.homeWarning,null);
+});

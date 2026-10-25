@@ -1,6 +1,6 @@
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=tutorial-meals-v31';
-import {createLayoutRuntime} from './runtime.js?v=tutorial-meals-v31';
-import {EDITOR_CSS} from './styles.js?v=tutorial-meals-v31';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=home-warning-v32';
+import {createLayoutRuntime} from './runtime.js?v=home-warning-v32';
+import {EDITOR_CSS} from './styles.js?v=home-warning-v32';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=true;
 const copy=value=>JSON.parse(JSON.stringify(value));

@@ -1,5 +1,5 @@
 import {UI_TEXT} from './ui-editor/text-overrides.js';
-import {controlText} from './settings.js?v=tutorial-meals-v31';
+import {controlText} from './settings.js?v=home-warning-v32';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -40,6 +40,10 @@ export const MESSAGES={
     "tutorialSkipped": "Tutorial skipped.",
     "boughtMax": "Bought {portions} food portions for {spent} coins.",
     "foodOnly": "R Buy max works at food counters.",
+    "foodShortageTitle": "Not enough food for tonight",
+    "foodShortageCopy": "You have {have} of the {required} portions needed. You still need {missing}. If you return now, you and your son will go hungry.",
+    "foodShortageFinalCopy": "You have {have} of the {required} portions needed. You still need {missing}. Returning now means a second hungry night and a bad ending. Keep collecting food?",
+    "foodShortageAction": "Return anyway",
     "bindingHint": "Choose a key to change it. Escape opens the menu.",
     "binLeft": "You left the food here. You can take it later.",
     "binSign": "RUBBISH",
@@ -102,9 +106,6 @@ export const MESSAGES={
     "dusk": "DUSK",
     "duskWarning": "30 seconds until night.",
     "emptyCoin": "Empty coin slot",
-    "emptyFoodAction": "Return without food",
-    "emptyFoodCopy": "You have no food. Coins cannot be eaten. If you go home now, you and your son will both go hungry. Keep looking for food, or choose to return anyway.",
-    "emptyFoodTitle": "Go home without food?",
     "endingLabel": "THE COST OF ANOTHER DAY",
     "endingWait": "Stay with this moment…",
     "enteredShop": "You step into the {name}.",
@@ -343,6 +344,10 @@ export const MESSAGES={
     "tutorialSkipped": "튜토리얼을 건너뛰었습니다.",
     "boughtMax": "{spent}원으로 음식 {portions}칸을 샀습니다.",
     "foodOnly": "R 최대 구매는 음식 상점에서 사용할 수 있습니다.",
+    "foodShortageTitle": "오늘 먹을 음식이 부족합니다",
+    "foodShortageCopy": "오늘은 {required}칸이 필요한데 현재 {have}칸입니다. {missing}칸이 더 필요합니다. 지금 돌아가면 아빠와 아이가 굶게 됩니다.",
+    "foodShortageFinalCopy": "오늘은 {required}칸이 필요한데 현재 {have}칸입니다. {missing}칸이 더 필요합니다. 지금 돌아가면 이틀 연속 굶어 배드 엔딩이 됩니다. 음식을 더 모으세요.",
+    "foodShortageAction": "그래도 돌아가기",
     "bindingHint": "키를 눌러 변경하세요. Esc는 메뉴를 엽니다.",
     "binLeft": "음식을 그대로 뒀어요. 나중에 다시 챙길 수 있어요.",
     "binSign": "쓰레기통",
@@ -405,9 +410,6 @@ export const MESSAGES={
     "dusk": "해 질 녘",
     "duskWarning": "밤까지 30초!",
     "emptyCoin": "빈 돈 칸",
-    "emptyFoodAction": "음식 없이 돌아가기",
-    "emptyFoodCopy": "챙긴 음식이 한 칸도 없습니다. 돈만으로는 저녁을 먹을 수 없어요. 지금 돌아가면 아빠와 아들 모두 굶게 됩니다. 창을 닫아 음식을 구하거나, 그대로 돌아갈 수 있습니다.",
-    "emptyFoodTitle": "음식 없이 돌아갈까요?",
     "endingLabel": "또 하루를 버틴 대가",
     "endingWait": "이 장면에 잠시 머무르세요…",
     "enteredShop": "{name} 안으로 들어왔습니다.",

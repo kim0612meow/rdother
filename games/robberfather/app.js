@@ -1,24 +1,25 @@
-import {WAITING_CHILD} from './framing.js?v=tutorial-meals-v31';
-import {installUIEditor} from './ui-editor/index.js?v=tutorial-meals-v31';
-import {DialogueTyper} from './dialogue.js?v=tutorial-meals-v31';
-import {settings,DEFAULT_BINDINGS} from './settings.js?v=tutorial-meals-v31';
-import {UseInput} from './use-input.js?v=tutorial-meals-v31';
-import {PocketInput} from './pocket-input.js?v=tutorial-meals-v31';
-import {ROBBERY,endingPart} from './cinematics.js?v=tutorial-meals-v31';
-import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=tutorial-meals-v31';
-import {Pickpocket} from './pickpocket.js?v=tutorial-meals-v31';
-import {Shell} from './shell.js?v=tutorial-meals-v31';
-import {Renderer} from './scene.js?v=tutorial-meals-v31';
-import {Soundscape} from './audio.js?v=tutorial-meals-v31';
-import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=tutorial-meals-v31';
-import {getMorningLines,storyText} from './story.js?v=tutorial-meals-v31';
+import {DayNotice} from './day-notice.js?v=home-warning-v32';
+import {WAITING_CHILD} from './framing.js?v=home-warning-v32';
+import {installUIEditor} from './ui-editor/index.js?v=home-warning-v32';
+import {DialogueTyper} from './dialogue.js?v=home-warning-v32';
+import {settings,DEFAULT_BINDINGS} from './settings.js?v=home-warning-v32';
+import {UseInput} from './use-input.js?v=home-warning-v32';
+import {PocketInput} from './pocket-input.js?v=home-warning-v32';
+import {ROBBERY,endingPart} from './cinematics.js?v=home-warning-v32';
+import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=home-warning-v32';
+import {Pickpocket} from './pickpocket.js?v=home-warning-v32';
+import {Shell} from './shell.js?v=home-warning-v32';
+import {Renderer} from './scene.js?v=home-warning-v32';
+import {Soundscape} from './audio.js?v=home-warning-v32';
+import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=home-warning-v32';
+import {getMorningLines,storyText} from './story.js?v=home-warning-v32';
 const $=id=>document.getElementById(id),SAVE='one-more-meal-v3',LANG='one-more-meal-language';
 function getSaved(){try{const s=JSON.parse(localStorage.getItem(SAVE));if(s?.version===3&&Number.isInteger(s.day)&&s.day>0&&s.day<1000000&&Array.isArray(s.inventory))return s;}catch{}return null;}
 let saved=getSaved(),game=new Game(),renderer=new Renderer($('game')),held=new Set(),pendingPresses=new Set(),modalOpen=false,transitioning=false,lastTime=0,visualTime=0,toastUntil=0,tutorialUntil=0,lastSignature='',sound=true,soundscape=new Soundscape(),modalSpec=null,previousFocus=null,toastSpec=null;
 try{sound=localStorage.getItem('one-more-meal-sound')!=='off';}catch{}
 soundscape.setVolume(1);soundscape.setVolumes(settings.volumes);
 let uiEditor=null;
-let dayNoticeRemaining=0,dayNoticeSpec=null;
+const dayNotice=new DayNotice();
 const sonTyper=new DialogueTyper();let sonDialogueKey='';
 function paintSonLine(){const line=$('sonLine');line.replaceChildren();const shown=document.createElement('span'),unspoken=document.createElement('span');shown.textContent=sonTyper.visible;unspoken.textContent=sonTyper.remaining;unspoken.style.visibility='hidden';unspoken.setAttribute('aria-hidden','true');line.append(shown,unspoken);}
 function setSonLine(text){const key=[getLocale(),game.day,game.morningIndex,text].join('|');if(game.mode!=='morning'){sonDialogueKey='';return;}if(key===sonDialogueKey)return;sonDialogueKey=key;sonTyper.start(text);paintSonLine();}
@@ -26,14 +27,14 @@ function updateSonLine(dt){if(game.mode!=='morning'||modalOpen||transitioning||d
 
 function showDayNotice(){
  const hungry=game.recoveryDay,sick=game.rottenStreak>0;
- dayNoticeSpec=hungry||sick?{title:hungry?(sick?'dayBothTitle':'dayHungryTitle'):'daySickTitle',copy:hungry?(sick?'dayBothCopy':'dayHungryCopy'):'daySickCopy'}:null;
- dayNoticeRemaining=dayNoticeSpec?8:0;
+ const spec=hungry||sick?{title:hungry?(sick?'dayBothTitle':'dayHungryTitle'):'daySickTitle',copy:hungry?(sick?'dayBothCopy':'dayHungryCopy'):'daySickCopy'}:null;
+ dayNotice.start(game.day,spec);
 }
 function updateDayNotice(dt){
  const visible=game.mode==='day'&&!modalOpen&&!transitioning&&!pick.active&&!shell.active;
- if(visible)dayNoticeRemaining=Math.max(0,dayNoticeRemaining-dt);
- $('dayNotice').hidden=!visible||!dayNoticeSpec||dayNoticeRemaining<=0;
- if(dayNoticeSpec){$('dayNoticeTitle').textContent=t(dayNoticeSpec.title);$('dayNoticeCopy').textContent=t(dayNoticeSpec.copy,{required:game.mealRequired,multiplier:game.theftMultiplier});}
+ const show=dayNotice.update(dt,visible,game.mode!=='day'||modalOpen||pick.active||shell.active);
+ $('dayNotice').hidden=!show;
+ if(dayNotice.spec){$('dayNoticeTitle').textContent=t(dayNotice.spec.title);$('dayNoticeCopy').textContent=t(dayNotice.spec.copy,{required:game.mealRequired,multiplier:game.theftMultiplier});}
 }
 let captureAction=null;
 const pocketKeys=new PocketInput();const useKey=new UseInput();let shortUsePending=false;
@@ -66,7 +67,7 @@ function renderSettings(page=pausePage){
   const list=document.createElement('ul');for(let i=1;i<=6;i++){const li=document.createElement('li');li.textContent=t('helpShort'+i);list.append(li);}body.append(list);const table=document.createElement('table'),head=document.createElement('tr');for(const key of ['shopLabel','itemLabel','priceLabel']){const th=document.createElement('th');th.textContent=t(key);head.append(th);}table.append(head);for(const [shop,item,price]of [['bakery','breadItem',PRICES.bread.price],['market','potatoItem',PRICES.potato.price],['pharmacy','medicineItem',PRICES.medicine.price]]){const tr=document.createElement('tr');for(const text of [t(shop),t(item),String(price)]){const td=document.createElement('td');td.textContent=text;tr.append(td);}table.append(tr);}body.append(table);const credits=document.createElement('details'),summary=document.createElement('summary'),credit=document.createElement('p');summary.textContent=t('audioCredits');credit.innerHTML='“Chase Pulse Faster” — Kevin MacLeod (incompetech.com). <a href="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100384" target="_blank" rel="noopener">Source</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Volume and looping adjusted. Other sampled effects: CC0; <a href="./assets/audio-v22/CREDITS.md" target="_blank" rel="noopener">credits</a>.';credits.append(summary,credit);body.append(credits);
  }
 }
-function openModal(spec){game.tutorialSkipProgress=0;previousFocus=document.activeElement;modalSpec=spec;modalOpen=true;pocketKeys.clear();soundscape.quiet();held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;$('modalBody').replaceChildren();$('modalCancel').hidden=!spec.confirm;$('modal').hidden=false;if(spec.settings)renderSettings(spec.page||'menu');else{$('modal').classList.remove('pause-menu');$('modalTitle').hidden=false;$('modalTitle').textContent=t(spec.title,spec.vars);$('pauseChoices').hidden=true;$('pauseTools').hidden=true;$('preferences').hidden=true;const p=document.createElement('p');p.textContent=t(spec.body,spec.vars);$('modalBody').append(p);$('modalAction').querySelector('span').textContent=t(spec.action||'resume');$('closeModal').hidden=!!spec.required;}$('modal').querySelector('.modal').focus();}
+function openModal(spec){dayNotice.dismiss();game.tutorialSkipProgress=0;previousFocus=document.activeElement;modalSpec=spec;modalOpen=true;pocketKeys.clear();soundscape.quiet();held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;$('modalBody').replaceChildren();$('modalCancel').hidden=!spec.confirm;$('modal').hidden=false;if(spec.settings)renderSettings(spec.page||'menu');else{$('modal').classList.remove('pause-menu');$('modalTitle').hidden=false;$('modalTitle').textContent=t(spec.title,spec.vars);$('pauseChoices').hidden=true;$('pauseTools').hidden=true;$('preferences').hidden=true;const p=document.createElement('p');p.textContent=t(spec.body,spec.vars);$('modalBody').append(p);$('modalAction').querySelector('span').textContent=t(spec.action||'resume');$('closeModal').hidden=!!spec.required;}$('modal').querySelector('.modal').focus();}
 function closeModal(action=false){if(!modalOpen)return;if(modalSpec.required&&!action)return;const spec=modalSpec;captureAction=null;modalOpen=false;modalSpec=null;$('modal').hidden=true;held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;if(action&&spec.onAction)spec.onAction();else if(spec.onClose)spec.onClose();else previousFocus?.focus({preventScroll:true});}
 $('modalAction').addEventListener('click',()=>{if(modalSpec?.settings&&pausePage!=='menu'){renderSettings('menu');return;}closeModal(true);});$('closeModal').addEventListener('click',()=>{if(modalSpec?.settings&&pausePage!=='menu')renderSettings('menu');else closeModal();});$('volumeTab').onclick=()=>renderSettings('volume');$('controlsTab').onclick=()=>renderSettings('controls');$('helpBtn').onclick=()=>renderSettings('help');$('modalCancel').onclick=()=>closeModal();$('restartBtn').onclick=()=>requestRestart(true);
 function pause(){if(modalOpen){if(modalSpec?.settings&&pausePage!=='menu')renderSettings('menu');else closeModal();return;}if(!transitioning)openModal({settings:true});}$('pauseBtn').addEventListener('click',pause);
@@ -80,7 +81,7 @@ const slotHtml=(kind,icon)=>{const name=t(kind==='empty'&&icon===COIN_ICON?'empt
 // A quick dip to dark when stepping through a shop door.
 function blink(){const fade=$('fade');fade.style.transition='none';fade.classList.add('active');requestAnimationFrame(()=>requestAnimationFrame(()=>{fade.style.transition='opacity .35s';fade.classList.remove('active');setTimeout(()=>fade.style.transition='',400);}));}
 function syncScene(){const mode=game.mode;$('stage').classList.toggle('is-intro',mode==='intro');$('stage').classList.toggle('is-prologue',mode==='prologue');$('prologue').hidden=mode!=='prologue';$('stage').classList.toggle('is-night',mode==='night');$('stage').classList.toggle('is-morning',mode==='morning');$('stage').classList.toggle('is-ending',mode==='ending');$('stage').classList.toggle('is-arrest',mode==='ending'&&game.ending==='arrest');$('intro').hidden=mode!=='intro';$('cinema').hidden=mode!=='night';$('dialogue').hidden=mode!=='morning';$('endingOverlay').hidden=mode!=='ending';lastSignature='';hud();}
-async function begin(continuing=false){if(transitioning)return;toastUntil=0;toastSpec=null;tutorialUntil=0;$('toast').classList.remove('visible');pick.close();pocketKeys.clear();unlockAudio();transitioning=true;held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;$('fade').classList.add('active');await sleep(650);game=new Game(continuing?saved:null);if(!continuing){saved={...game.save(),mode:'morning'};try{localStorage.setItem(SAVE,JSON.stringify(saved));}catch{toast('saveError');}}game.start({prologue:!continuing});renderer.camera=0;renderer.zoom=1;$('fade').classList.remove('active');transitioning=false;dayNoticeRemaining=0;dayNoticeSpec=null;if(game.mode==='day')showDayNotice();syncScene();persist();(game.mode==='prologue'?$('prologueSkip'):game.mode==='morning'?$('dialogueNext'):$('game')).focus({preventScroll:true});}
+async function begin(continuing=false){if(transitioning)return;toastUntil=0;toastSpec=null;tutorialUntil=0;$('toast').classList.remove('visible');pick.close();pocketKeys.clear();unlockAudio();transitioning=true;held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;$('fade').classList.add('active');await sleep(650);game=new Game(continuing?saved:null);if(!continuing){saved={...game.save(),mode:'morning'};try{localStorage.setItem(SAVE,JSON.stringify(saved));}catch{toast('saveError');}}game.start({prologue:!continuing});renderer.camera=0;renderer.zoom=1;$('fade').classList.remove('active');transitioning=false;dayNotice.reset();syncScene();persist();(game.mode==='prologue'?$('prologueSkip'):game.mode==='morning'?$('dialogueNext'):$('game')).focus({preventScroll:true});}
 function requestRestart(fromSettings=false){openModal({title:'newTitle',body:'newCopy',action:'newAction',confirm:true,onAction:()=>begin(false),onClose:fromSettings?()=>openModal({settings:true}):null});}
 $('startBtn').addEventListener('click',()=>{if(saved)requestRestart();else begin(false);});$('continueBtn').addEventListener('click',()=>begin(true));
 function advanceMorning(){if(game.mode!=='morning'||transitioning||modalOpen)return;if(!sonTyper.done){sonTyper.finish();paintSonLine();return;}const started=game.advanceMorning();syncScene();if(started){persist();$('game').focus({preventScroll:true});}else $('dialogueNext').focus({preventScroll:true});}
@@ -99,7 +100,7 @@ function modalTab(e){if(e.key!=='Tab')return;const buttons=[...$('modal').queryS
  document.addEventListener('keyup',e=>{held.delete(e.code);if(settings.action(e.code)==='steal'&&game.mode==='day'&&!modalOpen&&!transitioning){e.preventDefault();const action=useKey.release(performance.now(),game.nearbyCounter()?.shop.id??null);if(action==='tap')shortUsePending=true;else if(action==='buy'&&!pick.active&&!shell.active)game.buy();}if(settings.action(e.code)==='gauge'&&game.mode==='day'&&!modalOpen)e.preventDefault();});window.addEventListener('blur',()=>{held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;if(game.mode==='day'&&!modalOpen&&!transitioning)pause();else soundscape.quiet();});document.addEventListener('visibilitychange',()=>{held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;lastTime=0;if(document.hidden)soundscape.quiet();if(document.hidden&&game.mode==='day'&&!modalOpen&&!transitioning)pause();});
 function walkTo(x,duration){const from=game.player.x;return new Promise(resolve=>{const start=performance.now();function step(now){const progress=Math.min(1,(now-start)/duration);game.player.x=from+(x-from)*progress;game.player.face=Math.sign(x-from)||-1;game.player.walk+=.15;if(progress===1)resolve();else requestAnimationFrame(step);}requestAnimationFrame(step);});}
 const clampMs=ms=>Math.max(600,Math.min(2400,ms));
-async function returnHome(fromTimeout=false,confirmed=false){if(transitioning||modalOpen)return;if(!fromTimeout){if(!game.canHome()){toast(game.tutorial<TUTORIAL.done?'finishPractice':'noHomeChase',{},true);return;}if(game.food===0&&!confirmed){openModal({title:'emptyFoodTitle',body:'emptyFoodCopy',action:'emptyFoodAction',onAction:()=>returnHome(false,true)});return;}game.goHome();}transitioning=true;held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;toast(fromTimeout?'timeoutToast':'returning',{},fromTimeout,3500);hud();if(!game.shop&&game.player.x<760){const to=Math.max(150,Math.min(330,game.player.x-80));await walkTo(to,clampMs((game.player.x-to)*8));}else{await walkTo(Math.max(90,game.player.x-130),850);$('fade').classList.add('active');await sleep(650);game.player.x=490;renderer.camera=0;$('fade').classList.remove('active');await walkTo(330,1150);}$('fade').classList.add('active');await sleep(650);game.beginNight();$('toast').classList.remove('visible');$('fade').classList.remove('active');transitioning=false;syncScene();persist();$('nextDayBtn').focus({preventScroll:true});}
+async function returnHome(fromTimeout=false,confirmed=false){if(transitioning||modalOpen)return;if(!fromTimeout){if(!game.canHome()){toast(game.tutorial<TUTORIAL.done?'finishPractice':'noHomeChase',{},true);return;}const shortage=game.homeWarning;if(shortage&&!confirmed){openModal({title:'foodShortageTitle',body:shortage.finalNight?'foodShortageFinalCopy':'foodShortageCopy',vars:shortage,action:'foodShortageAction',confirm:true,onAction:()=>returnHome(false,true)});return;}game.goHome();}transitioning=true;held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;toast(fromTimeout?'timeoutToast':'returning',{},fromTimeout,3500);hud();if(!game.shop&&game.player.x<760){const to=Math.max(150,Math.min(330,game.player.x-80));await walkTo(to,clampMs((game.player.x-to)*8));}else{await walkTo(Math.max(90,game.player.x-130),850);$('fade').classList.add('active');await sleep(650);game.player.x=490;renderer.camera=0;$('fade').classList.remove('active');await walkTo(330,1150);}$('fade').classList.add('active');await sleep(650);game.beginNight();$('toast').classList.remove('visible');$('fade').classList.remove('active');transitioning=false;syncScene();persist();$('nextDayBtn').focus({preventScroll:true});}
 $('shellExit').onclick=()=>closeShell();
 $('homePrompt').addEventListener('click',()=>returnHome());
 $('binGuide').onclick=()=>game.inspectBin();$('binTake').onclick=()=>game.finishBin(true);$('binLeave').onclick=()=>game.finishBin(false);
