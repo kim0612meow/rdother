@@ -1,6 +1,6 @@
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=bulk-memory-v29';
-import {createLayoutRuntime} from './runtime.js?v=bulk-memory-v29';
-import {EDITOR_CSS} from './styles.js?v=bulk-memory-v29';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=cleanup-v30';
+import {createLayoutRuntime} from './runtime.js?v=cleanup-v30';
+import {EDITOR_CSS} from './styles.js?v=cleanup-v30';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=true;
 const copy=value=>JSON.parse(JSON.stringify(value));
@@ -17,7 +17,7 @@ export function installUIEditor({stage,onOpen=()=>{},onClose=()=>{},onTextChange
  const fields={x:[-100,100,.1,0],y:[-100,100,.1,0],width:[0,100,.1,0],height:[0,100,.1,0],fontSize:[0,72,1,0],opacity:[.1,1,.05,1],backgroundAlpha:[0,1,.05,1]};
  for(const [key,[min,max,step,value]]of Object.entries(fields)){const label=document.createElement('label'),span=document.createElement('span'),input=document.createElement('input');span.dataset.word=key;input.type='number';input.id='uie-'+key;input.min=min;input.max=max;input.step=step;input.value=value;label.append(span,input);$('numbers').append(label);input.oninput=()=>{if(input.value===''||!input.validity.valid)return;change(p=>{p[key]=Number(input.value);if(key==='backgroundAlpha'&&!p.background)p.background=$('background').value;},false);};input.onchange=sync;}
  function translate(){for(const el of panel.querySelectorAll('[data-word]'))el.textContent=w(el.dataset.word);entry.textContent=w('edit');for(const option of $('scene').options)option.textContent=SCENES[option.value][lang()];refreshTargets();for(const option of $('scope').options)option.textContent=option.value==='all'?w('all'):SCENES[option.value][lang()];if(active){preview();sync();}}
- for(const [value,label]of Object.entries(SCENES)){const option=document.createElement('option');option.value=value;option.textContent=label[lang()];$('scene').append(option);}for(const t of TARGETS){const option=document.createElement('option');option.value=t[0];option.textContent=name(t);$('element').append(option);}
+ for(const [value,label]of Object.entries(SCENES)){const option=document.createElement('option');option.value=value;option.textContent=label[lang()];$('scene').append(option);}
  function remember(group=null){if(group&&group===textGroup)return;textGroup=group;undo.push(copy(layout));if(undo.length>60)undo.shift();redo=[];}
  function apply(){layout=cleanLayout(layout);if(!targets().some(t=>t[0]===selected)){selected='resources';fillTextKeys(true);}refreshTargets();runtime.set(layout);if(active)preview();$('status').textContent=JSON.stringify(layout)===saved?'':w('changed');$('undo').disabled=!undo.length;$('redo').disabled=!redo.length;position();}
  function change(fn,refresh=true){remember();const p=layout.items[selected]||={};fn(p);apply();if(refresh)sync();}

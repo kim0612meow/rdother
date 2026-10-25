@@ -1,5 +1,5 @@
-import {streetBays,facadeSlices} from './layout.js?v=interaction-sounds-v22';
-import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=interaction-sounds-v22';
+import {streetBays,facadeSlices} from './layout.js?v=cleanup-v30';
+import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=cleanup-v30';
 const W=1440,H=840,GROUND=650;
 export class Backgrounds{
  constructor(theme=ACTIVE_THEME){this.theme=THEMES[theme];this.panels={};this.props={};this.ready=false;if(!this.theme)return;this.loadStreetAssets();const img=new Image();img.onload=()=>{

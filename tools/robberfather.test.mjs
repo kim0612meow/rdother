@@ -354,3 +354,6 @@ test('older control mappings survive the new R action including an existing R re
 test('the small recognition dot only draws for faces that actually remember the player',async()=>{
  const {drawRecognitionDot}=await import('../games/robberfather/scene.js');const arcs=[],c={save(){},restore(){},beginPath(){},arc(...a){arcs.push(a);},fill(){},stroke(){}};drawRecognitionDot(c,{x:100,y:650,knows:false});assert.equal(arcs.length,0);drawRecognitionDot(c,{x:100,y:650,knows:true,calm:3,alert:false});assert.deepEqual(arcs[0].slice(0,3),[114,479,3.3]);assert.equal(c.fillStyle,'#f24740');drawRecognitionDot(c,{x:200,y:650,knows:true,alert:true});assert.equal(arcs.length,2);
 });
+test('generated translation keys for controls, volume, guide and all ending captions remain available',async()=>{
+ const {DEFAULT_BINDINGS}=await import('../games/robberfather/settings.js');const needed=[...Object.keys(DEFAULT_BINDINGS).map(key=>'bind_'+key),...['background','effects','voice'].map(key=>'volume_'+key),...Array.from({length:6},(_,i)=>'helpShort'+(i+1)),...['arrest','collapse','robbed'].flatMap(key=>[key+'Title',...Array.from({length:3},(_,i)=>key+'Caption'+(i+1))])];for(const locale of ['ko','en'])for(const key of needed)assert.ok(typeof MESSAGES[locale][key]==='string'&&MESSAGES[locale][key].length>0,locale+': '+key);
+});

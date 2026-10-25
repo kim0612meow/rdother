@@ -61,7 +61,7 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 .home-prompt{position:absolute;right:20px;bottom:22px;z-index:5;background:#f3d599;color:#22352a;display:flex;align-items:center;gap:10px;padding:13px 20px;min-height:52px}
 .home-prompt strong{font-size:18px}
 .home-prompt kbd{font:700 19px system-ui}
-.home-prompt small{display:none}
+
 .chase-tag{position:absolute;top:80px;left:50%;transform:translateX(-50%);z-index:5;color:#fff0e5;background:#713c30ef;padding:10px 20px;border-radius:10px}
 .chase-tag strong{font-size:18px}
 .toast{position:absolute;top:86px;left:50%;transform:translate(-50%,-5px);max-width:70%;z-index:12;background:var(--panel);border-radius:12px;padding:10px 18px;font-size:17px;line-height:1.5;opacity:0;pointer-events:none}
@@ -206,4 +206,4 @@ select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius
 
 .bin-guide.learned{border:1px solid #82917c;box-shadow:none;background:#1c302be8;color:#e2e6d6}.bin-guide.learned kbd{background:transparent;color:#e2e6d6;animation:none}.bin-guide.learned>b{animation:none;color:#c5cbbb;text-shadow:none}
 
-.volume-setting+.volume-setting{margin-top:20px}.shell-exit{background:#2e4438;color:#f3dfad;border:1px solid #9ca584;border-radius:8px;padding:11px 15px;font:700 17px system-ui;white-space:nowrap}.shell-exit kbd{font:inherit}.shell .pick-bottom{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.shell [data-shell-exit-note]{flex-basis:100%;font-size:14px;color:#e6c7a1}
+.volume-setting+.volume-setting{margin-top:20px}.shell-exit{background:#2e4438;color:#f3dfad;border:1px solid #9ca584;border-radius:8px;padding:11px 15px;font:700 17px system-ui;white-space:nowrap}.shell-exit kbd{font:inherit}.shell [data-shell-exit-note]{flex-basis:100%;font-size:14px;color:#e6c7a1}

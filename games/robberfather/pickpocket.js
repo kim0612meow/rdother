@@ -1,11 +1,11 @@
-import {drawPocketBack} from './characters.js?v=bulk-memory-v29';
+import {drawPocketBack} from './characters.js?v=cleanup-v30';
 // The pocket window, seen over the victim's back. Draw the wallet out along a line with the mouse while keeping the Space gauge in time.
 // The street keeps moving underneath, so suspicion and witnesses still count while you play.
 // When the victim starts to turn (look, set by app.js) press E to leave the pocket; reopening the same pocket picks up where you stopped.
-import {dayDifficulty} from './difficulty.js?v=bulk-memory-v29';
-import {TYPES} from './engine.js?v=bulk-memory-v29';
-import {Trace} from './pick-trace.js?v=bulk-memory-v29';
-import {Timing} from './pick-timing.js?v=bulk-memory-v29';
+import {dayDifficulty} from './difficulty.js?v=cleanup-v30';
+import {TYPES} from './engine.js?v=cleanup-v30';
+import {Trace} from './pick-trace.js?v=cleanup-v30';
+import {Timing} from './pick-timing.js?v=cleanup-v30';
 // The Space gauge runs alongside the line including the tutorial. Set to false to go back to the mouse alone.
 const GAUGE=true;
 const RUSH=.7,W=640,H=400,START={x:206,y:252},HEAD={x:104,y:74};

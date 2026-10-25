@@ -1,4 +1,4 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=bulk-memory-v29';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=cleanup-v30';
 // Sound timing is separate from synthesis so pauses and story states stay silent.
 export class SoundDirector {
  constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.progress=0;this.bite=0;this.shout=0;}
@@ -20,7 +20,7 @@ export class SoundDirector {
   }else this.beat=0;
   const moved=holding&&g.progress>this.progress+.001;this.progress=holding?g.progress:0;this.rustle=Math.max(0,this.rustle-dt);if(moved&&this.rustle===0){out.push({type:'rustle'});this.rustle=.4;}
   if(g.mode==='day'&&g.chasers.length&&this.shout===0){out.push({type:'shout'});this.shout=4.8;}
-  if(g.mode==='night'&&(g.fed||g.ateRotten)){this.bite-=dt;if(this.bite<=0){out.push({type:'eat',spoiled:g.ateRotten});this.bite=2.35;}}
+  if(g.mode==='night'&&(g.fed||g.ateRotten)){this.bite-=dt;if(this.bite<=0){out.push({type:'eat'});this.bite=2.35;}}
   return out;
  }
  alert(){this.shout=4.8;}
@@ -118,9 +118,6 @@ export class Soundscape {
    case'betLost':this.noiseHit(.18,.06,600);break;
    case'headStrike':this.noiseHit(.075,.25,1300);this.tone(930,.6,.16,0,420,'triangle');this.tone(1480,.4,.075,.008,750,'sine');this.tone(80,.18,.12,0,35);break;
    case'bodyStrike':this.noiseHit(.18,.22,290);this.tone(75,.15,.1,0,38);break;
-   case'save':break;
-   case'night':break;
-   case'start':break;
   }
  }
  update(g,dt,active,locale,focus=0){

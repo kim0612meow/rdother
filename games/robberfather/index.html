@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#16201e"><meta name="description" content="A story of a pickpocket, a waiting son, and one more meal. A 2D survival game."><title>One More Meal</title>
  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2316201e'/%3E%3Cpath d='M12 32h40v8L42 50H22L12 40Z' fill='%23d6b77a'/%3E%3Cpath d='M22 25v-9m10 9V12m10 13v-9' stroke='%23d6b77a' stroke-width='4'/%3E%3C/svg%3E">
- <link rel="stylesheet" href="game.css?v=bulk-memory-v29">
+ <link rel="stylesheet" href="game.css?v=cleanup-v30">
 </head>
 <body>
   <section class="game-stage is-intro" id="stage" aria-label="One More Meal">
@@ -29,7 +29,7 @@
    </div>
    <div class="discard-note" id="discardNote" hidden><span data-i18n="holdDiscard"></span><div><i id="discardBar"></i></div></div>
    <div class="stamina" id="staminaWrap" hidden><span id="staminaLabel"></span><div><i id="staminaBar"></i></div></div>
-   <div id="cinema" class="cinema" hidden><div class="cinema-top"><span id="cinemaDay"></span><small data-i18n="nightKicker"></small></div><div class="cinema-copy"><i></i><h2 id="nightTitle"></h2><p id="mealCopy"></p><button id="nextDayBtn" class="primary-button"><span id="nextDayText"></span><b>→</b></button></div><div class="night-summary"><span><span data-i18n="nightEarned"></span> <b id="nightEarned"></b></span><span><span data-i18n="nightSpent"></span> <b id="nightSpent"></b></span></div></div>
+   <div id="cinema" class="cinema" hidden><div class="cinema-top"><span id="cinemaDay"></span><small data-i18n="nightKicker"></small></div><div class="cinema-copy"><h2 id="nightTitle"></h2><p id="mealCopy"></p><button id="nextDayBtn" class="primary-button"><span id="nextDayText"></span><b>→</b></button></div><div class="night-summary"><span><span data-i18n="nightEarned"></span> <b id="nightEarned"></b></span><span><span data-i18n="nightSpent"></span> <b id="nightSpent"></b></span></div></div>
    <button id="binGuide" class="cover-guide bin-guide" hidden><span><kbd data-control="hide">F</kbd> <span data-i18n="inspectBinAction"></span></span><b id="binGuideArrow" aria-hidden="true">↓</b></button>
    <div id="binCard" class="bin-card" hidden><span class="eyebrow" data-i18n="binTitle"></span><p id="binContents"></p><div><button id="binTake" data-i18n="takeFood"></button><button id="binLeave" data-i18n="leaveFood"></button></div></div>
    <div id="hidePrompt" class="hide-prompt" hidden></div>
@@ -37,7 +37,7 @@
    <div id="pickpocket" class="pickpocket" hidden><div class="pick-top"><strong data-pick-title></strong><p data-pick-hint></p></div><canvas width="640" height="400"></canvas><div class="pick-bottom"><div class="pick-track"><i data-pick-bar></i></div></div></div>
    <div id="shell" class="pickpocket shell" hidden><div class="pick-top"><strong data-i18n="shellTitle"></strong><small data-i18n="shellHint"></small></div><canvas width="640" height="360"></canvas><div class="pick-bottom"><span data-shell-note></span><small class="shell-net" data-shell-net></small><button class="primary-button shell-bet" data-shell-bet><span data-i18n="shellBet"></span></button><button id="shellExit" class="shell-exit"><kbd data-control="steal">E</kbd> <span data-i18n="shellExit"></span></button><small data-shell-exit-note data-i18n="shellForfeit" hidden></small></div></div>
    <section id="dialogue" class="dialogue" role="dialog" aria-labelledby="sonSpeaker" hidden><div class="dialogue-top"><span id="sonSpeaker" data-i18n="son"></span><small id="dialogueCount"></small></div><p id="sonLine"></p><div class="dialogue-bottom"><button id="dialogueNext" class="primary-button"><span></span><b>→</b></button></div></section>
-   <div id="endingOverlay" class="ending-overlay" hidden><div class="cinema-top"><span data-i18n="endingLabel"></span></div><div class="ending-copy"><i></i><h2 id="endingTitle"></h2><p id="endingCaption"></p><button id="endingSkip" class="ending-skip" data-i18n="skipEnding"></button><button id="endingRestart" class="primary-button" disabled><span data-i18n="overAction"></span><b>→</b></button></div></div>
+   <div id="endingOverlay" class="ending-overlay" hidden><div class="cinema-top"><span data-i18n="endingLabel"></span></div><div class="ending-copy"><h2 id="endingTitle"></h2><p id="endingCaption"></p><button id="endingSkip" class="ending-skip" data-i18n="skipEnding"></button><button id="endingRestart" class="primary-button" disabled><span data-i18n="overAction"></span><b>→</b></button></div></div>
    <div id="fade" class="fade"></div>
 <div class="modal-backdrop" id="modal" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
 <button id="closeModal" class="modal-close" aria-label="Back">←</button><h2 id="modalTitle"></h2><div id="modalBody"></div>
@@ -46,5 +46,5 @@
 <aside id="pauseTools" class="pause-tools" hidden><button id="saveBtn" class="primary-button" data-i18n="save"></button><select id="localeSelect" aria-label="Language"><option value="en">EN</option><option value="ko">한국어</option></select><button id="fullscreenBtn" data-i18n="fullscreen"></button></aside>
 </section></div>
 </section>
-<script type="module" src="app.js?v=bulk-memory-v29"></script>
+<script type="module" src="app.js?v=cleanup-v30"></script>
 </body></html>

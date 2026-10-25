@@ -1,4 +1,4 @@
-import {MESSAGES} from '../i18n.js?v=bulk-memory-v29';
+import {MESSAGES} from '../i18n.js?v=cleanup-v30';
 export const TARGETS=[
  ['resources','#resourceHud','돈·식사·기회 묶음','Resources','street'],
  ['coins','#resourceHud .hud-group:nth-child(1)','돈 칸','Coins','street'],
