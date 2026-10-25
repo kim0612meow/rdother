@@ -1,12 +1,12 @@
-import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=home-police-v18';
-import {ARCHITECTURE} from './themes/config.js?v=home-police-v18';
-import {Backgrounds} from './themes/backgrounds.js?v=home-police-v18';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=home-police-v18';
-import {drawCharacter,drawChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=home-police-v18';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=home-police-v18';
+import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=story-pose-v19';
+import {ARCHITECTURE} from './themes/config.js?v=story-pose-v19';
+import {Backgrounds} from './themes/backgrounds.js?v=story-pose-v19';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=story-pose-v19';
+import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=story-pose-v19';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=story-pose-v19';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=home-police-v18';
-import {HD2D} from './hd2d.js?v=home-police-v18';
+import {t,getLocale} from './i18n.js?v=story-pose-v19';
+import {HD2D} from './hd2d.js?v=story-pose-v19';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
@@ -192,9 +192,9 @@ const x=b.x,y=GROUND;rect(c,x-40,y-61,80,61,'#887955');rect(c,x-35,y-56,70,49,'#
   }
   if(p>ROBBERY.home-.6)rect(c,0,0,W,H,'rgba(8,12,11,'+((p-(ROBBERY.home-.6))/.6)+')');return;
  }
- this.homeBackground(c);newspaper(c,1023,605,65,26,.02);
- if(p<ROBBERY.collapse)this.child(c,1060,626,2.1,0,false);else{c.save();c.translate(1054,624);c.rotate(Math.PI/2);this.child(c,0,0,2.1,0,false);c.restore();}
- poly(c,[[937,627],[1009,623],[997,652],[955,655]],'#a79d7e');rect(c,945,627,50,3,'#626755');
+ this.homeBackground(c);c.save();c.translate(W/2,GROUND);c.scale(1.2,1.2);c.translate(-1030,-GROUND);
+ if(p<ROBBERY.collapse){newspaper(c,1023,628,65,17,.02);this.child(c,1060,638,2.1,0,false);}else{newspaper(c,990,638,138,14,.02);drawLyingChild(c,1054,GROUND,2.1);}
+ poly(c,[[877,627],[949,623],[937,652],[895,655]],'#a79d7e');rect(c,885,627,50,3,'#626755');c.restore();
  }
- drawCollapse(c,g,time){this.homeBackground(c);rect(c,0,0,W,H,'#8da78c16');c.save();c.translate(COLLAPSE_LAYOUT.center,GROUND);c.scale(COLLAPSE_LAYOUT.scale,COLLAPSE_LAYOUT.scale);c.translate(-COLLAPSE_LAYOUT.sourceCenter,-GROUND);c.save();c.translate(1054,624);c.rotate(Math.PI/2);this.child(c,0,0,1.7,0,false);c.restore();newspaper(c,1023,605,65,26,.02);person(c,{x:967,y:635,walk:0,face:1,pose:'seated'},true,2.3);poly(c,[[934,641],[995,641],[987,659],[947,661]],'#b0a77c');rect(c,943,631,43,10,'#d4c18d');c.restore();}
+ drawCollapse(c,g,time){this.homeBackground(c);rect(c,0,0,W,H,'#8da78c16');c.save();c.translate(COLLAPSE_LAYOUT.center,GROUND);c.scale(COLLAPSE_LAYOUT.scale,COLLAPSE_LAYOUT.scale);c.translate(-COLLAPSE_LAYOUT.sourceCenter,-GROUND);newspaper(c,990,638,138,14,.02);drawLyingChild(c,1054,GROUND,1.7);person(c,{x:967,y:635,walk:0,face:1,pose:'seated'},true,2.3);poly(c,[[934,641],[995,641],[987,659],[947,661]],'#b0a77c');rect(c,943,631,43,10,'#d4c18d');c.restore();}
 }
