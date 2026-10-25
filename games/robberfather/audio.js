@@ -1,4 +1,4 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=interaction-sounds-v22';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=sound-settings-v23';
 // Sound timing is separate from synthesis so pauses and story states stay silent.
 export class SoundDirector {
  constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.progress=0;this.bite=0;this.shout=0;}
@@ -27,7 +27,7 @@ export class SoundDirector {
 }
 
 export class Soundscape {
- constructor(createContext=()=>new (globalThis.AudioContext||globalThis.webkitAudioContext)()){this.createContext=createContext;this.volume=1;this.enabled=true;this.running=false;this.context=null;this.sources=new Set();this.director=new SoundDirector();this.locale='en';this.voice=null;this.foot=0;}
+ constructor(createContext=()=>new (globalThis.AudioContext||globalThis.webkitAudioContext)()){this.createContext=createContext;this.volume=1;this.volumes={background:1,effects:1,voice:1};this.enabled=true;this.running=false;this.context=null;this.sources=new Set();this.director=new SoundDirector();this.locale='en';this.voice=null;this.foot=0;}
  unlock(){
   if(!this.enabled)return;
   try{
@@ -36,16 +36,18 @@ export class Soundscape {
     this.master=c.createGain();this.master.gain.value=.8*this.volume;
     const limiter=c.createDynamicsCompressor();limiter.threshold.value=-12;limiter.knee.value=12;limiter.ratio.value=5;
     this.master.connect(limiter).connect(c.destination);
+    for(const key of ['background','effects','voice']){const bus=c.createGain();bus.gain.value=this.volumes[key];bus.connect(this.master);this[key+'Bus']=bus;}
     this.noise=c.createBuffer(1,c.sampleRate*2,c.sampleRate);const data=this.noise.getChannelData(0);
     let brown=0;for(let i=0;i<data.length;i++){brown=(brown+(Math.random()*2-1)*.04)/1.02;data[i]=brown*3;}
     this.ambient=c.createBufferSource();this.ambient.buffer=this.noise;this.ambient.loop=true;
     const filter=c.createBiquadFilter();filter.type='lowpass';filter.frequency.value=520;
-    this.air=c.createGain();this.air.gain.value=0;this.ambient.connect(filter).connect(this.air).connect(this.master);this.ambient.start();this.samples=new SampleMixer(c,this.master);
+    this.air=c.createGain();this.air.gain.value=0;this.ambient.connect(filter).connect(this.air).connect(this.backgroundBus);this.ambient.start();this.samples=new SampleMixer(c,this.effectsBus,undefined,{background:this.backgroundBus});
    }
    this.context.resume().catch(()=>{});
   }catch{this.enabled=false;}
  }
  setVolume(value){this.volume=Math.max(0,Math.min(1,Number(value)||0));if(this.master&&this.running)this.master.gain.setTargetAtTime(.8*this.volume,this.context.currentTime,.025);if(this.voice&&this.volume===0){globalThis.speechSynthesis?.cancel();this.voice=null;}}
+ setVolumes(values){for(const key of ['background','effects','voice']){const value=Number(values?.[key]);this.volumes[key]=Number.isFinite(value)?Math.max(0,Math.min(1,value)):1;const bus=this[key+'Bus'];if(bus)bus.gain.setTargetAtTime(this.volumes[key],this.context.currentTime,.025);}if(this.voice&&this.volumes.voice===0){globalThis.speechSynthesis?.cancel();this.voice=null;}}
  setEnabled(value){this.enabled=value;if(value)this.unlock();else this.quiet();}
  quiet(){
   this.running=false;
@@ -55,31 +57,32 @@ export class Soundscape {
   if(this.voice){globalThis.speechSynthesis?.cancel();this.voice=null;}
  }
  track(source){this.sources.add(source);const ended=source.onended;source.onended=()=>{ended?.();this.sources.delete(source);source.disconnect();};return source;}
- tone(frequency,duration,volume,delay=0,endFrequency=frequency,type='sine',filter=null){
+ tone(frequency,duration,volume,delay=0,endFrequency=frequency,type='sine',filter=null,channel='effects'){
   const c=this.context,at=c.currentTime+delay,osc=this.track(c.createOscillator()),gain=c.createGain();
   osc.type=type;osc.frequency.setValueAtTime(frequency,at);osc.frequency.exponentialRampToValueAtTime(Math.max(1,endFrequency),at+duration);
   gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),at+.008);gain.gain.exponentialRampToValueAtTime(.0001,at+duration);
   if(filter){const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=filter;f.Q.value=4;osc.connect(f).connect(gain);}else osc.connect(gain);
-  gain.connect(this.master);osc.start(at);osc.stop(at+duration+.015);
+  gain.connect(this[channel+'Bus']||this.master);osc.start(at);osc.stop(at+duration+.015);
  }
- noiseHit(duration,volume,frequency,delay=0){
+ noiseHit(duration,volume,frequency,delay=0,channel='effects'){
   const c=this.context,at=c.currentTime+delay,source=this.track(c.createBufferSource()),gain=c.createGain(),filter=c.createBiquadFilter();
   source.buffer=this.noise;filter.type='bandpass';filter.frequency.value=frequency;filter.Q.value=.65;
   gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(volume,at+.008);gain.gain.exponentialRampToValueAtTime(.0001,at+duration);
-  source.connect(filter).connect(gain).connect(this.master);source.start(at,Math.random()*.8,duration);source.stop(at+duration+.01);
+  source.connect(filter).connect(gain).connect(this[channel+'Bus']||this.master);source.start(at,Math.random()*.8,duration);source.stop(at+duration+.01);
  }
  shout(){
+  if(this.volumes.voice===0)return;
   // Use an installed local voice when available; the voiced "hey" fallback is offline.
   const speech=globalThis.speechSynthesis,voices=speech?.getVoices()||[];
   const voice=voices.find(v=>v.localService&&v.lang.toLowerCase().startsWith(this.locale));
   if(voice&&globalThis.SpeechSynthesisUtterance&&!speech.speaking){
    const line=new SpeechSynthesisUtterance(this.locale==='ko'?'거기 서! 도둑이야!':'Hey! Stop! Thief!');
-   line.voice=voice;line.lang=voice.lang;line.volume=.65*this.volume;line.rate=1.15;line.pitch=.8;this.voice=line;
+   line.voice=voice;line.lang=voice.lang;line.volume=.65*this.volume*this.volumes.voice;line.rate=1.15;line.pitch=.8;this.voice=line;
    line.onend=line.onerror=()=>{if(this.voice===line)this.voice=null;};speech.speak(line);
   }else{
-   this.noiseHit(.08,.12,1400);
-   this.tone(165,.48,.09,.05,108,'sawtooth',730);
-   this.tone(168,.4,.045,.08,112,'sawtooth',1550);
+   this.noiseHit(.08,.12,1400,0,'voice');
+   this.tone(165,.48,.09,.05,108,'sawtooth',730,'voice');
+   this.tone(168,.4,.045,.08,112,'sawtooth',1550,'voice');
   }
  }
  play(event){
@@ -89,8 +92,8 @@ export class Soundscape {
    case'binOpened':case'binClosed':{const source=this.samples?.lid(e.type==='binOpened');if(source)this.track(source);break;}
    case'heartbeat':{
     if(this.inPocket&&this.samples?.has('heartbeat'))break;
-    const v=.13+e.tension*.06;this.tone(76,.115,v,0,39);this.noiseHit(.04,.025,180);
-    this.tone(65,.14,v*.65,.16,34);break;
+    const v=.13+e.tension*.06;this.tone(76,.115,v,0,39,'sine',null,'background');this.noiseHit(.04,.025,180,0,'background');
+    this.tone(65,.14,v*.65,.16,34,'sine',null,'background');break;
    }
    case'step':{const source=this.samples?.step(e.surface,e.running);if(source){this.track(source);break;}}this.foot++;this.noiseHit(e.running?.12:.16,e.running?.19:.115,650+(this.foot%2)*260);this.tone(100+(this.foot%2)*15,.075,e.running?.07:.04,0,45);break;
    case'slip':this.noiseHit(.34,.14,620);this.tone(150,.14,.06,0,80);break;

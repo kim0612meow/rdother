@@ -1,5 +1,5 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=interaction-sounds-v22';
-import {dayDifficulty} from './difficulty.js?v=interaction-sounds-v22';
+import {ROBBERY,endingDuration} from './cinematics.js?v=sound-settings-v23';
+import {dayDifficulty} from './difficulty.js?v=sound-settings-v23';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,hideLock:.55,meal:3,recoveryMeal:5,hungerDifficulty:1.5,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
@@ -92,16 +92,16 @@ export class Game{
   if([TUTORIAL.counter,TUTORIAL.purchase].includes(this.tutorial)&&this.shop?.kind===1)return{kind:'counter',x:this.shop.x0+COUNTER,width:200,height:130,shopId:this.shop.id,ready:!!this.nearbyCounter(),action:'steal'};
   return null;
  }
- get tutorialHold(){const T=TUTORIAL,s=this.tutorial;if(s===T.purchase)return'buy';if(s===T.move&&this.travel===0)return'move';if((s===T.approach||s===T.resume)&&this.activeTarget===null&&this.target&&this.isBehind(this.target)&&!(this.target.lookBack>0))return'steal';return null;}
+ get tutorialHold(){const T=TUTORIAL,s=this.tutorial;if(s===T.dodge)return'withdraw';if(s===T.purchase)return'buy';if(s===T.move&&this.travel===0)return'move';if((s===T.approach||s===T.resume)&&this.activeTarget===null&&this.target&&this.isBehind(this.target)&&!(this.target.lookBack>0))return'steal';return null;}
  update(dt,input={}){dt=clamp(dt,0,.05);this.time+=dt;if(this.mode==='prologue'){this.prologueTime+=dt;if(this.prologueTime>=PROLOGUE_SECONDS/2)this.prologueIndex=1;if(this.prologueTime>=PROLOGUE_SECONDS)this.skipPrologue();return;}if(this.mode==='night'){this.nightTime+=dt;return;}if(this.mode==='ending'){const before=this.endingTime;this.endingTime+=dt;if(this.ending==='robbed'){if(before<ROBBERY.hit&&this.endingTime>=ROBBERY.hit)this.emit('headStrike');for(const hit of ROBBERY.kicks)if(before<hit&&this.endingTime>=hit)this.emit('bodyStrike');if(before<ROBBERY.rob&&this.endingTime>=ROBBERY.rob){this.inventory=this.inventory.filter(x=>x!=='coin');this.emit('robberyTaken');}}return;}if(this.mode!=='day')return;
  const practice=this.tutorial<TUTORIAL.done;if(!practice){const priorTime=this.timeLeft;this.timeLeft=Math.max(0,this.timeLeft-dt);if(priorTime>30&&this.timeLeft<=30)this.emit('duskWarning');if(this.timeLeft===0){this.endChase();this.goHome('timeout');this.emit('timeout');return;}}
  if(practice&&[TUTORIAL.caught,TUTORIAL.memory,TUTORIAL.buyIntro,TUTORIAL.meal].includes(this.tutorial)){this.previousInput={};return;}
  this.cooldown=Math.max(0,this.cooldown-dt);const edge=key=>input[key]&&!this.previousInput[key];const p=this.player,wasInspecting=!!this.inspectedBin;
  if(wasInspecting&&(edge('steal')||edge('leave')))this.finishBin(!!edge('steal'));
- else if(!wasInspecting&&edge('hide')&&this.nearbyBin())this.inspectBin();
- const inspecting=wasInspecting||!!this.inspectedBin,dir=inspecting||['steal','buy'].includes(this.tutorialHold)?0:(input.right?1:0)-(input.left?1:0);
+ else if(!wasInspecting&&this.tutorial!==TUTORIAL.dodge&&edge('hide')&&this.nearbyBin())this.inspectBin();
+ const inspecting=wasInspecting||!!this.inspectedBin,dir=inspecting||['steal','buy','withdraw'].includes(this.tutorialHold)?0:(input.right?1:0)-(input.left?1:0);
  p.hideLock=Math.max(0,p.hideLock-dt);if(p.hidden&&!input.left&&!input.right&&!input.hide)p.coverExitReady=true;
- if(!inspecting){if(edge('hide')&&(!p.hidden||p.coverExitReady))this.toggleHide();if(p.hidden&&dir&&p.coverExitReady&&(edge('left')||edge('right')))this.toggleHide();if(edge('enter'))this.useDoor();}
+ if(!inspecting&&this.tutorial!==TUTORIAL.dodge){if(edge('hide')&&(!p.hidden||p.coverExitReady))this.toggleHide();if(p.hidden&&dir&&p.coverExitReady&&(edge('left')||edge('right')))this.toggleHide();if(edge('enter'))this.useDoor();}
  if(p.exhausted&&p.stamina>=RULES.stamina*.45)p.exhausted=false;const running=dir&&input.run&&!p.exhausted&&p.stamina>0&&!p.hidden;
  if(dir&&!p.hidden){const dx=dir*(running?RULES.run:RULES.walk)*dt,[lo,hi]=bounds(p.x);p.x=clamp(p.x+dx,lo,hi);p.face=dir;p.walk+=dt*(running?15:9);this.travel+=Math.abs(dx);}
  const inside=this.shop;if(inside&&dir<0&&!p.hidden&&p.x<=inside.x0+100){if(!this.chasers.length)this.useDoor();else if(!this.edgeExitBlocked){this.emit('doorBlocked');this.edgeExitBlocked=true;}}else this.edgeExitBlocked=false;
@@ -109,7 +109,7 @@ export class Game{
  if(this.tutorial===TUTORIAL.move&&this.travel>=75)this.tutorial=TUTORIAL.find;
  const bin=this.nearbyBin();this.target=this.nearest();const binPriority=bin&&!bin.searched&&(!this.target||distance(bin,p)<distance(this.target,p));if(binPriority)this.target=null;
  if(inspecting)this.target=null;
- if(!inspecting&&input.discard&&this.rottenCount&&!this.discardLatch){this.discardProgress+=dt;if(this.discardProgress>=RULES.discardHold){this.discardRotten();this.discardLatch=true;this.discardProgress=0;}}else if(!input.discard){this.discardProgress=0;this.discardLatch=false;}
+ if(!inspecting&&this.tutorial!==TUTORIAL.dodge&&input.discard&&this.rottenCount&&!this.discardLatch){this.discardProgress+=dt;if(this.discardProgress>=RULES.discardHold){this.discardRotten();this.discardLatch=true;this.discardProgress=0;}}else if(!input.discard){this.discardProgress=0;this.discardLatch=false;}
  if(this.tutorial===TUTORIAL.counter&&this.nearbyCounter()?.item==='potato')this.tutorial=TUTORIAL.purchase;
  if(this.target&&this.tutorial===TUTORIAL.find)this.tutorial=TUTORIAL.approach;
  if(input.pick&&this.target&&!dir&&!p.hidden&&!input.discard&&this.cooldown===0&&(this.activeTarget===this.target.id||this.isBehind(this.target))){const n=this.target,kind=TYPES[n.type],watching=this.isWatching(n),tn=this.turn,slip=valid(input.slip);if(this.activeTarget!==n.id){this.activeTarget=n.id;this.progress=0;this.suspicion=0;tn.phase='wait';tn.t=practice?Infinity:(kind.wait[0]+Math.random()*(kind.wait[1]-kind.wait[0]))/this.wary;if(this.tutorial===TUTORIAL.approach)this.tutorial=TUTORIAL.pull;if(this.tutorial===TUTORIAL.dodge){tn.phase='warn';tn.t=Infinity;}}this.progress=clamp(valid(input.trace),0,1)*kind.hold;if(practice&&this.tutorial!==TUTORIAL.resume){this.progress=Math.min(this.progress,kind.hold*(this.tutorialQte?.4:.18));if(this.tutorial===TUTORIAL.pull&&!this.tutorialQte&&this.progress>=kind.hold*.18)this.tutorial=TUTORIAL.qte;if(this.tutorial===TUTORIAL.qte&&input.qteHit){this.tutorialQte=true;this.tutorial=TUTORIAL.pull;}}this.suspicion+=(slip+valid(input.risk))*(practice?1:this.wary);

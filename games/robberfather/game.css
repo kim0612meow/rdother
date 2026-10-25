@@ -205,3 +205,5 @@ select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius
 .bin-guide{pointer-events:auto;font:700 19px system-ui;cursor:pointer;max-width:300px}.bin-guide kbd{font:700 22px system-ui;color:#ffe4a1}.bin-guide b{display:block;font-size:28px;line-height:1.1}
 
 .bin-guide.learned{border:1px solid #82917c;box-shadow:none;background:#1c302be8;color:#e2e6d6}.bin-guide.learned kbd{background:transparent;color:#e2e6d6;animation:none}.bin-guide.learned>b{animation:none;color:#c5cbbb;text-shadow:none}
+
+.volume-setting+.volume-setting{margin-top:20px}.shell-exit{background:#2e4438;color:#f3dfad;border:1px solid #9ca584;border-radius:8px;padding:11px 15px;font:700 17px system-ui;white-space:nowrap}.shell-exit kbd{font:inherit}.shell .pick-bottom{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.shell [data-shell-exit-note]{flex-basis:100%;font-size:14px;color:#e6c7a1}

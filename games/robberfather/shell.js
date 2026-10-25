@@ -24,7 +24,7 @@ export class Shell{
  lift(cup){const k=Math.min(1,this.time/.35);if(this.state==='show'&&cup===this.ball)return 70*(this.time<this.showSeconds-.3?k:Math.max(0,1-(this.time-(this.showSeconds-.3))/.3));if(this.state==='reveal'&&(cup===this.chosen||cup===this.ball&&this.time>.5))return 70*(cup===this.chosen?k:Math.min(1,(this.time-.5)/.35));return 0;}
  cupAt(p){for(let cup=0;cup<3;cup++){const {x}=this.cupX(cup);if(Math.abs(p.x-x)<50&&p.y>CUP_Y-110&&p.y<CUP_Y+20)return cup;}return-1;}
  note(){if(this.state==='idle')return this.result===null?'shellIdle':this.result?'shellWin':'shellLose';return{show:'shellShow',shuffle:'shellShuffle',pick:'shellPick',reveal:this.win?'shellWin':'shellLose'}[this.state];}
- render(){const c=this.c;c.fillStyle='#1d2b22';c.fillRect(0,0,W,H);const glow=c.createRadialGradient(W/2,40,10,W/2,120,380);glow.addColorStop(0,'#f0c9703a');glow.addColorStop(1,'#f0c97000');c.fillStyle=glow;c.fillRect(0,0,W,H);
+ render(){this.root.querySelector('[data-shell-exit-note]').hidden=!this.busy;const c=this.c;c.fillStyle='#1d2b22';c.fillRect(0,0,W,H);const glow=c.createRadialGradient(W/2,40,10,W/2,120,380);glow.addColorStop(0,'#f0c9703a');glow.addColorStop(1,'#f0c97000');c.fillStyle=glow;c.fillRect(0,0,W,H);
   c.fillStyle='#5b4630';c.fillRect(40,CUP_Y-6,W-80,H-CUP_Y);c.fillStyle='#7a6040';c.fillRect(40,CUP_Y-6,W-80,10);
   const order=[0,1,2].sort((a,b)=>this.cupX(a).y-this.cupX(b).y);
   const bx=this.cupX(this.ball).x;c.fillStyle='#d8d0b8';c.beginPath();c.arc(bx,CUP_Y-14,11,0,Math.PI*2);c.fill();c.fillStyle='#ffffff80';c.fillRect(bx-5,CUP_Y-21,4,4);

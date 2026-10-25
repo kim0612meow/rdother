@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=interaction-sounds-v22';
+import {controlText} from './settings.js?v=sound-settings-v23';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -274,7 +274,7 @@ export const MESSAGES={
     "scrapsCopy": "Only {count} of {required} portions, and some spoiled. You both stay hungry, and the sickness remains.",
     "scrapsTitle": "Not enough, and not good.",
     "shellBet": "Space · Time it / bet",
-    "shellHint": "Win: 2 coins. Lose: −1 coin. E Use to close.",
+    "shellHint": "Win: 2 coins. Lose: −1 coin.",
     "shellIdle": "Put a coin down and watch the ball.",
     "shellLose": "Empty. The coin is gone.",
     "shellNet": "Shell game so far · {net}",
@@ -335,6 +335,11 @@ export const MESSAGES={
     "unhidden": "You left cover.",
     "untilDusk": "Until night",
     "volume": "Volume",
+    "volume_background": "Background",
+    "volume_effects": "Effects",
+    "volume_voice": "Dialogue",
+    "shellExit": "Leave table",
+    "shellForfeit": "Leaving before the result loses the coin you bet.",
     "wealthy": "Wealthy passerby",
     "witnessed": "A bystander saw your hand! Run before the crowd closes in."
   },
@@ -610,7 +615,7 @@ export const MESSAGES={
     "scrapsCopy": "음식 {count}칸, 오늘 필요한 {required}칸에 모자라고 상한 음식도 섞였다. 굶주림과 병이 모두 남았다.",
     "scrapsTitle": "모자라고, 상한 저녁.",
     "shellBet": "Space 맞추기 · 베팅",
-    "shellHint": "맞히면 2칸, 틀리면 −1칸 · E 사용으로 닫기",
+    "shellHint": "맞히면 2칸, 틀리면 −1칸",
     "shellIdle": "돈을 걸고 공을 잘 보세요.",
     "shellLose": "빈 컵이다. 1칸을 잃었다.",
     "shellNet": "야바위 누적 · {net}칸",
@@ -671,6 +676,11 @@ export const MESSAGES={
     "unhidden": "엄폐물에서 나왔습니다.",
     "untilDusk": "밤까지",
     "volume": "음량",
+    "volume_background": "배경음",
+    "volume_effects": "효과음",
+    "volume_voice": "대사음",
+    "shellExit": "테이블 나가기",
+    "shellForfeit": "결과가 나오기 전에 나가면 건 돈을 잃어요.",
     "wealthy": "부유한 행인",
     "witnessed": "주변 사람이 손을 봤습니다! 사람들이 몰리기 전에 달리세요."
   }

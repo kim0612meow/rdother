@@ -1,12 +1,12 @@
-import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=interaction-sounds-v22';
-import {ARCHITECTURE} from './themes/config.js?v=interaction-sounds-v22';
-import {Backgrounds} from './themes/backgrounds.js?v=interaction-sounds-v22';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=interaction-sounds-v22';
-import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=interaction-sounds-v22';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=interaction-sounds-v22';
+import {COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=sound-settings-v23';
+import {ARCHITECTURE} from './themes/config.js?v=sound-settings-v23';
+import {Backgrounds} from './themes/backgrounds.js?v=sound-settings-v23';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=sound-settings-v23';
+import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=sound-settings-v23';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=sound-settings-v23';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=interaction-sounds-v22';
-import {HD2D} from './hd2d.js?v=interaction-sounds-v22';
+import {t,getLocale} from './i18n.js?v=sound-settings-v23';
+import {HD2D} from './hd2d.js?v=sound-settings-v23';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};

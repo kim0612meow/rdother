@@ -7,3 +7,5 @@
 Footfalls are played as varied individual contacts timed from actual travel, rather than a moving-away recording on repeat. Running changes contact cadence and volume. Door/purchase levels are adjusted at playback. Pocket entry reuses a short gesture from the [v21 pocket recording](../audio-v21/CREDITS.md). The brief denial tone is synthesized in the game.
 
 [Earlier music and effects credits](../audio-v21/CREDITS.md). Source URLs and SHA-256 hashes are retained in SOURCES.json.
+
+Revision 23 plays only the opening portion of the door recording (0–0.58 seconds) and one short purchase gesture (0.23–0.53 seconds). Original audio files remain unchanged. Background recordings, sound effects and spoken shouts have separate volume controls.

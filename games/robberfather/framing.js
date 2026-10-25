@@ -1,4 +1,4 @@
-import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=interaction-sounds-v22';
+import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=sound-settings-v23';
 
 // Keep a narrow walkable foreground at every street/room camera scale.
 export const FOOT_LINE=.85;
