@@ -161,9 +161,25 @@ test('the arrest holds the capture and keeps child and officer visible through t
 test('tap and hold E are mutually exclusive, buy once, and cancel when the counter changes',async()=>{
  const {UseInput}=await import('../games/robberfather/use-input.js');const key=new UseInput();key.press(0,1);assert.equal(key.release(200,1),'tap');key.press(0,1);assert.equal(key.release(400,1),null);key.press(0,1);assert.equal(key.update(649,1),null);assert.equal(key.update(650,1),'buy');assert.equal(key.update(900,1),null);assert.equal(key.release(1000,1),null);key.press(0,1);assert.equal(key.release(650,1),'buy');key.press(0,1);assert.equal(key.update(700,2),null);assert.equal(key.release(750,2),null);key.press(0,1);key.cancel();assert.equal(key.release(100,1),null);
 });
-test('leaving rotten food in a bin preserves it across leaving, saving and returning',async()=>{
- const {BINS}=await import('../games/robberfather/engine.js');const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.npcs=[];g.player.x=BINS[0].x;g.update(.02,{leave:true});assert.equal(g.nearbyBin().searched,false);assert.equal(g.rottenCount,0);g.player.x+=200;g.update(.02);const copy=new Game(g.save());copy.start();copy.player.x=BINS[0].x;copy.update(.02,{steal:true});assert.equal(copy.rottenCount,1);assert.equal(copy.nearbyBin(),null);
+test('F opens a bin, Q closes without taking food, and E later collects it once',async()=>{
+ const {BINS}=await import('../games/robberfather/engine.js');const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.npcs=[];g.player.x=BINS[0].x;
+ g.update(.02,{steal:true});assert.equal(g.rottenCount,0);assert.equal(g.inspectedBin,null);g.update(.02,{});g.update(.02,{hide:true});assert.ok(g.inspectedBin);assert.equal(g.player.hidden,false);assert.equal(g.drainEvents().filter(e=>e.type==='binOpened').length,1);
+ g.update(.02,{hide:true});assert.equal(g.drainEvents().filter(e=>e.type==='binOpened').length,0);g.update(.02,{leave:true});assert.equal(g.inspectedBin,null);assert.equal(g.nearbyBin().searched,false);assert.equal(g.rottenCount,0);assert.equal(g.drainEvents().filter(e=>e.type==='binClosed').length,1);
+ const copy=new Game(g.save());copy.start();copy.player.x=BINS[0].x;copy.update(.02,{hide:true});copy.update(.02,{steal:true});assert.equal(copy.rottenCount,1);assert.equal(copy.inspectedBin,null);assert.equal(copy.nearbyBin().searched,true);assert.equal(copy.takeBin(copy.nearbyBin()),false);assert.equal(copy.rottenCount,1);
 });
+test('bin inspection blocks movement and cover, closes with E even when full, and preserves the food',async()=>{
+ const {BINS}=await import('../games/robberfather/engine.js');const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.npcs=[];g.player.x=BINS[0].x;g.add('fresh',5);g.update(.02,{hide:true});const x=g.player.x;g.update(.02,{right:true,run:true,hide:true});assert.equal(g.player.x,x);assert.ok(g.inspectedBin);g.update(.02,{steal:true});assert.equal(g.inspectedBin,null);assert.equal(g.nearbyBin().searched,false);assert.equal(g.food,5);assert.ok(g.drainEvents().some(e=>e.type==='foodFull'));
+});
+test('nightfall closes an inspected bin and an open lid never survives a save reload',async()=>{
+ const {BINS}=await import('../games/robberfather/engine.js');const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.npcs=[];g.player.x=BINS[0].x;g.inspectBin();const copy=new Game(g.save());copy.start();assert.equal(copy.inspectedBin,null);g.timeLeft=.01;g.update(.02);assert.equal(g.inspectedBin,null);assert.ok(g.drainEvents().some(e=>e.type==='binClosed'));
+});
+test('the ambience follows zoom continuously and quiet nights never play street chatter',async()=>{
+ const {ambienceMix}=await import('../games/robberfather/audio-samples.js');let priorStreet=1,priorHeart=-1;for(const f of [0,.1,.3,.5,.8,1]){const m=ambienceMix({mode:'day'},f);assert.ok(m.street<=priorStreet);assert.ok(m.heartbeat>=priorHeart);assert.equal(m.night,0);priorStreet=m.street;priorHeart=m.heartbeat;}const night=ambienceMix({mode:'night'},1);assert.ok(night.night>0&&night.night<.04);assert.equal(night.street,0);assert.equal(night.heartbeat,0);
+});
+test('lid playback separates the opening and closing around their recorded quiet gap',async()=>{
+ const {binLidRanges}=await import('../games/robberfather/audio-samples.js');const data=new Float32Array(5000);for(let i=200;i<1000;i++)data[i]=.5;for(let i=3500;i<4300;i++)data[i]=.5;const r=binLidRanges({duration:5,sampleRate:1000,getChannelData:()=>data});assert.ok(r.open[1]>=1&&r.open[1]<1.1);assert.ok(r.close[0]>3.4&&r.close[0]<3.6);assert.ok(r.open[1]<r.close[0]);assert.equal(r.close[0]+r.close[1],5);
+});
+
 test('new cover ignores already-held movement and F, including through the safety delay',async()=>{
  const {BOXES}=await import('../games/robberfather/engine.js');const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.player.x=BOXES[0].x;g.update(.02,{right:true,hide:true});assert.equal(g.player.hidden,true);assert.equal(g.toggleHide(),false);tick(g,1,{right:true,hide:true});assert.equal(g.player.hidden,true);g.update(.02,{});g.update(.02,{right:true});assert.equal(g.player.hidden,false);
 });
@@ -256,3 +272,5 @@ test('civilian, wealthy and police reward 1, 2 and 1 actual coins while respecti
 test('the pocket title shows the same nominal reward and difficulty as the street for every NPC type',async()=>{
  const {TYPES}=await import('../games/robberfather/engine.js');for(const type of ['civilian','wealthy','police']){const title={},hint={},root={hidden:true,querySelector:s=>s==='[data-pick-title]'?title:hint},p=Object.create(Pickpocket.prototype);Object.assign(p,{root,t:(key,vars)=>key==='pickTitle'?JSON.stringify(vars):key,render(){}});p.open({type,id:0},72,{day:1});const vars=JSON.parse(title.textContent);assert.equal(vars.coins,TYPES[type].slots);assert.equal(vars.difficulty,'difficulty_'+TYPES[type].difficulty);}
 });
+
+test('an emptied bin remains inspectable without blocking pickpocket targets beside it',async()=>{const {BINS}=await import('../games/robberfather/engine.js');const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.player.x=BINS[0].x;g.bins[0].searched=true;g.npcs[0].x=g.player.x+42;g.npcs[0].face=1;g.update(.02);assert.ok(g.nearbyBin());assert.equal(g.target?.id,g.npcs[0].id);});

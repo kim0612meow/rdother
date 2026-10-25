@@ -1,3 +1,4 @@
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=audio-bin-v20';
 // Sound timing is separate from synthesis so pauses and story states stay silent.
 export class SoundDirector {
  constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.bite=0;this.shout=0;}
@@ -39,7 +40,7 @@ export class Soundscape {
     let brown=0;for(let i=0;i<data.length;i++){brown=(brown+(Math.random()*2-1)*.04)/1.02;data[i]=brown*3;}
     this.ambient=c.createBufferSource();this.ambient.buffer=this.noise;this.ambient.loop=true;
     const filter=c.createBiquadFilter();filter.type='lowpass';filter.frequency.value=520;
-    this.air=c.createGain();this.air.gain.value=0;this.ambient.connect(filter).connect(this.air).connect(this.master);this.ambient.start();
+    this.air=c.createGain();this.air.gain.value=0;this.ambient.connect(filter).connect(this.air).connect(this.master);this.ambient.start();this.samples=new SampleMixer(c,this.master);
    }
    this.context.resume().catch(()=>{});
   }catch{this.enabled=false;}
@@ -53,7 +54,7 @@ export class Soundscape {
   this.sources.clear();
   if(this.voice){globalThis.speechSynthesis?.cancel();this.voice=null;}
  }
- track(source){this.sources.add(source);source.onended=()=>{this.sources.delete(source);source.disconnect();};return source;}
+ track(source){this.sources.add(source);const ended=source.onended;source.onended=()=>{ended?.();this.sources.delete(source);source.disconnect();};return source;}
  tone(frequency,duration,volume,delay=0,endFrequency=frequency,type='sine',filter=null){
   const c=this.context,at=c.currentTime+delay,osc=this.track(c.createOscillator()),gain=c.createGain();
   osc.type=type;osc.frequency.setValueAtTime(frequency,at);osc.frequency.exponentialRampToValueAtTime(Math.max(1,endFrequency),at+duration);
@@ -85,7 +86,9 @@ export class Soundscape {
   if(!this.context||!this.enabled||!this.running)return;
   const e=typeof event==='string'?{type:event}:event;
   switch(e.type){
+   case'binOpened':case'binClosed':{const source=this.samples?.lid(e.type==='binOpened');if(source)this.track(source);break;}
    case'heartbeat':{
+    if(this.inPocket&&this.samples?.has('heartbeat'))break;
     const v=.13+e.tension*.06;this.tone(76,.115,v,0,39);this.noiseHit(.04,.025,180);
     this.tone(65,.14,v*.65,.16,34);break;
    }
@@ -100,7 +103,7 @@ export class Soundscape {
    case'shout':this.shout();break;
    case'eat':this.noiseHit(.18,.07,700,.2);this.noiseHit(.16,.055,500,.48);this.noiseHit(.18,.04,650,.77);break;
    case'hidden':case'unhidden':case'enterShop':case'exitShop':this.noiseHit(.38,.2,530);this.tone(110,.16,.045,.03,50);break;
-   case'bought':this.noiseHit(.12,.09,1900);this.noiseHit(.16,.065,1300,.13);break;case'medicine':this.noiseHit(.18,.08,1600);break;case'noMoney':case'notSick':break;case'scavenged':case'discarded':this.noiseHit(.42,.18,1100);break;
+   case'bought':this.noiseHit(.12,.09,1900);this.noiseHit(.16,.065,1300,.13);break;case'medicine':this.noiseHit(.18,.08,1600);break;case'noMoney':case'notSick':break;case'scavenged':if(!this.samples?.has('bin'))this.noiseHit(.42,.18,1100);break;case'discarded':this.noiseHit(.42,.18,1100);break;
    case'caught':this.noiseHit(.3,.22,470);break;
    case'betPlaced':this.noiseHit(.09,.07,1800);break;
    case'cupMove':this.noiseHit(.09,.07,900);break;
@@ -113,12 +116,13 @@ export class Soundscape {
    case'start':break;
   }
  }
- update(g,dt,active,locale){
+ update(g,dt,active,locale,focus=0){
   this.locale=locale;
   const audible=active&&this.enabled&&!!this.context;
   if(!audible){this.director.update(g,dt,false);if(this.running)this.quiet();return;}
   if(!this.running){this.running=true;this.master.gain.setTargetAtTime(.8*this.volume,this.context.currentTime,.025);}
-  this.air.gain.setTargetAtTime(g.mode==='day'?.013:.008,this.context.currentTime,.6);
+  this.inPocket=g.mode==='day'&&g.activeTarget!==null;this.samples?.update(ambienceMix(g,focus));
+  this.air.gain.setTargetAtTime(this.samples?.has('street')?0:g.mode==='day'?.013:.008,this.context.currentTime,.6);
   for(const event of this.director.update(g,dt))this.play(event);
  }
 }

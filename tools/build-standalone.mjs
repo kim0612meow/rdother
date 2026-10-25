@@ -22,7 +22,7 @@ async function emit(file){
  const m=modules.get(file);for(const dep of m.deps)await emit(dep);
  let code=m.code.replace(imports,(_,items,relative)=>`const {${items.trim().replace(/\s+as\s+/g,':')}}=${modules.get(path.resolve(path.dirname(file),relative)).id};`).replace(/\bexport\s+(?=const\b|class\b|function\b)/g,'');
  for(const match of [...code.matchAll(/new URL\('([^']+)',import.meta.url\).href/g)]){
-  const asset=await readFile(path.resolve(path.dirname(file),match[1]));code=code.replace(match[0],JSON.stringify('data:image/png;base64,'+asset.toString('base64')));
+  const asset=await readFile(path.resolve(path.dirname(file),match[1]));code=code.replace(match[0],JSON.stringify('data:'+({'.png':'image/png','.mp3':'audio/mpeg'}[path.extname(match[1])]||'application/octet-stream')+';base64,'+asset.toString('base64')));
  }
  js+=`const ${m.id}=(()=>{\n${code}\nreturn {${[...m.names].join(',')}};\n})();\n`;emitted.add(file);
 }

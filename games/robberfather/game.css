@@ -88,7 +88,7 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 #hidePrompt,#doorPrompt,#shopPrompt{left:auto;right:20px;transform:none}
 .game-stage:has(#homePrompt:not([hidden])) :is(#hidePrompt,#doorPrompt,#shopPrompt){bottom:90px}
 .hide-prompt.unsafe{color:#ffb297}
-.bin-card{bottom:auto;top:30%;max-width:360px}
+.bin-card{bottom:auto;top:30%;max-width:400px;border:1px solid #b2a37c}.bin-card button{background:#425c47;color:#fff1d0;border:1px solid #a3ac8c;padding:9px 12px;border-radius:7px;font:inherit}.bin-card button:disabled{opacity:.45}
 .bin-card p{line-height:1.6}
 .bin-card>div{display:flex;gap:24px;color:#e3c989}
 .discard-note{position:absolute;right:20px;bottom:158px;background:var(--panel);padding:8px 12px;border-radius:10px;font-size:14px;z-index:4}
