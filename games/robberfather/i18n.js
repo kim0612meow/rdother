@@ -1,4 +1,5 @@
-import {controlText} from './settings.js?v=ui-editor-v26';
+import {UI_TEXT} from './ui-editor/text-overrides.js';
+import {controlText} from './settings.js?v=ui-text-v27';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -222,6 +223,7 @@ export const MESSAGES={
     "partialMealCopy": "You shared {count} portions, but needed {required} today. Both are still hungry.",
     "partialMealTitle": "Dinner was not enough.",
     "pause": "Menu",
+    "pauseButton": "Ⅱ",
     "pauseControl": "Pause",
     "pausedCopy": "",
     "pausedTitle": "Menu",
@@ -563,6 +565,7 @@ export const MESSAGES={
     "partialMealCopy": "음식 {count}칸을 나눠 먹었지만, 오늘은 {required}칸이 필요했다. 두 사람은 여전히 굶주렸다.",
     "partialMealTitle": "아직 모자란 저녁.",
     "pause": "메뉴",
+    "pauseButton": "Ⅱ",
     "pauseControl": "일시정지",
     "pausedCopy": "",
     "pausedTitle": "메뉴",
@@ -689,4 +692,4 @@ export const MESSAGES={
 let locale=DEFAULT_LOCALE;
 export function getLocale(){return locale;}
 export function setLocale(value){locale=Object.hasOwn(MESSAGES,value)?value:DEFAULT_LOCALE;}
-export function t(key,vars={}){return controlText(MESSAGES[locale][key]??MESSAGES.en[key]??key).replace(/\{(\w+)\}/g,(_,name)=>String(vars[name]??`{${name}}`));}
+export function t(key,vars={}){return controlText(UI_TEXT[locale][key]??MESSAGES[locale][key]??MESSAGES.en[key]??key).replace(/\{(\w+)\}/g,(_,name)=>String(vars[name]??`{${name}}`));}
