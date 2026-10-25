@@ -1,19 +1,19 @@
-import {activeDetail} from './ui-editor/scopes.js?v=indoor-audio-v34';
-import {DayNotice} from './day-notice.js?v=indoor-audio-v34';
-import {WAITING_CHILD} from './framing.js?v=indoor-audio-v34';
-import {installUIEditor} from './ui-editor/index.js?v=indoor-audio-v34';
-import {DialogueTyper} from './dialogue.js?v=indoor-audio-v34';
-import {settings,DEFAULT_BINDINGS} from './settings.js?v=indoor-audio-v34';
-import {UseInput} from './use-input.js?v=indoor-audio-v34';
-import {PocketInput} from './pocket-input.js?v=indoor-audio-v34';
-import {ROBBERY,endingPart} from './cinematics.js?v=indoor-audio-v34';
-import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=indoor-audio-v34';
-import {Pickpocket} from './pickpocket.js?v=indoor-audio-v34';
-import {Shell} from './shell.js?v=indoor-audio-v34';
-import {Renderer} from './scene.js?v=indoor-audio-v34';
-import {Soundscape} from './audio.js?v=indoor-audio-v34';
-import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=indoor-audio-v34';
-import {getMorningLines,storyText} from './story.js?v=indoor-audio-v34';
+import {activeDetail} from './ui-editor/scopes.js?v=music-installed-v37';
+import {DayNotice} from './day-notice.js?v=music-installed-v37';
+import {WAITING_CHILD} from './framing.js?v=music-installed-v37';
+import {installUIEditor} from './ui-editor/index.js?v=music-installed-v37';
+import {DialogueTyper} from './dialogue.js?v=music-installed-v37';
+import {settings,DEFAULT_BINDINGS} from './settings.js?v=music-installed-v37';
+import {UseInput} from './use-input.js?v=music-installed-v37';
+import {PocketInput} from './pocket-input.js?v=music-installed-v37';
+import {ROBBERY,endingPart} from './cinematics.js?v=music-installed-v37';
+import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=music-installed-v37';
+import {Pickpocket} from './pickpocket.js?v=music-installed-v37';
+import {Shell} from './shell.js?v=music-installed-v37';
+import {Renderer} from './scene.js?v=music-installed-v37';
+import {Soundscape} from './audio.js?v=music-installed-v37';
+import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=music-installed-v37';
+import {getMorningLines,storyText} from './story.js?v=music-installed-v37';
 const $=id=>document.getElementById(id),SAVE='one-more-meal-v3',LANG='one-more-meal-language';
 function getSaved(){try{const s=JSON.parse(localStorage.getItem(SAVE));if(s?.version===3&&Number.isInteger(s.day)&&s.day>0&&s.day<1000000&&Array.isArray(s.inventory))return s;}catch{}return null;}
 let saved=getSaved(),game=new Game(),renderer=new Renderer($('game')),held=new Set(),pendingPresses=new Set(),modalOpen=false,transitioning=false,lastTime=0,visualTime=0,toastUntil=0,tutorialUntil=0,lastSignature='',sound=true,soundscape=new Soundscape(),modalSpec=null,previousFocus=null,toastSpec=null;
@@ -65,7 +65,7 @@ function renderSettings(page=pausePage){
   const grid=document.createElement('div');grid.className='binding-grid';for(const action of Object.keys(DEFAULT_BINDINGS)){const label=document.createElement('label'),button=document.createElement('button');button.type='button';button.dataset.action=action;button.textContent=captureAction===action?t('pressKey'):settings.label(action);button.setAttribute('aria-label',t('bind_'+action)+' · '+settings.label(action));button.onclick=()=>{captureAction=action;renderSettings('controls');};label.append(document.createTextNode(t('bind_'+action)),button);grid.append(label);}body.append(grid);if(captureAction)grid.querySelector('[data-action="'+captureAction+'"]').focus();const status=document.createElement('p');status.id='bindingStatus';status.className='binding-note';status.setAttribute('role','status');status.textContent=t(captureAction?'pressKeyHint':'bindingHint');body.append(status);const reset=document.createElement('button');reset.textContent=t('resetSettings');reset.onclick=()=>{settings.bindings={...DEFAULT_BINDINGS};settings.save();soundscape.setVolume(1);soundscape.setVolumes(settings.volumes);captureAction=null;strings();renderSettings('controls');};body.append(reset);
  }
  if(page==='help'){
-  const list=document.createElement('ul');for(let i=1;i<=6;i++){const li=document.createElement('li');li.textContent=t('helpShort'+i);list.append(li);}body.append(list);const table=document.createElement('table'),head=document.createElement('tr');for(const key of ['shopLabel','itemLabel','priceLabel']){const th=document.createElement('th');th.textContent=t(key);head.append(th);}table.append(head);for(const [shop,item,price]of [['bakery','breadItem',PRICES.bread.price],['market','potatoItem',PRICES.potato.price],['pharmacy','medicineItem',PRICES.medicine.price]]){const tr=document.createElement('tr');for(const text of [t(shop),t(item),String(price)]){const td=document.createElement('td');td.textContent=text;tr.append(td);}table.append(tr);}body.append(table);const credits=document.createElement('details'),summary=document.createElement('summary'),credit=document.createElement('p');summary.textContent=t('audioCredits');credit.innerHTML='“Chase Pulse Faster” — Kevin MacLeod (incompetech.com). <a href="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100384" target="_blank" rel="noopener">Source</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Volume and looping adjusted. Other sampled effects: CC0; <a href="./assets/audio-v22/CREDITS.md" target="_blank" rel="noopener">credits</a>.';credits.append(summary,credit);body.append(credits);
+  const list=document.createElement('ul');for(let i=1;i<=6;i++){const li=document.createElement('li');li.textContent=t('helpShort'+i);list.append(li);}body.append(list);const table=document.createElement('table'),head=document.createElement('tr');for(const key of ['shopLabel','itemLabel','priceLabel']){const th=document.createElement('th');th.textContent=t(key);head.append(th);}table.append(head);for(const [shop,item,price]of [['bakery','breadItem',PRICES.bread.price],['market','potatoItem',PRICES.potato.price],['pharmacy','medicineItem',PRICES.medicine.price]]){const tr=document.createElement('tr');for(const text of [t(shop),t(item),String(price)]){const td=document.createElement('td');td.textContent=text;tr.append(td);}table.append(tr);}body.append(table);const credits=document.createElement('details'),summary=document.createElement('summary'),credit=document.createElement('p');summary.textContent=t('audioCredits');credit.innerHTML='“Chase Pulse Faster” — Kevin MacLeod (incompetech.com). <a href="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100384" target="_blank" rel="noopener">Source</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Volume and looping adjusted. “Despair and Triumph” — Kevin MacLeod (incompetech.com). <a href="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400012" target="_blank" rel="noopener">Source</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Volume, looping and crossfades adjusted. “Contemplation” — Joth, CC0. <a href="./assets/audio-v37/CREDITS.md" target="_blank" rel="noopener">Music credits</a>. Other sampled effects: CC0; <a href="./assets/audio-v22/CREDITS.md" target="_blank" rel="noopener">credits</a>.';credits.append(summary,credit);body.append(credits);
  }
 }
 function openModal(spec){dayNotice.dismiss();game.tutorialSkipProgress=0;previousFocus=document.activeElement;modalSpec=spec;modalOpen=true;pocketKeys.clear();soundscape.quiet();held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;$('modalBody').replaceChildren();$('modalCancel').hidden=!spec.confirm;$('modal').hidden=false;if(spec.settings)renderSettings(spec.page||'menu');else{$('modal').classList.remove('pause-menu');$('modalTitle').hidden=false;$('modalTitle').textContent=t(spec.title,spec.vars);$('pauseChoices').hidden=true;$('pauseTools').hidden=true;$('preferences').hidden=true;const p=document.createElement('p');p.textContent=t(spec.body,spec.vars);$('modalBody').append(p);$('modalAction').querySelector('span').textContent=t(spec.action||'resume');$('closeModal').hidden=!!spec.required;}$('modal').querySelector('.modal').focus();}

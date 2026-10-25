@@ -1,0 +1,24 @@
+[
+  {
+    "file": "contemplation.mp3",
+    "title": "Contemplation",
+    "author": "Joth",
+    "url": "https://opengameart.org/content/contemplation-0",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "download": "https://opengameart.org/sites/default/files/Contemplation.mp3",
+    "checkedOn": "2026-10-25",
+    "sha256": "283962d3a975c93613c46cda30c9f0816176ae3e2899f961591a49e2d41b4bf3"
+  },
+  {
+    "file": "despair-and-triumph.mp3",
+    "title": "Despair and Triumph",
+    "author": "Kevin MacLeod",
+    "url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400012",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "download": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Despair%20and%20Triumph.mp3",
+    "checkedOn": "2026-10-25",
+    "sha256": "957526b21ae4859557c5b1082a81ace57c6d01cac7055c0a0f63e4f3ea82c46c"
+  }
+]

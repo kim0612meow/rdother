@@ -1,4 +1,6 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=indoor-audio-v34';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=music-installed-v37';
+// Three times the previous default gain; category sliders keep their saved values.
+export const MASTER_GAIN=2.4;
 // Sound timing is separate from synthesis so pauses and story states stay silent.
 export class SoundDirector {
  constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.progress=0;this.bite=0;this.shout=0;}
@@ -33,7 +35,7 @@ export class Soundscape {
   try{
    if(!this.context){
     this.context=this.createContext();const c=this.context;
-    this.master=c.createGain();this.master.gain.value=.8*this.volume;
+    this.master=c.createGain();this.master.gain.value=MASTER_GAIN*this.volume;
     const limiter=c.createDynamicsCompressor();limiter.threshold.value=-12;limiter.knee.value=12;limiter.ratio.value=5;
     this.master.connect(limiter).connect(c.destination);
     for(const key of ['background','effects','voice']){const bus=c.createGain();bus.gain.value=key==='voice'&&this.indoors?0:this.volumes[key];bus.connect(this.master);this[key+'Bus']=bus;}
@@ -46,7 +48,7 @@ export class Soundscape {
    this.context.resume().catch(()=>{});
   }catch{this.enabled=false;}
  }
- setVolume(value){this.volume=Math.max(0,Math.min(1,Number(value)||0));if(this.master&&this.running)this.master.gain.setTargetAtTime(.8*this.volume,this.context.currentTime,.025);if(this.voice&&this.volume===0){globalThis.speechSynthesis?.cancel();this.voice=null;}}
+ setVolume(value){this.volume=Math.max(0,Math.min(1,Number(value)||0));if(this.master&&this.running)this.master.gain.setTargetAtTime(MASTER_GAIN*this.volume,this.context.currentTime,.025);if(this.voice&&this.volume===0){globalThis.speechSynthesis?.cancel();this.voice=null;}}
  setVolumes(values){for(const key of ['background','effects','voice']){const value=Number(values?.[key]);this.volumes[key]=Number.isFinite(value)?Math.max(0,Math.min(1,value)):1;const bus=this[key+'Bus'];if(bus)bus.gain.setTargetAtTime(key==='voice'&&this.indoors?0:this.volumes[key],this.context.currentTime,.025);}if(this.voice&&this.volumes.voice===0){globalThis.speechSynthesis?.cancel();this.voice=null;}}
  setLocation(g){const indoors=!!g.shop&&g.shop.kind!==5;if(this.indoors===indoors)return;this.indoors=indoors;if(this.voiceBus)this.voiceBus.gain.setTargetAtTime(indoors?0:this.volumes.voice,this.context.currentTime,.015);if(indoors&&this.voice){globalThis.speechSynthesis?.cancel();this.voice=null;}}
  setEnabled(value){this.enabled=value;if(value)this.unlock();else this.quiet();}
@@ -78,7 +80,7 @@ export class Soundscape {
   const voice=voices.find(v=>v.localService&&v.lang.toLowerCase().startsWith(this.locale));
   if(voice&&globalThis.SpeechSynthesisUtterance&&!speech.speaking){
    const line=new SpeechSynthesisUtterance(this.locale==='ko'?'거기 서! 도둑이야!':'Hey! Stop! Thief!');
-   line.voice=voice;line.lang=voice.lang;line.volume=.65*this.volume*this.volumes.voice;line.rate=1.15;line.pitch=.8;this.voice=line;
+   line.voice=voice;line.lang=voice.lang;line.volume=Math.min(1,1.95*this.volume*this.volumes.voice);line.rate=1.15;line.pitch=.8;this.voice=line;
    line.onend=line.onerror=()=>{if(this.voice===line)this.voice=null;};speech.speak(line);
   }else{
    this.noiseHit(.08,.12,1400,0,'voice');
@@ -125,7 +127,7 @@ export class Soundscape {
   this.locale=locale;this.setLocation(g);
   const audible=active&&this.enabled&&!!this.context;
   if(!audible){this.director.update(g,dt,false);if(this.running)this.quiet();return;}
-  if(!this.running){this.running=true;this.master.gain.setTargetAtTime(.8*this.volume,this.context.currentTime,.025);}
+  if(!this.running){this.running=true;this.master.gain.setTargetAtTime(MASTER_GAIN*this.volume,this.context.currentTime,.025);}
   this.inPocket=g.mode==='day'&&g.activeTarget!==null;this.samples?.update(ambienceMix(g,focus));
   this.air.gain.setTargetAtTime(this.samples?.has('street')?0:g.mode==='day'?.013:.008,this.context.currentTime,.6);
   for(const event of this.director.update(g,dt))this.play(event);

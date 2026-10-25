@@ -8,4 +8,4 @@ Rejected audition sets:
 - Hidden Agenda; Medieval: Market Day; Medieval: The Old Tower Inn; Medieval: Exploration.
 - Sunset Walk; Relaxing Piano Music; Calm Piano 1 (Vaporware); Dream Culture.
 
-Current auditions are in music-review.html. They are original external streams, not installed gameplay tracks. Descriptions are based on the composers' published classifications; playback checks do not establish subjective fit. Do not describe them as listened-to or approved without evidence.
+Current auditions are in music-review.html. The user approved both current candidates on 2026-10-25. Contemplation is installed for the street, and Despair and Triumph for shop interiors, with locally hosted originals and source/license records in assets/audio-v37/. Descriptions are based on the composers' published classifications; playback checks do not establish subjective fit. Do not describe them as listened-to or approved without evidence.

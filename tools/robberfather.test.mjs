@@ -44,7 +44,7 @@ test('five coins remain distinct from three dinner portions',()=>{const g=practi
 test('the UI has valid bindings and matching bilingual keys',async()=>{const html=await readFile(new URL('../games/robberfather/index.html',import.meta.url),'utf8'),app=await readFile(new URL('../games/robberfather/app.js',import.meta.url),'utf8');for(const [,id]of app.matchAll(/\$\('([^']+)'\)/g))assert.ok(html.includes(`id="${id}"`)||app.includes(`.id='${id}'`),id);assert.deepEqual(Object.keys(MESSAGES.en).sort(),Object.keys(MESSAGES.ko).sort());assert.match(MESSAGES.ko.coinCount,/\{max\}/);});
 
 test('custom controls swap duplicates, reject reserved keys and survive reload',async()=>{const {Settings}=await import('../games/robberfather/settings.js');const s=new Settings();assert.equal(s.bind('steal','KeyR'),true);assert.equal(s.action('KeyE'),'buyMax');assert.equal(s.action('KeyR'),'steal');s.bind('left','KeyD');assert.equal(s.action('KeyD'),'left');assert.equal(s.action('KeyA'),'right');assert.equal(s.bind('home','Escape'),false);assert.equal(s.bind('home','F2'),false);const restored=new Settings(JSON.parse(JSON.stringify(s)));assert.deepEqual(restored.bindings,s.bindings);assert.equal(new Settings({volume:-3}).volume,0);assert.equal(new Settings({volume:8}).volume,1);});
- test('volume controls both master sound gain and spoken shouts',async()=>{const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape();let actual;s.master={gain:{setTargetAtTime:v=>actual=v}};s.context={currentTime:2};s.running=true;s.setVolume(.25);assert.equal(actual,.2);s.setVolume(0);assert.equal(actual,0);});
+ test('volume controls both master sound gain and spoken shouts',async()=>{const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape();let actual;s.master={gain:{setTargetAtTime:v=>actual=v}};s.context={currentTime:2};s.running=true;s.setVolume(.25);assert.equal(actual,.6);s.setVolume(0);assert.equal(actual,0);});
 
 test('every pictured street door is centred on its actual entry trigger',async()=>{const {SHOPS}=await import('../games/robberfather/engine.js');const {Backgrounds}=await import('../games/robberfather/themes/backgrounds.js');const {ARCHITECTURE}=await import('../games/robberfather/themes/config.js');for(const shop of SHOPS){const calls=[],c={drawImage:(...args)=>calls.push(args)},bg={ready:true,theme:{compact:true},panels:{street:{},alley:{}},wall(){},floor(){}};Backgrounds.prototype.street.call(bg,c,shop.door-720,[shop]);const [,sx,,sw,,dx,,dw]=calls[0];const door=shop.kind===5?ARCHITECTURE.alleyDoor:ARCHITECTURE.streetDoor;assert.ok(Math.abs(dx+(door-sx)*dw/sw-720)<.001);const g=practice();g.tutorial=TUTORIAL.done;g.player.x=shop.door;assert.equal(g.nearbyDoor().shop.id,shop.id);g.useDoor();assert.equal(g.nearbyDoor().exit,true);g.useDoor();assert.equal(g.player.x,shop.door);}});
 
@@ -451,4 +451,23 @@ test('NPC pursuit does not dispatch indoor shouts, but outdoors still does',asyn
  const {SoundDirector}=await import('../games/robberfather/audio.js');const g={...practice(),shop:{kind:0},chasers:[1]};
  const director=new SoundDirector();assert.equal(director.update(g,.1).some(e=>e.type==='shout'),false);
  g.shop=null;assert.equal(director.update(g,.1).some(e=>e.type==='shout'),true);
+});
+
+
+test('approved music follows outdoor and indoor locations and ducks through pocket focus and pursuit',async()=>{
+ const {ambienceMix}=await import('../games/robberfather/audio-samples.js');
+ for(const kind of [null,0,1,2,3,4,5]){
+  const g={mode:'day',shop:kind===null?null:{kind},chasers:[]};const normal=ambienceMix(g),focused=ambienceMix(g,1);const indoors=kind!==null&&kind!==5;
+  assert.equal(normal[indoors?'musicStreet':'musicShop'],0);assert.ok(normal[indoors?'musicShop':'musicStreet']>0);
+  for(const key of ['musicStreet','musicShop']){assert.ok(focused[key]<=normal[key]);assert.ok(ambienceMix({...g,chasers:[1]})[key]<=normal[key]);}
+  assert.ok(focused.heartbeat>normal.heartbeat);if(indoors)assert.equal(normal.street,0);
+ }
+ for(const mode of ['intro','prologue','night','ending']){const mix=ambienceMix({mode});assert.equal(mix.musicStreet,0);assert.equal(mix.musicShop,0);}
+});
+test('selected local music files and in-game attribution stay packaged together',async()=>{
+ const {AUDIO_FILES}=await import('../games/robberfather/audio-samples.js');const sources=JSON.parse(await readFile(new URL('../games/robberfather/assets/audio-v37/SOURCES.json',import.meta.url),'utf8'));
+ const {createHash}=await import('node:crypto');for(const [i,key] of ['musicStreet','musicShop'].entries()){
+  const bytes=await readFile(new URL(AUDIO_FILES[key]));assert.ok(bytes.length>100000);assert.equal(createHash('sha256').update(bytes).digest('hex'),sources[i].sha256);
+ }
+ const app=await readFile(new URL('../games/robberfather/app.js',import.meta.url),'utf8');assert.match(app,/Despair and Triumph/);assert.ok(app.includes('assets/audio-v37/CREDITS.md'));
 });
