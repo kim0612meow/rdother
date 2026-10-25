@@ -9,3 +9,5 @@ Footfalls are played as varied individual contacts timed from actual travel, rat
 [Earlier music and effects credits](../audio-v21/CREDITS.md). Source URLs and SHA-256 hashes are retained in SOURCES.json.
 
 Revision 23 plays only the opening portion of the door recording (0–0.58 seconds) and one short purchase gesture (0.23–0.53 seconds). Original audio files remain unchanged. Background recordings, sound effects and spoken shouts have separate volume controls.
+
+Revision 24 reuses a short, low-pass-filtered gesture from the v21 CC0 pocket recording for discarding food, with a quiet synthesized soft impact. Dialogue typing sounds are synthesized and use the dialogue volume channel.

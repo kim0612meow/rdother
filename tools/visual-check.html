@@ -3,8 +3,8 @@
 <h1>One More Meal · Pixel sprite studio · revision 2</h1><p>Raster dot sprites, sampled to native pixels with a shared 24-colour palette per person. Full-body animation; no rectangle-built bodies. Local QA fixtures replace only this preview origin's save.</p>
 <canvas id="sheet" width="1200" height="940"></canvas><p id="result"></p><div id="fixtures"></div>
 <script type="module">
-import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=sound-settings-v23';
-import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=sound-settings-v23';
+import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=story-practice-v24';
+import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=story-practice-v24';
 await ready;
 const c=document.getElementById('sheet').getContext('2d');c.fillStyle='#d8d4c7';c.fillRect(0,0,1200,630);c.imageSmoothingEnabled=false;
 const people=[['FATHER','father'],['SON','child'],['PASSERBY','civilian'],['WEALTHY','wealthy'],['POLICE','police'],['ALLEY MAN','thug']];
@@ -16,9 +16,13 @@ for(let i=0;i<people.length;i++){
  drawCharacter(s,{x:70,y:240,type,face:1,walk:0,id:0},type==='father',3);
  s.globalCompositeOperation='source-in';s.fillStyle='#22232c';s.fillRect(0,0,150,250);c.drawImage(el,x-70,340);
 }
+const savedPractice=JSON.parse(localStorage.getItem('one-more-meal-v3')||'null');if(savedPractice){const status=document.createElement('pre');status.id='practice-snapshot';status.textContent=JSON.stringify({x:savedPractice.player?.x,tutorial:savedPractice.tutorial,victim:savedPractice.tutorialVictim,coins:savedPractice.inventory.filter(x=>x==='coin').length});document.getElementById('fixtures').before(status);}
 const fresh=()=>{const g=new Game();g.start();for(let i=0;i<3;i++)g.advanceMorning();g.tutorialDone=true;g.tutorial=TUTORIAL.done;return g;};
 const recovery=()=>{const g=fresh();g.goHome();g.beginNight();g.nextDay();for(let i=0;i<3;i++)g.advanceMorning();return g;};
 const scenarios={
+ 'V24 · mouse lesson exit':()=>{const g=fresh();g.tutorialDone=false;g.tutorial=TUTORIAL.approach;g.player.x=748;g.npcs=[{...g.npcs[0],x:790,face:1,pause:999}];g.update(.02,{pick:true,trace:.01});return g;},
+ 'V24 · Space lesson exit':()=>{const g=fresh();g.tutorialDone=false;g.tutorial=TUTORIAL.approach;g.player.x=748;g.npcs=[{...g.npcs[0],x:790,face:1,pause:999}];g.update(.02,{pick:true,trace:1});return g;},
+ 'V24 · E lesson exit':()=>{const g=fresh();g.tutorialDone=false;g.tutorial=TUTORIAL.approach;g.player.x=748;g.npcs=[{...g.npcs[0],x:790,face:1,pause:999}];g.update(.02,{pick:true,trace:1});g.update(.02,{pick:true,trace:1,qteHit:true});g.update(.02,{pick:true,trace:1});return g;},
  'V23 · shell exit':()=>{const g=fresh();g.player.x=SHOPS.find(s=>s.kind===5).x0+1110;g.inventory=['coin','coin'];return g;},
  'V22 · shop no coins':()=>{const g=fresh();g.player.x=SHOPS[1].x0+1110;g.inventory=[];g.npcs.forEach(n=>n.pause=999);return g;},
  'V22 · shop purchase':()=>{const g=fresh();g.player.x=SHOPS[1].x0+1110;g.inventory=['coin','coin'];g.npcs.forEach(n=>n.pause=999);return g;},
