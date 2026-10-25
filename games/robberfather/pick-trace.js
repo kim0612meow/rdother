@@ -20,7 +20,7 @@ export class Trace{
   const hand=path[this.index],lead=Math.hypot(p.x-hand.x,p.y-hand.y);
   if(bestD>tol)return this.slip('noteOff');if(lead>tol+62)return this.slip('noteFast');
   const step=Math.floor(this.speed*dt/3+this.carry);this.carry=(this.speed*dt/3+this.carry)%1;if(best>this.index)this.index=Math.min(best,this.index+Math.max(0,step));this.warn=lead>tol+30;return false;}
- slip(note){this.grabbing=false;this.note=note;this.index=Math.max(0,this.index-Math.round((this.path.length-1)*.22));return true;}
+ slip(note){this.grabbing=false;this.carry=0;this.warn=false;this.note=note;this.index=Math.max(0,this.index-Math.round((this.path.length-1)*.22));return true;}
  draw(c,danger){const path=this.path;
   // The way out: dashed guide, gold where the wallet has already travelled.
   c.lineCap='round';c.lineJoin='round';c.strokeStyle='#ffffff18';c.lineWidth=this.tol*2;c.beginPath();path.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.stroke();

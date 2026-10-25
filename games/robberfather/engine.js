@@ -1,5 +1,5 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=story-practice-v24';
-import {dayDifficulty} from './difficulty.js?v=story-practice-v24';
+import {ROBBERY,endingDuration} from './cinematics.js?v=qte-recovery-v25';
+import {dayDifficulty} from './difficulty.js?v=qte-recovery-v25';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,hideLock:.55,meal:3,recoveryMeal:5,hungerDifficulty:1.5,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
@@ -132,7 +132,10 @@ export class Game{
  // Leaving the pocket. Done during the warning, the victim turns, finds nobody at their coat, and turns back.
  dodge(){const n=this.npcs.find(n=>n.id===this.activeTarget);if(n&&this.turn.phase==='warn'){n.faceBack=n.face;n.face=Math.sign(this.player.x-n.x)||-n.face;n.lookBack=RULES.lookTime;this.emit('turnLook');this.emit('dodged');if(this.tutorial===TUTORIAL.dodge)this.tutorial=TUTORIAL.resume;}this.clearHold();this.cooldown=Math.max(this.cooldown,.3);}
  skipEnding(){if(this.mode==='ending')this.endingTime=Math.max(this.endingTime,this.endingDuration);}
- finishTutorial(){if(this.tutorial<TUTORIAL.done){this.tutorial=TUTORIAL.done;this.tutorialDone=true;this.emit('tutorialComplete');}}
+ finishTutorial(){if(this.tutorial<TUTORIAL.done){
+  // Give the player room to leave the lesson. Familiar faces still remember them.
+  this.endChase();for(const n of this.npcs.filter(n=>n.knows)){const room=areaAt(n.x),anchor=room?(this.shop?.id===room.id?this.player.x:room.x0+INSIDE_DOOR):(this.shop?.door??this.player.x);if(Math.abs(n.x-anchor)<650){const [lo,hi]=bounds(n.x),left=lo+120,right=hi-120;n.x=Math.abs(left-anchor)>Math.abs(right-anchor)?left:right;}n.witness=0;n.recognizing=false;n.alert=false;n.lookBack=0;n.calm=RULES.recognizeCalm;n.pause=2;n.lastSeen=n.x;}
+  this.tutorial=TUTORIAL.done;this.tutorialDone=true;this.emit('tutorialComplete');}}
  // Spotted inside a shop: that shop never lets you in again.
  detect(detector,victim,witnessed=false){this.attempts.push('caught');const s=this.shop;if(s&&!this.closedShops.includes(s.id)){this.closedShops.push(s.id);this.emit('shopClosed',{kind:s.kind});}this.beginChase(detector,victim);this.clearHold();if(this.tutorial<TUTORIAL.done){this.tutorial=TUTORIAL.caught;this.tutorialVictim=victim.id;}this.emit(witnessed?'witnessed':'detected');}
  beginChase(detector,victim=detector){this.closeBin();this.chasers=this.npcs.filter(n=>n.id===detector.id||n.id===victim.id||(distance(n,this.player)<300&&(n.type==='police'||distance(n,this.player)<190))).map(n=>n.id);this.chasers.forEach(id=>{const n=this.npcs.find(n=>n.id===id);n.alert=true;n.knows=true;n.recognizing=false;n.lastSeen=this.player.x;});this.chaseTime=0;this.escape=0;}

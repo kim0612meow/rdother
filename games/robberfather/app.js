@@ -1,15 +1,15 @@
-import {DialogueTyper} from './dialogue.js?v=story-practice-v24';
-import {settings,DEFAULT_BINDINGS} from './settings.js?v=story-practice-v24';
-import {UseInput} from './use-input.js?v=story-practice-v24';
-import {PocketInput} from './pocket-input.js?v=story-practice-v24';
-import {ROBBERY,endingPart} from './cinematics.js?v=story-practice-v24';
-import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=story-practice-v24';
-import {Pickpocket} from './pickpocket.js?v=story-practice-v24';
-import {Shell} from './shell.js?v=story-practice-v24';
-import {Renderer} from './scene.js?v=story-practice-v24';
-import {Soundscape} from './audio.js?v=story-practice-v24';
-import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=story-practice-v24';
-import {getMorningLines,storyText} from './story.js?v=story-practice-v24';
+import {DialogueTyper} from './dialogue.js?v=qte-recovery-v25';
+import {settings,DEFAULT_BINDINGS} from './settings.js?v=qte-recovery-v25';
+import {UseInput} from './use-input.js?v=qte-recovery-v25';
+import {PocketInput} from './pocket-input.js?v=qte-recovery-v25';
+import {ROBBERY,endingPart} from './cinematics.js?v=qte-recovery-v25';
+import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=qte-recovery-v25';
+import {Pickpocket} from './pickpocket.js?v=qte-recovery-v25';
+import {Shell} from './shell.js?v=qte-recovery-v25';
+import {Renderer} from './scene.js?v=qte-recovery-v25';
+import {Soundscape} from './audio.js?v=qte-recovery-v25';
+import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=qte-recovery-v25';
+import {getMorningLines,storyText} from './story.js?v=qte-recovery-v25';
 const $=id=>document.getElementById(id),SAVE='one-more-meal-v3',LANG='one-more-meal-language';
 function getSaved(){try{const s=JSON.parse(localStorage.getItem(SAVE));if(s?.version===3&&Number.isInteger(s.day)&&s.day>0&&s.day<1000000&&Array.isArray(s.inventory))return s;}catch{}return null;}
 let saved=getSaved(),game=new Game(),renderer=new Renderer($('game')),held=new Set(),pendingPresses=new Set(),modalOpen=false,transitioning=false,lastTime=0,visualTime=0,toastUntil=0,tutorialUntil=0,lastSignature='',sound=true,soundscape=new Soundscape(),modalSpec=null,previousFocus=null,toastSpec=null;

@@ -1,11 +1,11 @@
-import {drawPocketBack} from './characters.js?v=story-practice-v24';
+import {drawPocketBack} from './characters.js?v=qte-recovery-v25';
 // The pocket window, seen over the victim's back. Draw the wallet out along a line with the mouse while keeping the Space gauge in time.
 // The street keeps moving underneath, so suspicion and witnesses still count while you play.
 // When the victim starts to turn (look, set by app.js) press E to leave the pocket; reopening the same pocket picks up where you stopped.
-import {dayDifficulty} from './difficulty.js?v=story-practice-v24';
-import {TYPES} from './engine.js?v=story-practice-v24';
-import {Trace} from './pick-trace.js?v=story-practice-v24';
-import {Timing} from './pick-timing.js?v=story-practice-v24';
+import {dayDifficulty} from './difficulty.js?v=qte-recovery-v25';
+import {TYPES} from './engine.js?v=qte-recovery-v25';
+import {Trace} from './pick-trace.js?v=qte-recovery-v25';
+import {Timing} from './pick-timing.js?v=qte-recovery-v25';
 // The Space gauge runs alongside the line including the tutorial. Set to false to go back to the mouse alone.
 const GAUGE=true;
 const RUSH=.7,W=640,H=400,START={x:206,y:252},HEAD={x:104,y:74};
@@ -27,7 +27,7 @@ export class Pickpocket{
  // Tutorial line shown at the top of the window, or null.
  coach(key){this.coachKey=key;}
  // Returns the suspicion added by a mistake this frame, or 0. risk: extra suspicion from pulling too fast (the wallet turns red).
- update(dt,paused=false,qte=false){this.risk=0;this.paused=paused;this.tracePaused=qte;if(!this.active)return 0;if(paused){this.render();return 0;}this.shake=Math.max(0,this.shake-dt);let slip=qte?0:this.game.update(dt);if(this.gauge?.update(dt,qte||this.game.touching)&&!slip&&!qte){slip=true;this.game.note='noteMiss';}if(this.game.warn)this.risk=dt*RUSH;if(slip)this.shake=.35;this.render();return slip?LOOK[this.type].slip:0;}
+ update(dt,paused=false,qte=false){this.risk=0;this.paused=paused;this.tracePaused=qte;if(!this.active)return 0;if(paused){this.render();return 0;}this.shake=Math.max(0,this.shake-dt);let slip=qte?0:this.game.update(dt);if(this.gauge?.update(dt,qte||this.game.touching)){if(!slip)this.game.slip('noteMiss');slip=true;}if(this.game.warn)this.risk=dt*RUSH;if(slip)this.shake=.35;this.render();return slip?LOOK[this.type].slip:0;}
  render(){const c=this.c,s=LOOK[this.type],look=this.look;c.save();c.clearRect(0,0,W,H);if(this.shake>0)c.translate(Math.sin(this.shake*90)*6*this.shake/.35,0);
   // The street behind them, then their back filling the left of the view.
   c.fillStyle='#18211f';c.fillRect(0,0,W,H);c.fillStyle='#ffffff07';for(let x=20;x<W;x+=56)c.fillRect(x,0,3,H);

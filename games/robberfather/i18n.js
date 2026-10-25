@@ -1,4 +1,4 @@
-import {controlText} from './settings.js?v=story-practice-v24';
+import {controlText} from './settings.js?v=qte-recovery-v25';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
