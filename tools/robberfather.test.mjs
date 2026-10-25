@@ -424,3 +424,31 @@ test('scope catalog follows engine tutorial order and roundtrips with old UI lay
   assert.deepEqual(cleanLayout(JSON.parse(JSON.stringify(layout))),layout);
  }
 });
+
+
+test('indoor ambience drops the crowd recording while retaining pocket and chase sounds',async()=>{
+ const {ambienceMix}=await import('../games/robberfather/audio-samples.js');
+ for(const kind of [0,1,2,3,4])for(const focus of [0,.5,1]){
+  const mix=ambienceMix({mode:'day',shop:{kind},chasers:[1]},focus);
+  assert.equal(mix.street,0);assert.equal(mix.night,0);assert.ok(mix.chase>0);
+  if(focus>0)assert.ok(mix.heartbeat>0);
+ }
+ assert.ok(ambienceMix({mode:'day',shop:null},0).street>0);
+ assert.ok(ambienceMix({mode:'day',shop:{kind:5}},0).street>0);
+});
+test('entering shops cancels current speech, blocks new shouts and preserves the voice preference on exit',async()=>{
+ const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape();
+ const original=globalThis.speechSynthesis;let cancelled=0;globalThis.speechSynthesis={cancel(){cancelled++;}};
+ try{
+  s.context={currentTime:1};s.voiceBus={gain:{setTargetAtTime(value){this.value=value;}}};s.voice={};
+  s.volumes.voice=.4;s.setLocation({shop:{kind:0}});assert.equal(cancelled,1);assert.equal(s.voice,null);assert.equal(s.voiceBus.gain.value,0);
+  s.noiseHit=s.tone=()=>assert.fail('Indoor shouts must stay silent');s.shout();
+  s.setVolumes({voice:.7,effects:1,background:1});assert.equal(s.voiceBus.gain.value,0);assert.equal(s.volumes.voice,.7);
+  s.setLocation({shop:{kind:5}});assert.equal(s.voiceBus.gain.value,.7);assert.equal(s.indoors,false);
+ }finally{if(original===undefined)delete globalThis.speechSynthesis;else globalThis.speechSynthesis=original;}
+});
+test('NPC pursuit does not dispatch indoor shouts, but outdoors still does',async()=>{
+ const {SoundDirector}=await import('../games/robberfather/audio.js');const g={...practice(),shop:{kind:0},chasers:[1]};
+ const director=new SoundDirector();assert.equal(director.update(g,.1).some(e=>e.type==='shout'),false);
+ g.shop=null;assert.equal(director.update(g,.1).some(e=>e.type==='shout'),true);
+});

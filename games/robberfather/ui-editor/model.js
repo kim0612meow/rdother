@@ -1,5 +1,5 @@
-import {DETAIL_SCENES} from './scopes.js?v=tutorial-scopes-v33';
-import {MESSAGES} from '../i18n.js?v=tutorial-scopes-v33';
+import {DETAIL_SCENES} from './scopes.js?v=indoor-audio-v34';
+import {MESSAGES} from '../i18n.js?v=indoor-audio-v34';
 export const TARGETS=[
  ['resources','#resourceHud','돈·식사·기회 묶음','Resources','street'],
  ['coins','#resourceHud .hud-group:nth-child(1)','돈 칸','Coins','street'],

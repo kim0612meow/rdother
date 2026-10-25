@@ -1,5 +1,5 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=tutorial-scopes-v33';
-import {dayDifficulty} from './difficulty.js?v=tutorial-scopes-v33';
+import {ROBBERY,endingDuration} from './cinematics.js?v=indoor-audio-v34';
+import {dayDifficulty} from './difficulty.js?v=indoor-audio-v34';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,hideLock:.55,meal:3,recoveryMeal:5,tutorialSkipHold:1.5,hungerDifficulty:1.5,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};

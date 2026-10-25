@@ -3,8 +3,8 @@
 <h1>One More Meal · Pixel sprite studio · revision 2</h1><p>Raster dot sprites, sampled to native pixels with a shared 24-colour palette per person. Full-body animation; no rectangle-built bodies. Local QA fixtures replace only this preview origin's save.</p>
 <canvas id="sheet" width="1200" height="940"></canvas><p id="result"></p><div id="fixtures"></div>
 <script type="module">
-import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=tutorial-scopes-v33';
-import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=tutorial-scopes-v33';
+import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=indoor-audio-v34';
+import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=indoor-audio-v34';
 await ready;
 const c=document.getElementById('sheet').getContext('2d');c.fillStyle='#d8d4c7';c.fillRect(0,0,1200,630);c.imageSmoothingEnabled=false;
 const people=[['FATHER','father'],['SON','child'],['PASSERBY','civilian'],['WEALTHY','wealthy'],['POLICE','police'],['ALLEY MAN','thug']];

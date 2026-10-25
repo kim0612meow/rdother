@@ -1,4 +1,4 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=tutorial-scopes-v33';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=indoor-audio-v34';
 // Sound timing is separate from synthesis so pauses and story states stay silent.
 export class SoundDirector {
  constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.progress=0;this.bite=0;this.shout=0;}
@@ -19,7 +19,7 @@ export class SoundDirector {
    this.beat-=dt;if(this.beat<=0){out.push({type:'heartbeat',tension});this.beat=.92-.43*tension;}
   }else this.beat=0;
   const moved=holding&&g.progress>this.progress+.001;this.progress=holding?g.progress:0;this.rustle=Math.max(0,this.rustle-dt);if(moved&&this.rustle===0){out.push({type:'rustle'});this.rustle=.4;}
-  if(g.mode==='day'&&g.chasers.length&&this.shout===0){out.push({type:'shout'});this.shout=4.8;}
+  if(g.mode==='day'&&(!g.shop||g.shop.kind===5)&&g.chasers.length&&this.shout===0){out.push({type:'shout'});this.shout=4.8;}
   if(g.mode==='night'&&(g.fed||g.ateRotten)){this.bite-=dt;if(this.bite<=0){out.push({type:'eat'});this.bite=2.35;}}
   return out;
  }
@@ -36,7 +36,7 @@ export class Soundscape {
     this.master=c.createGain();this.master.gain.value=.8*this.volume;
     const limiter=c.createDynamicsCompressor();limiter.threshold.value=-12;limiter.knee.value=12;limiter.ratio.value=5;
     this.master.connect(limiter).connect(c.destination);
-    for(const key of ['background','effects','voice']){const bus=c.createGain();bus.gain.value=this.volumes[key];bus.connect(this.master);this[key+'Bus']=bus;}
+    for(const key of ['background','effects','voice']){const bus=c.createGain();bus.gain.value=key==='voice'&&this.indoors?0:this.volumes[key];bus.connect(this.master);this[key+'Bus']=bus;}
     this.noise=c.createBuffer(1,c.sampleRate*2,c.sampleRate);const data=this.noise.getChannelData(0);
     let brown=0;for(let i=0;i<data.length;i++){brown=(brown+(Math.random()*2-1)*.04)/1.02;data[i]=brown*3;}
     this.ambient=c.createBufferSource();this.ambient.buffer=this.noise;this.ambient.loop=true;
@@ -47,7 +47,8 @@ export class Soundscape {
   }catch{this.enabled=false;}
  }
  setVolume(value){this.volume=Math.max(0,Math.min(1,Number(value)||0));if(this.master&&this.running)this.master.gain.setTargetAtTime(.8*this.volume,this.context.currentTime,.025);if(this.voice&&this.volume===0){globalThis.speechSynthesis?.cancel();this.voice=null;}}
- setVolumes(values){for(const key of ['background','effects','voice']){const value=Number(values?.[key]);this.volumes[key]=Number.isFinite(value)?Math.max(0,Math.min(1,value)):1;const bus=this[key+'Bus'];if(bus)bus.gain.setTargetAtTime(this.volumes[key],this.context.currentTime,.025);}if(this.voice&&this.volumes.voice===0){globalThis.speechSynthesis?.cancel();this.voice=null;}}
+ setVolumes(values){for(const key of ['background','effects','voice']){const value=Number(values?.[key]);this.volumes[key]=Number.isFinite(value)?Math.max(0,Math.min(1,value)):1;const bus=this[key+'Bus'];if(bus)bus.gain.setTargetAtTime(key==='voice'&&this.indoors?0:this.volumes[key],this.context.currentTime,.025);}if(this.voice&&this.volumes.voice===0){globalThis.speechSynthesis?.cancel();this.voice=null;}}
+ setLocation(g){const indoors=!!g.shop&&g.shop.kind!==5;if(this.indoors===indoors)return;this.indoors=indoors;if(this.voiceBus)this.voiceBus.gain.setTargetAtTime(indoors?0:this.volumes.voice,this.context.currentTime,.015);if(indoors&&this.voice){globalThis.speechSynthesis?.cancel();this.voice=null;}}
  setEnabled(value){this.enabled=value;if(value)this.unlock();else this.quiet();}
  quiet(){
   this.running=false;
@@ -71,7 +72,7 @@ export class Soundscape {
   source.connect(filter).connect(gain).connect(this[channel+'Bus']||this.master);source.start(at,Math.random()*.8,duration);source.stop(at+duration+.01);
  }
  shout(){
-  if(this.volumes.voice===0)return;
+  if(this.indoors||this.volumes.voice===0)return;
   // Use an installed local voice when available; the voiced "hey" fallback is offline.
   const speech=globalThis.speechSynthesis,voices=speech?.getVoices()||[];
   const voice=voices.find(v=>v.localService&&v.lang.toLowerCase().startsWith(this.locale));
@@ -121,7 +122,7 @@ export class Soundscape {
   }
  }
  update(g,dt,active,locale,focus=0){
-  this.locale=locale;
+  this.locale=locale;this.setLocation(g);
   const audible=active&&this.enabled&&!!this.context;
   if(!audible){this.director.update(g,dt,false);if(this.running)this.quiet();return;}
   if(!this.running){this.running=true;this.master.gain.setTargetAtTime(.8*this.volume,this.context.currentTime,.025);}

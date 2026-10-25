@@ -1,7 +1,7 @@
-import {baseScene} from './scopes.js?v=tutorial-scopes-v33';
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=tutorial-scopes-v33';
-import {createLayoutRuntime} from './runtime.js?v=tutorial-scopes-v33';
-import {EDITOR_CSS} from './styles.js?v=tutorial-scopes-v33';
+import {baseScene} from './scopes.js?v=indoor-audio-v34';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=indoor-audio-v34';
+import {createLayoutRuntime} from './runtime.js?v=indoor-audio-v34';
+import {EDITOR_CSS} from './styles.js?v=indoor-audio-v34';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=true;
 const copy=value=>JSON.parse(JSON.stringify(value));
