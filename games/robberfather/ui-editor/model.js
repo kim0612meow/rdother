@@ -1,4 +1,5 @@
-import {MESSAGES} from '../i18n.js?v=home-warning-v32';
+import {DETAIL_SCENES} from './scopes.js?v=tutorial-scopes-v33';
+import {MESSAGES} from '../i18n.js?v=tutorial-scopes-v33';
 export const TARGETS=[
  ['resources','#resourceHud','돈·식사·기회 묶음','Resources','street'],
  ['coins','#resourceHud .hud-group:nth-child(1)','돈 칸','Coins','street'],
@@ -25,7 +26,7 @@ export const TARGETS=[
  ['ending','.ending-copy','엔딩 글','Ending caption','ending'],
  ['settings','#modal .modal','설정창','Settings panel','pause'],
 ];
-export const SCENES={current:['현재 화면','Current'],street:['거리 HUD','Street HUD'],dialogue:['아이 대화','Son dialogue'],pocket:['소매치기','Pickpocket'],shell:['도박','Shell game'],title:['시작 화면','Title'],night:['저녁 컷씬','Dinner'],ending:['엔딩','Ending'],pause:['일시정지','Pause']};
+export const SCENES={current:['현재 화면','Current'],street:['거리 HUD','Street HUD'],dialogue:['아이 대화','Son dialogue'],pocket:['소매치기','Pickpocket'],shell:['도박','Shell game'],title:['시작 화면','Title'],night:['저녁 컷씬','Dinner'],ending:['엔딩','Ending'],pause:['일시정지','Pause'],prologue:['도입 컷씬','Opening'],...DETAIL_SCENES};
 export const STORAGE_KEY='one-more-meal-ui-layout-v1';
 export const LIMITS={x:[-100,100],y:[-100,100],width:[0,100],height:[0,100],fontSize:[0,72],opacity:[.1,1],backgroundAlpha:[0,1]};
 export function cleanLayout(data){if(data?.version!==1||!data.items||typeof data.items!=='object'||Array.isArray(data.items))throw Error('Invalid layout');const additions=cleanAdditions(data.additions),items={};for(const [key]of layoutTargets({additions})){const item=data.items[key];if(!item||typeof item!=='object')continue;const out={};for(const [name,[min,max]]of Object.entries(LIMITS)){const value=item[name];if(typeof value==='number'&&Number.isFinite(value))out[name]=Math.max(min,Math.min(max,value));}for(const name of ['color','background'])if(/^#[0-9a-f]{6}$/i.test(item[name]))out[name]=item[name].toLowerCase();if(['system','serif','mono'].includes(item.font))out.font=item.font;if(Object.keys(out).length)items[key]=out;}const result={version:1,items};if(additions.length)result.additions=additions;const texts={};for(const locale of ['ko','en']){const source=data.texts?.[locale];if(!source||typeof source!=='object'||Array.isArray(source))continue;const valid={};for(const key of Object.keys(MESSAGES[locale]))if(typeof source[key]==='string')valid[key]=source[key].slice(0,2000);if(Object.keys(valid).length)texts[locale]=valid;}if(Object.keys(texts).length)result.texts=texts;return result;}

@@ -1,4 +1,4 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=home-warning-v32';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=tutorial-scopes-v33';
 // Sound timing is separate from synthesis so pauses and story states stay silent.
 export class SoundDirector {
  constructor(){this.x=null;this.mode=null;this.steps=0;this.beat=0;this.rustle=0;this.progress=0;this.bite=0;this.shout=0;}

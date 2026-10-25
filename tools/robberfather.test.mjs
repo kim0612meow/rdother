@@ -387,3 +387,40 @@ test('returning with three portions warns against both four- and five-portion re
 test('normal-day partial food also warns, while a full meal does not',()=>{
  const g=survivalDay();assert.deepEqual(g.homeWarning,{have:0,required:3,missing:3,finalNight:false});g.add('fresh',2);assert.deepEqual(g.homeWarning,{have:2,required:3,missing:1,finalNight:false});g.add('rotten',1);assert.equal(g.homeWarning,null);
 });
+
+
+// Custom annotations must follow live lessons rather than every pocket panel.
+import {activeDetail,baseScene,scopeVisible,DETAIL_SCENES} from '../games/robberfather/ui-editor/scopes.js';
+test('annotations follow each tutorial stage, stop on completion and hide under pause',()=>{
+ const g=practice();
+ for(const [name,step] of Object.entries(TUTORIAL)){
+  g.tutorial=step;const detail=activeDetail(g);
+  if(name==='done'){assert.equal(detail,'');continue;}
+  assert.equal(detail,'tutorial:'+name);
+  assert.equal(scopeVisible(detail,baseScene(detail),detail),true);
+  assert.equal(scopeVisible(detail,'pause',detail),false);
+  assert.equal(scopeVisible('tutorial:dodge',baseScene(detail),detail),name==='dodge');
+ }
+ g.tutorialDone=true;assert.equal(activeDetail(g),'');
+ assert.equal(scopeVisible('tutorial:qte','street','tutorial:qte'),false);
+});
+test('specific opening, dialogue, dinner and ending annotations do not leak into other scenes',()=>{
+ for(const [context,want] of [[{mode:'prologue',prologueIndex:1},'prologue:1'],[{mode:'morning',morningIndex:2},'dialogue:2'],[{mode:'night',fed:false},'night:hungry'],[{mode:'ending',ending:'robbed'},'ending:robbed']]){
+  assert.equal(activeDetail(context),want);
+  assert.equal(scopeVisible(want,baseScene(want),want),true);
+  assert.equal(scopeVisible(want,'street',''),false);
+ }
+ assert.equal(scopeVisible('pocket','pocket','tutorial:qte'),true);
+ assert.equal(scopeVisible('all','street',''),true);
+ assert.equal(scopeVisible('tutorial:qte','tutorial:pull','','tutorial:pull'),false);
+ assert.equal(scopeVisible('tutorial:qte','tutorial:qte','','tutorial:qte'),true);
+ assert.equal(scopeVisible('pocket','tutorial:qte','','tutorial:qte'),true);
+});
+test('scope catalog follows engine tutorial order and roundtrips with old UI layouts',async()=>{
+ const {cleanLayout}=await import('../games/robberfather/ui-editor/model.js');
+ for(const [key,value] of Object.entries(DETAIL_SCENES))if(key.startsWith('tutorial:'))assert.equal(value[3],TUTORIAL[key.split(':')[1]]);
+ for(const scene of ['street','pocket','tutorial:escape','ending:robbed']){
+  const layout={version:1,items:{'added-1':{x:12}},additions:[{id:'added-1',kind:'arrow',scene,texts:{ko:'↓',en:'↓'}}]};
+  assert.deepEqual(cleanLayout(JSON.parse(JSON.stringify(layout))),layout);
+ }
+});
