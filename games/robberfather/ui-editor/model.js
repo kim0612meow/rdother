@@ -1,5 +1,5 @@
-import {DETAIL_SCENES} from './scopes.js?v=original-quiet-v43';
-import {MESSAGES} from '../i18n.js?v=original-quiet-v43';
+import {DETAIL_SCENES} from './scopes.js?v=english-dialogue-v44';
+import {MESSAGES} from '../i18n.js?v=english-dialogue-v44';
 export const TARGETS=[
  ['resources','#resourceHud','돈·식사·기회 묶음','Resources','street'],
  ['coins','#resourceHud .hud-group:nth-child(1)','돈 칸','Coins','street'],

@@ -1,5 +1,5 @@
 import {UI_TEXT} from './ui-editor/text-overrides.js';
-import {controlText} from './settings.js?v=original-quiet-v43';
+import {controlText} from './settings.js?v=english-dialogue-v44';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -218,8 +218,8 @@ export const MESSAGES={
     "pressKeyHint": "Press a new key. Escape cancels.",
     "priceLabel": "Coins",
     "progress": "Drawing it out…",
-    "prologueLine1": "You are a father, the head of a family.",
-    "prologueLine2": "You do dirty work to keep your child fed.",
+    "prologueLine1": "You’re a father trying to provide for your son.",
+    "prologueLine2": "You pick pockets to keep him fed.",
     "ready": "M Go home · before night",
     "recognized": "“That is the thief!” Someone remembered your face.",
     "resetSettings": "Reset",
