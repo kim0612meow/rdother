@@ -1,5 +1,5 @@
 import {UI_TEXT} from './ui-editor/text-overrides.js';
-import {controlText} from './settings.js?v=morning-farewell-v45';
+import {controlText} from './settings.js?v=opening-endings-v46';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -220,6 +220,12 @@ export const MESSAGES={
     "progress": "Drawing it out…",
     "prologueLine1": "You’re a father trying to provide for your son.",
     "prologueLine2": "You pick pockets to keep him fed.",
+    "prologueLine3": "You’re no hero, and you’re not rich. You’re just an ordinary father with no money.",
+    "prologueLine4": "There are three endings. None is a happy ending.\nFor hints, press Esc and open Guide.",
+    "endingHints": "Ending hints",
+    "endingHint1": "Hunger: two hungry nights in a row will make your son try to help.",
+    "endingHint2": "Spoiled food: eating it two nights in a row puts your son in danger.",
+    "endingHint3": "Gambling: winning too much in the dark alley attracts attention.",
     "ready": "M Go home · before night",
     "recognized": "“That is the thief!” Someone remembered your face.",
     "resetSettings": "Reset",
@@ -524,6 +530,12 @@ export const MESSAGES={
     "progress": "빼내는 중…",
     "prologueLine1": "당신은 한 가장의 아버지입니다.",
     "prologueLine2": "아이를 먹여살리기 위해 더러운 일을 하고 있죠.",
+    "prologueLine3": "특별한 영웅도, 돈 많은 부자도 아닌 돈 없는 평범한 가정의 아버지입니다.",
+    "prologueLine4": "엔딩은 총 3개 있으며 해피엔딩은 없습니다.\n(힌트는 Esc → 안내에서 보기)",
+    "endingHints": "엔딩 힌트",
+    "endingHint1": "굶주림: 이틀 연속 굶으면 아이가 아빠를 도우려 합니다.",
+    "endingHint2": "썩은 음식: 이틀 연속 먹으면 아이가 위험해집니다.",
+    "endingHint3": "도박: 어두운 골목에서 너무 많이 따면 눈길을 끕니다.",
     "ready": "M 귀가 · 밤까지 돌아오세요",
     "recognized": "\"아까 그 소매치기다!\" 누군가 얼굴을 알아봤습니다.",
     "resetSettings": "초기화",

@@ -104,7 +104,7 @@ test('home/title framing leaves eight percent paving at tall, desktop and wide r
 });
 test('a new story has a timed, skippable prologue while continuing preserves its saved scene',()=>{
  const g=new Game();g.start({prologue:true});assert.equal(g.mode,'prologue');tick(g,4);assert.equal(g.mode,'prologue');g.skipPrologue();assert.equal(g.mode,'morning');assert.equal(g.morningIndex,0);assert.equal(g.timeLeft,RULES.daySeconds);
- const auto=new Game();auto.start({prologue:true});tick(auto,10.1);assert.equal(auto.mode,'morning');assert.equal(auto.drainEvents().filter(e=>e.type==='prologueEnd').length,1);
+ const auto=new Game();auto.start({prologue:true});tick(auto,24.1);assert.equal(auto.mode,'morning');assert.equal(auto.drainEvents().filter(e=>e.type==='prologueEnd').length,1);
  const saved=practice();saved.tutorialDone=true;saved.tutorial=TUTORIAL.done;saved.inventory=['fresh','coin'];const copy=new Game(saved.save());copy.start();assert.equal(copy.mode,'day');assert.deepEqual(copy.inventory,['fresh','coin']);
 });
 test('the QTE lesson cannot be passed by mouse progress or a missed Space press',()=>{
@@ -186,8 +186,8 @@ test('new cover ignores already-held movement and F, including through the safet
 test('the tutorial requires an actual paid food purchase and preserves its intermediate lesson',()=>{
  const g=practice();g.tutorial=TUTORIAL.memory;g.add('coin',1);g.advanceTutorial();assert.equal(g.tutorial,TUTORIAL.buyIntro);assert.equal(g.tutorialDone,false);g.advanceTutorial();g.player.x=1006;g.useDoor();g.player.x=g.shop.x0+1110;g.update(.02);assert.equal(g.tutorial,TUTORIAL.purchase);const copy=new Game(g.save());copy.start();assert.equal(copy.tutorial,TUTORIAL.purchase);assert.equal(copy.buy(),true);assert.equal(copy.coins,0);assert.equal(copy.food,1);assert.equal(copy.tutorial,TUTORIAL.meal);assert.equal(copy.tutorialDone,false);assert.equal(copy.timeLeft,RULES.daySeconds);copy.advanceTutorial();assert.equal(copy.tutorialDone,true);
 });
-test('prologue clicks advance one line before ending, while Skip still skips both',()=>{
- const g=new Game();g.start({prologue:true});g.advancePrologue();assert.equal(g.mode,'prologue');assert.equal(g.prologueIndex,1);g.advancePrologue();assert.equal(g.mode,'morning');const skip=new Game();skip.start({prologue:true});skip.skipPrologue();assert.equal(skip.mode,'morning');
+test('prologue clicks advance all four captions, while Skip exits immediately',()=>{
+ const g=new Game();g.start({prologue:true});g.advancePrologue();assert.equal(g.mode,'prologue');assert.equal(g.prologueIndex,1);g.advancePrologue();assert.equal(g.prologueIndex,2);g.advancePrologue();assert.equal(g.prologueIndex,3);assert.equal(g.mode,'prologue');g.advancePrologue();assert.equal(g.mode,'morning');const skip=new Game();skip.start({prologue:true});skip.skipPrologue();assert.equal(skip.mode,'morning');
 });
 test('street bins and loaded carts leave actual doorway openings clear',async()=>{
  const {SHOPS,BINS,BOXES}=await import('../games/robberfather/engine.js');for(const object of [...BINS,...BOXES.filter(b=>!b.inside)]){const half=BINS.includes(object)?26.5:RULES.coverWidth/2;for(const shop of SHOPS)assert.ok(Math.abs(object.x-shop.door)>=half+53+18,`blocked doorway: ${object.id} at ${shop.door}`);}

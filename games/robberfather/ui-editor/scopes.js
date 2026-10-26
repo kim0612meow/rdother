@@ -100,6 +100,8 @@ export const DETAIL_SCENES={
     "Opening · Second caption",
     "prologue"
   ],
+  "prologue:2": ["도입 · 세 번째 자막", "Opening · Third caption", "prologue"],
+  "prologue:3": ["도입 · 네 번째 자막", "Opening · Fourth caption", "prologue"],
   "dialogue:0": [
     "아침 · 첫 대사",
     "Morning · First line",

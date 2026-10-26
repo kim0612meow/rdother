@@ -1,5 +1,5 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=morning-farewell-v45';
-import {dayDifficulty} from './difficulty.js?v=morning-farewell-v45';
+import {ROBBERY,endingDuration} from './cinematics.js?v=opening-endings-v46';
+import {dayDifficulty} from './difficulty.js?v=opening-endings-v46';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,hideLock:.55,meal:3,recoveryMeal:5,tutorialSkipHold:1.5,hungerDifficulty:1.5,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
@@ -9,7 +9,8 @@ export const WARY={start:.7,step:.13,max:1.6};
 export const TYPES={civilian:{slots:1,difficulty:'easy',hold:3.0,risk:.36,speed:40,wait:[2.4,4.6],warn:.75},wealthy:{slots:2,difficulty:'normal',hold:3.9,risk:.48,speed:33,wait:[1.9,3.9],warn:.6},police:{slots:1,difficulty:'hard',hold:4.0,risk:.62,speed:48,behind:.22,wait:[1.3,2.6],warn:.42}};
 // First-day practice: mouse, Space, E withdrawal, one real detection, F cover and face memory. The clock/crowd wait; the practice pursuit is slow.
 export const TUTORIAL={move:0,find:1,approach:2,pull:3,qte:4,dodge:5,resume:6,caught:7,escape:8,memory:9,buyIntro:10,shop:11,counter:12,purchase:13,meal:14,done:15};
-export const PROLOGUE_SECONDS=10;
+export const PROLOGUE_LINES=4;
+export const PROLOGUE_SECONDS=24;
 // Every shop front on the street has its own room, laid out far beyond the street so distances never cross.
 // Kind 5 is a dark alley behind one of the shadowy doorways between the shops: no shop front, just a way in to the shell game.
 export const ALLEY=5,ALLEY_DOORS=[1470,2670,3730];
@@ -53,7 +54,7 @@ export class Game{
  this.bins.forEach(b=>b.searched=Array.isArray(s.searchedBins)&&s.searchedBins.includes(b.id));this.chasers=Array.isArray(s.chasers)?[...new Set(s.chasers.filter(id=>this.npcs.some(n=>n.id===id)))]:[];this.chasers.forEach(id=>this.npcs.find(n=>n.id===id).alert=true);this.chaseTime=clamp(valid(s.chaseTime),0,1000);this.escape=clamp(valid(s.escape),0,3);}
  start({prologue=false}={}){if(this.mode==='intro')this.mode=prologue?'prologue':this.resumeMode;}
  skipPrologue(){if(this.mode!=='prologue')return false;this.prologueTime=PROLOGUE_SECONDS;this.mode='morning';this.emit('prologueEnd');return true;}
- advancePrologue(){if(this.mode!=='prologue')return false;if(this.prologueIndex===0){this.prologueIndex=1;this.prologueTime=Math.max(this.prologueTime,PROLOGUE_SECONDS/2);}else this.skipPrologue();return true;}
+ advancePrologue(){if(this.mode!=='prologue')return false;if(this.prologueIndex<PROLOGUE_LINES-1){this.prologueIndex++;this.prologueTime=Math.max(this.prologueTime,this.prologueIndex*PROLOGUE_SECONDS/PROLOGUE_LINES);}else this.skipPrologue();return true;}
  advanceTutorial(){const T=TUTORIAL;if(this.tutorial===T.caught){this.tutorial=T.escape;return true;}if(this.tutorial===T.memory){if(this.player.hidden)this.toggleHide();this.tutorial=T.buyIntro;return true;}if(this.tutorial===T.buyIntro){this.tutorial=T.shop;return true;}if(this.tutorial===T.meal){this.finishTutorial();return true;}return false;}
  advanceMorning(){if(this.mode!=='morning')return false;this.morningIndex++;if(this.morningIndex>=3){this.mode='day';this.morningIndex=0;this.emit('dayStart');return true;}return false;}
  facingPlayer(n){return(this.player.x-n.x)*n.face>0;}
@@ -96,7 +97,7 @@ export class Game{
  }
  get tutorialPocketLocked(){return this.mode==='day'&&[TUTORIAL.pull,TUTORIAL.qte,TUTORIAL.dodge,TUTORIAL.resume].includes(this.tutorial);}
  get tutorialHold(){const T=TUTORIAL,s=this.tutorial;if(this.tutorialPocketLocked)return'withdraw';if(s===T.purchase)return'buy';if(s===T.move&&this.travel===0)return'move';if(s===T.approach&&this.activeTarget===null&&this.target&&this.isBehind(this.target)&&!(this.target.lookBack>0))return'steal';return null;}
- update(dt,input={}){dt=clamp(dt,0,.05);this.time+=dt;if(this.mode==='prologue'){this.prologueTime+=dt;if(this.prologueTime>=PROLOGUE_SECONDS/2)this.prologueIndex=1;if(this.prologueTime>=PROLOGUE_SECONDS)this.skipPrologue();return;}if(this.mode==='night'){this.nightTime+=dt;return;}if(this.mode==='ending'){const before=this.endingTime;this.endingTime+=dt;if(this.ending==='robbed'){if(before<ROBBERY.hit&&this.endingTime>=ROBBERY.hit)this.emit('headStrike');for(const hit of ROBBERY.kicks)if(before<hit&&this.endingTime>=hit)this.emit('bodyStrike');if(before<ROBBERY.rob&&this.endingTime>=ROBBERY.rob){this.inventory=this.inventory.filter(x=>x!=='coin');this.emit('robberyTaken');}}return;}if(this.mode!=='day')return;
+ update(dt,input={}){dt=clamp(dt,0,.05);this.time+=dt;if(this.mode==='prologue'){this.prologueTime+=dt;this.prologueIndex=Math.min(PROLOGUE_LINES-1,Math.floor(this.prologueTime/(PROLOGUE_SECONDS/PROLOGUE_LINES)));if(this.prologueTime>=PROLOGUE_SECONDS)this.skipPrologue();return;}if(this.mode==='night'){this.nightTime+=dt;return;}if(this.mode==='ending'){const before=this.endingTime;this.endingTime+=dt;if(this.ending==='robbed'){if(before<ROBBERY.hit&&this.endingTime>=ROBBERY.hit)this.emit('headStrike');for(const hit of ROBBERY.kicks)if(before<hit&&this.endingTime>=hit)this.emit('bodyStrike');if(before<ROBBERY.rob&&this.endingTime>=ROBBERY.rob){this.inventory=this.inventory.filter(x=>x!=='coin');this.emit('robberyTaken');}}return;}if(this.mode!=='day')return;
  if(this.updateTutorialSkip(dt,!!input.skipTutorial))return;const practice=this.tutorial<TUTORIAL.done;if(!practice){const priorTime=this.timeLeft;this.timeLeft=Math.max(0,this.timeLeft-dt);if(priorTime>30&&this.timeLeft<=30)this.emit('duskWarning');if(this.timeLeft===0){this.endChase();this.goHome('timeout');this.emit('timeout');return;}}
  if(practice&&[TUTORIAL.caught,TUTORIAL.memory,TUTORIAL.buyIntro,TUTORIAL.meal].includes(this.tutorial)){this.previousInput={};return;}
  this.cooldown=Math.max(0,this.cooldown-dt);const edge=key=>input[key]&&!this.previousInput[key];const p=this.player,wasInspecting=!!this.inspectedBin;

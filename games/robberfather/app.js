@@ -1,20 +1,20 @@
-import {createAudioCredits} from './audio-credits.js?v=morning-farewell-v45';
-import {activeDetail} from './ui-editor/scopes.js?v=morning-farewell-v45';
-import {DayNotice} from './day-notice.js?v=morning-farewell-v45';
-import {WAITING_CHILD} from './framing.js?v=morning-farewell-v45';
-import {installUIEditor} from './ui-editor/index.js?v=morning-farewell-v45';
-import {DialogueTyper} from './dialogue.js?v=morning-farewell-v45';
-import {settings,DEFAULT_BINDINGS} from './settings.js?v=morning-farewell-v45';
-import {UseInput} from './use-input.js?v=morning-farewell-v45';
-import {PocketInput} from './pocket-input.js?v=morning-farewell-v45';
-import {ROBBERY,endingPart} from './cinematics.js?v=morning-farewell-v45';
-import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=morning-farewell-v45';
-import {Pickpocket} from './pickpocket.js?v=morning-farewell-v45';
-import {Shell} from './shell.js?v=morning-farewell-v45';
-import {Renderer} from './scene.js?v=morning-farewell-v45';
-import {Soundscape} from './audio.js?v=morning-farewell-v45';
-import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=morning-farewell-v45';
-import {getMorningLines,storyText} from './story.js?v=morning-farewell-v45';
+import {createAudioCredits} from './audio-credits.js?v=opening-endings-v46';
+import {activeDetail} from './ui-editor/scopes.js?v=opening-endings-v46';
+import {DayNotice} from './day-notice.js?v=opening-endings-v46';
+import {WAITING_CHILD} from './framing.js?v=opening-endings-v46';
+import {installUIEditor} from './ui-editor/index.js?v=opening-endings-v46';
+import {DialogueTyper} from './dialogue.js?v=opening-endings-v46';
+import {settings,DEFAULT_BINDINGS} from './settings.js?v=opening-endings-v46';
+import {UseInput} from './use-input.js?v=opening-endings-v46';
+import {PocketInput} from './pocket-input.js?v=opening-endings-v46';
+import {ROBBERY,endingPart} from './cinematics.js?v=opening-endings-v46';
+import {Game,TYPES,RULES,TUTORIAL,PRICES,GROUND} from './engine.js?v=opening-endings-v46';
+import {Pickpocket} from './pickpocket.js?v=opening-endings-v46';
+import {Shell} from './shell.js?v=opening-endings-v46';
+import {Renderer} from './scene.js?v=opening-endings-v46';
+import {Soundscape} from './audio.js?v=opening-endings-v46';
+import {t,setLocale,getLocale,DEFAULT_LOCALE} from './i18n.js?v=opening-endings-v46';
+import {getMorningLines,storyText} from './story.js?v=opening-endings-v46';
 const $=id=>document.getElementById(id),SAVE='one-more-meal-v3',LANG='one-more-meal-language';
 function getSaved(){try{const s=JSON.parse(localStorage.getItem(SAVE));if(s?.version===3&&Number.isInteger(s.day)&&s.day>0&&s.day<1000000&&Array.isArray(s.inventory))return s;}catch{}return null;}
 let saved=getSaved(),game=new Game(),renderer=new Renderer($('game')),held=new Set(),pendingPresses=new Set(),modalOpen=false,transitioning=false,lastTime=0,visualTime=0,toastUntil=0,tutorialUntil=0,lastSignature='',sound=true,soundscape=new Soundscape(),modalSpec=null,previousFocus=null,toastSpec=null;
@@ -66,7 +66,7 @@ function renderSettings(page=pausePage){
   const grid=document.createElement('div');grid.className='binding-grid';for(const action of Object.keys(DEFAULT_BINDINGS)){const label=document.createElement('label'),button=document.createElement('button');button.type='button';button.dataset.action=action;button.textContent=captureAction===action?t('pressKey'):settings.label(action);button.setAttribute('aria-label',t('bind_'+action)+' · '+settings.label(action));button.onclick=()=>{captureAction=action;renderSettings('controls');};label.append(document.createTextNode(t('bind_'+action)),button);grid.append(label);}body.append(grid);if(captureAction)grid.querySelector('[data-action="'+captureAction+'"]').focus();const status=document.createElement('p');status.id='bindingStatus';status.className='binding-note';status.setAttribute('role','status');status.textContent=t(captureAction?'pressKeyHint':'bindingHint');body.append(status);const reset=document.createElement('button');reset.textContent=t('resetSettings');reset.onclick=()=>{settings.bindings={...DEFAULT_BINDINGS};settings.save();soundscape.setVolume(1);soundscape.setVolumes(settings.volumes);captureAction=null;strings();renderSettings('controls');};body.append(reset);
  }
  if(page==='help'){
-  const list=document.createElement('ul');for(let i=1;i<=6;i++){const li=document.createElement('li');li.textContent=t('helpShort'+i);list.append(li);}body.append(list);const table=document.createElement('table'),head=document.createElement('tr');for(const key of ['shopLabel','itemLabel','priceLabel']){const th=document.createElement('th');th.textContent=t(key);head.append(th);}table.append(head);for(const [shop,item,price]of [['bakery','breadItem',PRICES.bread.price],['market','potatoItem',PRICES.potato.price],['pharmacy','medicineItem',PRICES.medicine.price]]){const tr=document.createElement('tr');for(const text of [t(shop),t(item),String(price)]){const td=document.createElement('td');td.textContent=text;tr.append(td);}table.append(tr);}body.append(table);body.append(createAudioCredits(t('audioCredits'),getLocale()));
+  const list=document.createElement('ul');for(let i=1;i<=6;i++){const li=document.createElement('li');li.textContent=t('helpShort'+i);list.append(li);}body.append(list);const table=document.createElement('table'),head=document.createElement('tr');for(const key of ['shopLabel','itemLabel','priceLabel']){const th=document.createElement('th');th.textContent=t(key);head.append(th);}table.append(head);for(const [shop,item,price]of [['bakery','breadItem',PRICES.bread.price],['market','potatoItem',PRICES.potato.price],['pharmacy','medicineItem',PRICES.medicine.price]]){const tr=document.createElement('tr');for(const text of [t(shop),t(item),String(price)]){const td=document.createElement('td');td.textContent=text;tr.append(td);}table.append(tr);}body.append(table);const hints=document.createElement('details'),summary=document.createElement('summary');summary.textContent=t('endingHints');hints.append(summary);for(let i=1;i<=3;i++){const p=document.createElement('p');p.textContent=t('endingHint'+i);hints.append(p);}body.append(hints);body.append(createAudioCredits(t('audioCredits'),getLocale()));
  }
 }
 function openModal(spec){dayNotice.dismiss();game.tutorialSkipProgress=0;previousFocus=document.activeElement;modalSpec=spec;modalOpen=true;pocketKeys.clear();soundscape.quiet();held.clear();pendingPresses.clear();useKey.cancel();shortUsePending=false;$('modalBody').replaceChildren();$('modalCancel').hidden=!spec.confirm;$('modal').hidden=false;if(spec.settings)renderSettings(spec.page||'menu');else{$('modal').classList.remove('pause-menu');$('modalTitle').hidden=false;$('modalTitle').textContent=t(spec.title,spec.vars);$('pauseChoices').hidden=true;$('pauseTools').hidden=true;$('preferences').hidden=true;const p=document.createElement('p');p.textContent=t(spec.body,spec.vars);$('modalBody').append(p);$('modalAction').querySelector('span').textContent=t(spec.action||'resume');$('closeModal').hidden=!!spec.required;}$('modal').querySelector('.modal').focus();}
@@ -114,7 +114,7 @@ function positionGuide(id,point,ready,{inset=.12,minY=.2}={}){
 function hud(){
  const detail=activeDetail(game);if($('stage').dataset.uiDetail!==detail)$('stage').dataset.uiDetail=detail;
  const signature=[getLocale(),game.mode,game.day,game.inventory.join(),game.mealRequired,game.hungerStreak,game.rottenStreak,game.caughtCount,game.morningIndex,game.ending,game.prologueIndex,game.tutorial].join('|');
- if(signature!==lastSignature){lastSignature=signature;$('prologueText').textContent=t(game.prologueIndex?'prologueLine2':'prologueLine1');$('dayNumber').textContent=t('day',{day:String(game.day).padStart(2,'0')});
+ if(signature!==lastSignature){lastSignature=signature;$('prologueText').textContent=t('prologueLine'+(game.prologueIndex+1));$('dayNumber').textContent=t('day',{day:String(game.day).padStart(2,'0')});
   $('coinSlots').innerHTML=bagRow(['coin'],RULES.coinCap).map(kind=>slotHtml(kind,COIN_ICON)).join('');$('coinSlots').setAttribute('aria-label',t('coinCount',{coins:game.coins,max:RULES.coinCap}));
   $('foodSlots').innerHTML=bagRow(['fresh','rotten'],RULES.foodCap).map((kind,i)=>slotHtml(kind,FOOD_ICON).replace('food-slot ','food-slot '+(i>=game.mealRequired?'reserve ':''))).join('');$('foodSlots').setAttribute('aria-label',t('foodQuotaCount',{count:game.food,required:game.mealRequired}));$('mealTarget').textContent=t('mealTarget',{required:game.mealRequired});
   $('attemptSlots').innerHTML=Array.from({length:RULES.maxCaught},(_,i)=>'<span class="chance '+(i<RULES.maxCaught-game.caughtCount?'available':'used')+'" aria-hidden="true">'+(i<RULES.maxCaught-game.caughtCount?'●':'×')+'</span>').join('');$('attemptSlots').setAttribute('aria-label',t('chancesCount',{count:RULES.maxCaught-game.caughtCount}));
