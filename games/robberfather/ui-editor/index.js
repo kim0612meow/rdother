@@ -1,7 +1,7 @@
-import {baseScene} from './scopes.js?v=tutorial-focus-v47';
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=tutorial-focus-v47';
-import {createLayoutRuntime} from './runtime.js?v=tutorial-focus-v47';
-import {EDITOR_CSS} from './styles.js?v=tutorial-focus-v47';
+import {baseScene} from './scopes.js?v=food-meter-v48';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=food-meter-v48';
+import {createLayoutRuntime} from './runtime.js?v=food-meter-v48';
+import {EDITOR_CSS} from './styles.js?v=food-meter-v48';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=true;
 const copy=value=>JSON.parse(JSON.stringify(value));
