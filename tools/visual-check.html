@@ -3,8 +3,8 @@
 <h1>One More Meal · Pixel sprite studio · revision 2</h1><p>Raster dot sprites, sampled to native pixels with a shared 24-colour palette per person. Full-body animation; no rectangle-built bodies. Local QA fixtures replace only this preview origin's save.</p>
 <canvas id="sheet" width="1200" height="940"></canvas><p id="result"></p><div id="fixtures"></div>
 <script type="module">
-import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=straight-pockets-v54';
-import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=straight-pockets-v54';
+import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=empty-bins-v56';
+import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=empty-bins-v56';
 await ready;
 const c=document.getElementById('sheet').getContext('2d');c.fillStyle='#d8d4c7';c.fillRect(0,0,1200,630);c.imageSmoothingEnabled=false;
 const people=[['FATHER','father'],['SON','child'],['PASSERBY','civilian'],['WEALTHY','wealthy'],['POLICE','police'],['ALLEY MAN','thug']];
@@ -20,6 +20,9 @@ const savedPractice=JSON.parse(localStorage.getItem('one-more-meal-v3')||'null')
 const fresh=()=>{const g=new Game();g.start();for(let i=0;i<3;i++)g.advanceMorning();g.tutorialDone=true;g.tutorial=TUTORIAL.done;return g;};
 const recovery=()=>{const g=fresh();g.goHome();g.beginNight();g.nextDay();for(let i=0;i<3;i++)g.advanceMorning();return g;};
 const scenarios={
+ 'V56 · empty bin cannot open':()=>{const g=fresh();g.player.x=1570;g.bins[0].searched=true;g.npcs.forEach(n=>n.pause=999);return g;},
+ 'V55 · near son home prompt':()=>{const g=fresh();g.player.x=250;return g;},
+ 'V55 · empty pocket explanation':()=>{const g=fresh();g.player.x=760;g.npcs[0].x=790;g.npcs[0].stolen=true;g.npcs[0].pause=999;return g;},
  'V50 · remembered face blocks entry':()=>{const g=fresh();g.player.x=SHOPS[1].door;g.closedShops=[SHOPS[1].id];return g;},
  'V32 · hungry three of five':()=>{const g=fresh();g.goHome();g.beginNight();g.nextDay();for(let i=0;i<3;i++)g.advanceMorning();g.inventory=['fresh','fresh','fresh'];g.player.x=600;return g;},
  'V32 · hungry three of four':()=>{const g=fresh();g.inventory=['fresh','fresh'];g.goHome();g.beginNight();g.nextDay();for(let i=0;i<3;i++)g.advanceMorning();g.inventory=['fresh','fresh','fresh'];g.player.x=600;return g;},

@@ -1,5 +1,5 @@
-import {DETAIL_SCENES} from './scopes.js?v=straight-pockets-v54';
-import {MESSAGES} from '../i18n.js?v=straight-pockets-v54';
+import {DETAIL_SCENES} from './scopes.js?v=empty-bins-v56';
+import {MESSAGES} from '../i18n.js?v=empty-bins-v56';
 export const TARGETS=[
  ['resources','#resourceHud','돈·식사·기회 묶음','Resources','street'],
  ['coins','#resourceHud .hud-group:nth-child(1)','돈 칸','Coins','street'],

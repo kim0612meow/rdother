@@ -218,3 +218,5 @@ select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius
 
 /* Never expose old/partial art beneath the title while images decode. */
 .game-stage.is-loading>:not(#game){visibility:hidden!important;pointer-events:none!important}
+
+.son-home-prompt{position:absolute;z-index:5;transform:translate(-50%,-100%);padding:10px 14px;border-radius:10px;border:1px solid #f0d18e;background:#1b2b26f5;color:#ffe0a3;font-size:18px;white-space:nowrap}.son-home-prompt kbd{margin-right:6px}.son-home-prompt::after{content:"";position:absolute;left:calc(50% - 6px);bottom:-7px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #f0d18e}

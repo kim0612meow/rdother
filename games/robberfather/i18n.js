@@ -1,9 +1,11 @@
 import {UI_TEXT} from './ui-editor/text-overrides.js';
-import {controlText} from './settings.js?v=straight-pockets-v54';
+import {controlText} from './settings.js?v=empty-bins-v56';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
   "en": {
+    "homeBySon": "Go home",
+    "pocketEmpty": "You already stole from this person. There is nothing left to take.",
     "loadingArt": "Loading…",
     "artLoadFailed": "Could not load the game art. Please refresh.",
     "afternoon": "AFTERNOON",
@@ -316,6 +318,8 @@ export const MESSAGES={
     "witnessed": "A bystander saw your hand! Run before the crowd closes in."
   },
   "ko": {
+    "homeBySon": "집으로 들어가기",
+    "pocketEmpty": "이미 이 사람에게서 훔쳤습니다. 주머니에 더 가져갈 것이 없습니다.",
     "loadingArt": "불러오는 중…",
     "artLoadFailed": "게임 이미지를 불러오지 못했습니다. 새로고침해 주세요.",
     "afternoon": "오후",

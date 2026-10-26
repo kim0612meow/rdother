@@ -1,5 +1,5 @@
-import {ROBBERY,endingDuration} from './cinematics.js?v=straight-pockets-v54';
-import {dayDifficulty} from './difficulty.js?v=straight-pockets-v54';
+import {ROBBERY,endingDuration} from './cinematics.js?v=empty-bins-v56';
+import {dayDifficulty} from './difficulty.js?v=empty-bins-v56';
 // Pure simulation. Display text belongs to i18n.js and story.js.
 export const WIDTH=1440,HEIGHT=840,WORLD=4400,GROUND=650;
 export const RULES={foodCap:5,coinCap:5,coverReach:116,coverWidth:232,hideLock:.55,meal:3,recoveryMeal:5,tutorialSkipHold:1.5,hungerDifficulty:1.5,maxCaught:3,daySeconds:150,stamina:42,sprintDrain:26,regen:8,walk:126,run:246,discardHold:1.4,hiddenEscape:1.2,recognizeCalm:3,lookTime:1.4};
@@ -61,6 +61,7 @@ export class Game{
  isBehind(n){return!this.facingPlayer(n)&&distance(n,this.player)>=18;}
  isWatching(n){return(this.time+n.seed)%9<3.4;}
  nearest(allowFull=false){if(this.banned||this.chasers.length||this.player.x<630||this.player.hidden||this.coinFull&&!allowFull||!this.tutorialDone&&this.tutorial>=TUTORIAL.buyIntro)return null;return this.npcs.filter(n=>!n.stolen&&(!this.tutorialPocketLocked||this.tutorialVictim===null||n.id===this.tutorialVictim)&&distance(n,this.player)<67).sort((a,b)=>distance(a,this.player)-distance(b,this.player))[0]||null;}
+ get emptyPocketTarget(){if(this.mode!=='day'||!this.tutorialDone||this.chasers.length||this.player.hidden||this.player.x<630)return null;return this.npcs.filter(n=>n.stolen&&distance(n,this.player)<67).sort((a,b)=>distance(a,this.player)-distance(b,this.player))[0]||null;}
  get fullPocketsTarget(){if(!this.coinFull)return null;const n=this.nearest(true);return n&&this.isBehind(n)?n:null;}
  // The shop counter the player is standing at, and what it sells.
  nearbyCounter(){const s=this.shop;if(!s||!SELLS[s.kind]||this.player.hidden||this.chasers.length||Math.abs(this.player.x-(s.x0+COUNTER))>60)return null;const item=SELLS[s.kind];return{shop:s,item,...PRICES[item]};}
@@ -74,7 +75,7 @@ export class Game{
  settleBet(win){if(!this.betPending)return false;this.betPending=false;if(win){this.add('coin',GAMBLE.pay);this.gambleNet+=GAMBLE.pay-GAMBLE.stake;}else this.gambleNet-=GAMBLE.stake;this.emit(win?'betWon':'betLost',{net:this.gambleNet});if(this.gambleNet>=GAMBLE.limit){this.ending='robbed';this.endingTime=0;this.mode='ending';this.emit('ending',{kind:'robbed'});}}
  nearbyBox(){return BOXES.find(b=>distance(b,this.player)<RULES.coverReach)||null;}
  get inspectedBin(){return this.bins.find(b=>b.id===this.openBinId)||null;}
- nearbyBin(){if(this.player.hidden||this.chasers.length)return null;return this.bins.filter(b=>distance(b,this.player)<60).sort((a,b)=>distance(a,this.player)-distance(b,this.player))[0]||null;}
+ nearbyBin(){if(this.player.hidden||this.chasers.length)return null;return this.bins.filter(b=>!b.searched&&distance(b,this.player)<60).sort((a,b)=>distance(a,this.player)-distance(b,this.player))[0]||null;}
  // The shop door the player is standing at: a street entrance, or the exit inside a shop. barred: you were caught stealing in there once.
  nearbyDoor(){if(this.player.hidden)return null;const inside=this.shop;if(inside)return Math.abs(this.player.x-(inside.x0+INSIDE_DOOR))<60?{shop:inside,exit:true}:null;const s=SHOPS.find(s=>Math.abs(s.door-this.player.x)<45);return s?{shop:s,exit:false,barred:this.closedShops.includes(s.id)}:null;}
  useDoor(){const d=this.nearbyDoor();if(!d||this.tutorial<TUTORIAL.shop)return false;if(this.tutorial<TUTORIAL.done&&!d.exit&&d.shop.kind!==1){this.emit('tutorialMarketOnly');return false;}if(d.barred){this.emit('shopBarred');return false;}if(this.chasers.length){this.emit('doorBlocked');return false;}this.clearHold();this.player.x=d.exit?d.shop.door:d.shop.x0+INSIDE_DOOR;this.player.face=1;if(d.exit&&[TUTORIAL.counter,TUTORIAL.purchase].includes(this.tutorial))this.tutorial=TUTORIAL.shop;else if(!d.exit&&this.tutorial===TUTORIAL.shop)this.tutorial=TUTORIAL.counter;this.emit(d.exit?'exitShop':'enterShop',{kind:d.shop.kind});return true;}
@@ -82,7 +83,7 @@ export class Game{
  add(kind,count){const added=Math.max(0,Math.min(count,kind==='coin'?RULES.coinCap-this.coins:RULES.foodCap-this.food));for(let i=0;i<added;i++)this.inventory.push(kind);return added;}
  inspectBin(){const b=this.nearbyBin();if(!b||this.mode!=='day'||this.tutorial<TUTORIAL.done||this.activeTarget!==null)return false;this.openBinId=b.id;this.binIntroduced=true;this.target=null;this.emit('binOpened');return true;}
  closeBin(){if(this.openBinId===null)return false;this.openBinId=null;this.emit('binClosed');return true;}
- finishBin(take=false){const b=this.inspectedBin;if(!b)return false;if(take){if(!b.searched)this.takeBin(b);}else this.emit('binLeft');this.closeBin();return true;}
+ finishBin(take=false){const b=this.inspectedBin;if(!b)return false;if(b.searched){this.closeBin();return false;}if(take){if(!b.searched)this.takeBin(b);}else this.emit('binLeft');this.closeBin();return true;}
  takeBin(b){if(!b||b.searched)return false;if(this.foodFull){this.emit('foodFull');return false;}b.searched=true;this.add('rotten',1);this.emit('scavenged');if(this.food===this.mealRequired)this.emit('goal');return true;}
  discardRotten(){const i=this.inventory.lastIndexOf('rotten');if(i<0)return false;this.inventory.splice(i,1);this.emit('discarded');return true;}
  // A box always hides you: pursuers lose sight the moment you are inside.
