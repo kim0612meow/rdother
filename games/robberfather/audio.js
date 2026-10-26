@@ -1,4 +1,4 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=english-dialogue-v44';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=morning-farewell-v45';
 // Three times the previous default gain; category sliders keep their saved values.
 export const MASTER_GAIN=2.4;
 // Sound timing is separate from synthesis so pauses and story states stay silent.

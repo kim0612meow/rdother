@@ -1,7 +1,7 @@
-import {baseScene} from './scopes.js?v=english-dialogue-v44';
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=english-dialogue-v44';
-import {createLayoutRuntime} from './runtime.js?v=english-dialogue-v44';
-import {EDITOR_CSS} from './styles.js?v=english-dialogue-v44';
+import {baseScene} from './scopes.js?v=morning-farewell-v45';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=morning-farewell-v45';
+import {createLayoutRuntime} from './runtime.js?v=morning-farewell-v45';
+import {EDITOR_CSS} from './styles.js?v=morning-farewell-v45';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=true;
 const copy=value=>JSON.parse(JSON.stringify(value));
