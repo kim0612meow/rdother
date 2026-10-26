@@ -531,3 +531,13 @@ test('robbery fight keeps paving to ten percent without altering home/collapse f
  for(const [w,h]of [[1028,883],[1280,720],[1718,975],[2100,900]]){const size=viewportSize(w,h),zoom=fitZoom(2.1,size.width,size.height),view=cameraWindow(zoom,720,robberyFocusY(zoom),size.width,size.height);assert.ok(Math.abs((650-view.sy)*zoom/840-ROBBERY_FOOT_LINE)<.001);for(const x of [656,784])assert.ok((x-view.sx)*zoom>0&&(x-view.sx)*zoom<size.width);const homeZoom=fitZoom(1.25,size.width,size.height),home=cameraWindow(homeZoom,720,homeFocusY(homeZoom),size.width,size.height);assert.ok(Math.abs((650-home.sy)*homeZoom/840-HOME_FOOT_LINE)<.001);}
  const scene=await readFile(new URL('../games/robberfather/scene.js',import.meta.url),'utf8');assert.match(scene,/closeRobbery\?robberyFocusY\(this.zoom\)/);assert.match(scene,/this.zoom=home\|\|arrest\|\|closeRobbery\?wanted/);
 });
+
+test('cold art loading draws only a neutral loading screen and never the old fallback',async()=>{
+ const {Renderer}=await import('../games/robberfather/scene.js');const {setLocale,getLocale}=await import('../games/robberfather/i18n.js');const locale=getLocale();setLocale('en');
+ try{for(const failed of [false,true]){const text=[],classes=[];const r={resize(){},el:{width:1440,closest:()=>({classList:{toggle:(...a)=>classes.push(a)},setAttribute(){}})},backgrounds:{assetsReady:false,failed},out:{fillRect(){},fillText:value=>text.push(value)}};Renderer.prototype.draw.call(r,{},0,0);assert.equal(text[0],failed?'Could not load the game art. Please refresh.':'Loading…');assert.deepEqual(classes,[['is-loading',true]]);}
+ const source=await readFile(new URL('../games/robberfather/scene.js',import.meta.url),'utf8');assert.doesNotMatch(source,/legacyPerson|legacyMeal|function nightBackground|function dayBackground/);
+ }finally{setLocale(locale);}
+});
+test('easy mouse paths are straight across seeds while wealthy paths retain a gentle bend',()=>{
+ for(let seed=1;seed<=100;seed++){const easy=new Trace({type:'civilian',hold:3,seed,start:{x:206,y:252},W:640,H:400}),wealthy=new Trace({type:'wealthy',hold:3.9,seed,start:{x:206,y:252},W:640,H:400});assert.ok(easy.path.every((p,i)=>p.y===252&&(!i||p.x>easy.path[i-1].x)));assert.equal(easy.path.at(-1).x,568);assert.ok(new Set(wealthy.path.map(p=>Math.round(p.y))).size>10);assert.equal(easy.tol,30);assert.equal(wealthy.tol,23);}
+});

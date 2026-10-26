@@ -53,8 +53,10 @@ export const ready=typeof Image==='undefined'?Promise.resolve():Promise.all([
  // A purpose-drawn side-lying pose: do not rotate the seated sprite.
  const lying=cut(lyingChild,0,0,lyingChild.width,lyingChild.height,1),lyingFrame=document.createElement('canvas');lyingFrame.width=74;lyingFrame.height=Math.round(lying.height*74/lying.width);const lyingContext=lyingFrame.getContext('2d');lyingContext.imageSmoothingEnabled=false;lyingContext.drawImage(lying,0,0,lyingFrame.width,lyingFrame.height);reduce(lyingFrame,palettes.child);actions.childLying=lyingFrame;
  frames.worker=frames.civilian;loaded=true;
-}).catch(error=>{console.error('Character sprite loading failed',error);});
+}).catch(error=>{loadFailed=true;console.error('Character sprite loading failed',error);});
+let loadFailed=false;
 export function spritesReady(){return loaded;}
+export function spritesFailed(){return loadFailed;}
 function blit(c,frame,x,y,scale,face=1){c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));c.scale(face*scale,scale);c.drawImage(frame,-Math.floor(frame.width/2),-frame.height);c.restore();}
 export function drawCharacter(c,n,player=false,scale=1.3){
  if(!loaded)return false;

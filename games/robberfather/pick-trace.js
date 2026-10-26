@@ -1,7 +1,7 @@
-// Minigame: grab the wallet and draw it out along a winding line.
+// Minigame: grab the wallet and draw it out along the victim’s path.
 // tol: how far off the line the hand may wander. bends: how twisty the line is.
-const STYLE={civilian:{tol:30,bends:3,swing:70},wealthy:{tol:23,bends:5,swing:105},police:{tol:17,bends:7,swing:125}};
-function buildPath(type,seed,start,W,H){let r=seed;const rand=()=>{r=(r*16807)%2147483647;return r/2147483647;};const s=STYLE[type],pts=[{...start},{x:262,y:start.y}];for(let i=1;i<=s.bends;i++){const x=262+(560-262)*i/(s.bends+1);pts.push({x,y:Math.max(70,Math.min(H-70,H/2+(rand()*2-1)*s.swing))});}pts.push({x:568,y:H/2+(rand()*2-1)*40});
+const STYLE={civilian:{tol:30,bends:0,swing:0},wealthy:{tol:23,bends:3,swing:70},police:{tol:17,bends:7,swing:125}};
+function buildPath(type,seed,start,W,H){if(type==='civilian'){const steps=Math.ceil(Math.abs(568-start.x)/3);return Array.from({length:steps+1},(_,i)=>({x:start.x+(568-start.x)*i/steps,y:start.y}));}let r=seed;const rand=()=>{r=(r*16807)%2147483647;return r/2147483647;};const s=STYLE[type],pts=[{...start},{x:262,y:start.y}];for(let i=1;i<=s.bends;i++){const x=262+(560-262)*i/(s.bends+1);pts.push({x,y:Math.max(70,Math.min(H-70,H/2+(rand()*2-1)*s.swing))});}pts.push({x:568,y:H/2+(rand()*2-1)*40});
  // Catmull-Rom through the control points, then resample every 3px so progress is measured in pixels.
  const dense=[];for(let i=0;i<pts.length-1;i++){const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];for(let k=0;k<24;k++){const t=k/24,t2=t*t,t3=t2*t;dense.push({x:.5*(2*p1.x+(-p0.x+p2.x)*t+(2*p0.x-5*p1.x+4*p2.x-p3.x)*t2+(-p0.x+3*p1.x-3*p2.x+p3.x)*t3),y:.5*(2*p1.y+(-p0.y+p2.y)*t+(2*p0.y-5*p1.y+4*p2.y-p3.y)*t2+(-p0.y+3*p1.y-3*p2.y+p3.y)*t3)});}}dense.push(pts.at(-1));
  const path=[dense[0]];let acc=0;for(let i=1;i<dense.length;i++){const a=dense[i-1],b=dense[i],d=Math.hypot(b.x-a.x,b.y-a.y);acc+=d;while(acc>=3){acc-=3;const k=1-acc/d;path.push({x:a.x+(b.x-a.x)*k,y:a.y+(b.y-a.y)*k});}}path.push(dense.at(-1));return path;}

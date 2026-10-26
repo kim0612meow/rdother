@@ -215,3 +215,6 @@ select,#soundBtn{background:#36503f;color:#fff4df;padding:8px 12px;border-radius
 .hud-group.hud-highlight::before{content:'↓';position:absolute;left:50%;top:-49px;transform:translateX(-50%);font:900 38px/1 system-ui,sans-serif;color:#ffe09b;text-shadow:0 2px 3px #102019,0 0 12px #102019;background:#172d25;border:2px solid #ffe09b;border-radius:10px;padding:1px 9px 5px;animation:hud-pointer 1s ease-in-out infinite}
 @keyframes hud-pointer{0%,100%{transform:translate(-50%,-4px)}50%{transform:translate(-50%,2px)}}
 @media(prefers-reduced-motion:reduce){.hud-group.hud-highlight::before{animation:none}}
+
+/* Never expose old/partial art beneath the title while images decode. */
+.game-stage.is-loading>:not(#game){visibility:hidden!important;pointer-events:none!important}
