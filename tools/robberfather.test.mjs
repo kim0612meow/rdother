@@ -436,23 +436,14 @@ test('indoor ambience drops the crowd recording while retaining pocket and chase
  assert.ok(ambienceMix({mode:'day',shop:null},0).street>0);
  assert.ok(ambienceMix({mode:'day',shop:{kind:5}},0).street>0);
 });
-test('entering shops cancels current speech, blocks new shouts and preserves the voice preference on exit',async()=>{
- const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape();
- const original=globalThis.speechSynthesis;let cancelled=0;globalThis.speechSynthesis={cancel(){cancelled++;}};
- try{
-  s.context={currentTime:1};s.voiceBus={gain:{setTargetAtTime(value){this.value=value;}}};s.voice={};
-  s.volumes.voice=.4;s.setLocation({shop:{kind:0}});assert.equal(cancelled,1);assert.equal(s.voice,null);assert.equal(s.voiceBus.gain.value,0);
-  s.noiseHit=s.tone=()=>assert.fail('Indoor shouts must stay silent');s.shout();
-  s.setVolumes({voice:.7,effects:1,background:1});assert.equal(s.voiceBus.gain.value,0);assert.equal(s.volumes.voice,.7);
-  s.setLocation({shop:{kind:5}});assert.equal(s.voiceBus.gain.value,.7);assert.equal(s.indoors,false);
- }finally{if(original===undefined)delete globalThis.speechSynthesis;else globalThis.speechSynthesis=original;}
+test('entering shops stops recorded voice, keeps it muted, and restores its preference on exit',async()=>{
+ const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape();let stopped=0;s.context={currentTime:1};s.voiceBus={gain:{setTargetAtTime(value){this.value=value;}}};s.voice={stop(){stopped++;}};s.pendingVoice='witnessed';
+ s.volumes.voice=.4;s.setLocation({shop:{kind:0}});assert.equal(stopped,1);assert.equal(s.voice,null);assert.equal(s.pendingVoice,null);assert.equal(s.voiceBus.gain.value,0);s.shout();
+ s.setVolumes({voice:.7,effects:1,background:1});assert.equal(s.voiceBus.gain.value,0);assert.equal(s.volumes.voice,.7);s.setLocation({shop:{kind:5}});assert.equal(s.voiceBus.gain.value,.7);
 });
-test('NPC pursuit does not dispatch indoor shouts, but outdoors still does',async()=>{
- const {SoundDirector}=await import('../games/robberfather/audio.js');const g={...practice(),shop:{kind:0},chasers:[1]};
- const director=new SoundDirector();assert.equal(director.update(g,.1).some(e=>e.type==='shout'),false);
- g.shop=null;assert.equal(director.update(g,.1).some(e=>e.type==='shout'),true);
+test('ongoing pursuit does not repeat detection dialogue periodically',async()=>{
+ const {SoundDirector}=await import('../games/robberfather/audio.js');const g={...practice(),shop:null,chasers:[1]};const director=new SoundDirector();for(let i=0;i<600;i++)assert.equal(director.update(g,.05).some(e=>['shout','detected','witnessed'].includes(e.type)),false);
 });
-
 
 test('approved music follows outdoor and indoor locations and ducks through pocket focus and pursuit',async()=>{
  const {ambienceMix}=await import('../games/robberfather/audio-samples.js');
@@ -488,6 +479,23 @@ test('pursuit immediately silences both scene music gains and restores exclusive
 test('all installed recordings have direct author, source and license credits, with exactly two attribution-required tracks',async()=>{
  const {AUDIO_CREDITS}=await import('../games/robberfather/audio-credits.js');const {AUDIO_FILES}=await import('../games/robberfather/audio-samples.js');
  const required=AUDIO_CREDITS.filter(item=>item.license==='CC BY 4.0');assert.deepEqual(required.map(item=>item.title).sort(),['Chase Pulse Faster','Despair and Triumph']);
- for(const url of Object.values(AUDIO_FILES)){const suffix=new URL(url).pathname.split('/').slice(-3).join('/');const credits=AUDIO_CREDITS.filter(item=>item.files.includes(suffix));assert.equal(credits.length,1,suffix);assert.ok(credits[0].author);assert.ok(credits[0].url.startsWith('https://'));assert.ok(credits[0].licenseUrl.startsWith('https://creativecommons.org/'));}
- assert.ok(AUDIO_CREDITS.every(item=>['CC0 1.0','CC BY 4.0'].includes(item.license)));
+ for(const url of Object.values(AUDIO_FILES)){const suffix=new URL(url).pathname.split('/').slice(-3).join('/');const credits=AUDIO_CREDITS.filter(item=>item.files.includes(suffix));assert.equal(credits.length,1,suffix);assert.ok(credits[0].author);if(credits[0].license==='Project recording'){assert.equal(credits[0].licenseUrl,'./assets/audio-v41/CREDITS.md');}else{assert.ok(credits[0].url.startsWith('https://'));assert.ok(credits[0].licenseUrl.startsWith('https://creativecommons.org/'));}}
+ assert.ok(AUDIO_CREDITS.every(item=>['CC0 1.0','CC BY 4.0','Project recording'].includes(item.license)));
+});
+
+
+test('victim detection and bystander witnessing choose different owner recordings without overlap',async()=>{
+ const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape(),played=[],stopped=[];s.context={currentTime:1};s.running=true;s.noiseHit=()=>{};s.samples={has:()=>true,voice:key=>{played.push(key);return{stop(){stopped.push(key);this.onended?.();},disconnect(){}};}};
+ s.play('detected');s.play('witnessed');assert.deepEqual(played,['voiceCaught','voiceWitness']);assert.deepEqual(stopped,['voiceCaught']);s.play('recognized');assert.equal(played.at(-1),'voiceCaught');assert.equal(stopped.at(-1),'voiceWitness');
+ s.volumes.voice=0;s.play('detected');assert.equal(played.length,3);s.volumes.voice=1;s.indoors=true;s.play('witnessed');assert.equal(played.length,3);
+});
+test('late-loading voice plays only while its detection chase remains active, and pause discards pending speech',async()=>{
+ const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape(),played=[];let ready=false;s.context={currentTime:1};s.running=true;s.master={gain:{setTargetAtTime(){}}};s.air={gain:{setTargetAtTime(){}}};s.noiseHit=()=>{};s.director={update:()=>[]};s.samples={has:()=>ready,update(){},voice:key=>{played.push(key);return{stop(){},disconnect(){}};}};
+ const g={mode:'day',shop:null,chasers:[1],player:{hidden:false},activeTarget:null};s.play('witnessed');assert.equal(s.pendingVoice,'witnessed');assert.equal(played.length,0);ready=true;s.update(g,.02,true,'en');assert.deepEqual(played,['voiceWitness']);assert.equal(s.pendingVoice,null);
+ ready=false;s.play('detected');s.update({...g,chasers:[]},.02,true,'en');assert.equal(s.pendingVoice,null);ready=true;s.update(g,.02,true,'en');assert.equal(played.length,1);
+ ready=false;s.play('detected');s.quiet();assert.equal(s.pendingVoice,null);
+});
+test('recorded voices use their own volume bus as single playback sources',async()=>{
+ const {SampleMixer}=await import('../games/robberfather/audio-samples.js');const routed=[],started=[];let source;const voiceBus={},effectsBus={};const gain={gain:{value:0},connect(to){routed.push(to);return this;},disconnect(){}};const mixer=Object.create(SampleMixer.prototype);Object.assign(mixer,{buffers:{voiceCaught:{duration:1.18},voiceWitness:{duration:.97}},voiceBus,master:effectsBus,c:{createGain:()=>gain,createBufferSource:()=>source={connect(){return gain;},start(){started.push(this.buffer);}}}});
+ mixer.voice('voiceWitness');assert.equal(source.loop,false);assert.equal(started[0],mixer.buffers.voiceWitness);assert.equal(routed[0],voiceBus);assert.ok(gain.gain.value>0);
 });

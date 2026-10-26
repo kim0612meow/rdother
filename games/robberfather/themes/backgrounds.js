@@ -1,5 +1,5 @@
-import {streetBays,facadeSlices} from './layout.js?v=audio-credits-v39';
-import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=audio-credits-v39';
+import {streetBays,facadeSlices} from './layout.js?v=owner-voices-v41';
+import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=owner-voices-v41';
 const W=1440,H=840,GROUND=650;
 export class Backgrounds{
  constructor(theme=ACTIVE_THEME){this.theme=THEMES[theme];this.panels={};this.props={};this.ready=false;if(!this.theme)return;this.loadStreetAssets();const img=new Image();img.onload=()=>{

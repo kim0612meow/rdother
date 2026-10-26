@@ -1,0 +1,24 @@
+[
+  {
+    "file": "hey-stop.mp3",
+    "title": "Hey, stop!",
+    "sourceFile": "2026-10-26 17-57-20.mp4",
+    "trimStart": 0.32,
+    "trimDuration": 1.18,
+    "event": "detected",
+    "author": "Project owner (user-provided recording)",
+    "permission": "Provided by the owner for inclusion in this game; original rights retained. Not CC0.",
+    "sha256": "a1b0ec1cf7b369dcad0c794b065c34dd463dd5faeeef4d0d2dbe874922524312"
+  },
+  {
+    "file": "what-are-you-doing.mp3",
+    "title": "What are you doing?",
+    "sourceFile": "2026-10-26 17-58-50.mp4",
+    "trimStart": 0.33,
+    "trimDuration": 0.97,
+    "event": "witnessed",
+    "author": "Project owner (user-provided recording)",
+    "permission": "Provided by the owner for inclusion in this game; original rights retained. Not CC0.",
+    "sha256": "56258a5965e4095fa0891ece61273e3e659824b5a9d1cda8825c7cba16fdc813"
+  }
+]

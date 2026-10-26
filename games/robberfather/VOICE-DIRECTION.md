@@ -8,4 +8,4 @@ Rejected: Voice_Man_hey_calling_far_away_shout.wav by ValentinPetiteau, Freesoun
 
 Research exclusions: Robinhood76's voice shouting stop (Freesound 60521) has Attribution NonCommercial 4.0 restrictions. pyro13djt's Stop It (Freesound 331907) is CC0 but contains a mixture of scared, angry, happy and other takes; no suitable isolated chase performance has been verified, so it is not an approved replacement.
 
-No replacement recording is currently approved. Existing gameplay TTS remains until a suitable recording is selected.
+On 2026-10-26 the owner supplied two recordings and explicitly requested installation. The victim detection line is Hey, stop!; the bystander witness line is What are you doing?. They are installed in assets/audio-v41/ with project-specific permission, not a CC0 dedication. Speech triggers once per detection rather than repeating periodically. Previous indoor voice mute remains in effect. Gameplay TTS has been removed; browser TTS voice inventory is available for reference in voice-review.html.

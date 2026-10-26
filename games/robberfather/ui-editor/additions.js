@@ -1,4 +1,4 @@
-import {scopeVisible} from './scopes.js?v=audio-credits-v39';
+import {scopeVisible} from './scopes.js?v=owner-voices-v41';
 // Screen-space labels are separate from the simulation and never capture gameplay input.
 export function createAdditionLayer(stage){const layer=document.createElement('div');layer.id='ui-added-layer';layer.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:16';stage.append(layer);let items=[];const nodes=new Map();
  function currentScene(){const preview=stage.dataset.uiPreview;if(preview&&preview!=='current')return preview;if(!stage.querySelector('#modal')?.hidden)return'pause';if(!stage.querySelector('#pickpocket')?.hidden)return'pocket';if(!stage.querySelector('#shell')?.hidden)return'shell';if(stage.classList.contains('is-intro'))return'title';if(stage.classList.contains('is-prologue'))return'prologue';if(stage.classList.contains('is-morning'))return'dialogue';if(stage.classList.contains('is-night'))return'night';if(stage.classList.contains('is-ending'))return'ending';return'street';}
