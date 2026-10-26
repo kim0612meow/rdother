@@ -479,7 +479,7 @@ test('pursuit immediately silences both scene music gains and restores exclusive
 test('all installed recordings have direct author, source and license credits, with exactly two attribution-required tracks',async()=>{
  const {AUDIO_CREDITS}=await import('../games/robberfather/audio-credits.js');const {AUDIO_FILES}=await import('../games/robberfather/audio-samples.js');
  const required=AUDIO_CREDITS.filter(item=>item.license==='CC BY 4.0');assert.deepEqual(required.map(item=>item.title).sort(),['Chase Pulse Faster','Despair and Triumph']);
- for(const url of Object.values(AUDIO_FILES)){const suffix=new URL(url).pathname.split('/').slice(-3).join('/');const credits=AUDIO_CREDITS.filter(item=>item.files.includes(suffix));assert.equal(credits.length,1,suffix);assert.ok(credits[0].author);if(credits[0].license==='Project recording'){assert.equal(credits[0].licenseUrl,'./assets/audio-v42/CREDITS.md');}else{assert.ok(credits[0].url.startsWith('https://'));assert.ok(credits[0].licenseUrl.startsWith('https://creativecommons.org/'));}}
+ for(const url of Object.values(AUDIO_FILES)){const suffix=new URL(url).pathname.split('/').slice(-3).join('/');const credits=AUDIO_CREDITS.filter(item=>item.files.includes(suffix));assert.equal(credits.length,1,suffix);assert.ok(credits[0].author);if(credits[0].license==='Project recording'){assert.equal(credits[0].licenseUrl,'./assets/audio-v41/CREDITS.md');}else{assert.ok(credits[0].url.startsWith('https://'));assert.ok(credits[0].licenseUrl.startsWith('https://creativecommons.org/'));}}
  assert.ok(AUDIO_CREDITS.every(item=>['CC0 1.0','CC BY 4.0','Project recording'].includes(item.license)));
 });
 

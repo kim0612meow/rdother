@@ -153,8 +153,8 @@ export const AUDIO_CREDITS=[
     "checkedOn": "2026-10-26"
   }
 ,
-{"title":"Hey, stop!","author":"Project owner (user-provided recording)","url":"./assets/audio-v42/CREDITS.md","license":"Project recording","licenseUrl":"./assets/audio-v42/CREDITS.md","files":["assets/audio-v42/hey-stop.mp3"],"checkedOn":"2026-10-26"},
-{"title":"What are you doing?","author":"Project owner (user-provided recording)","url":"./assets/audio-v42/CREDITS.md","license":"Project recording","licenseUrl":"./assets/audio-v42/CREDITS.md","files":["assets/audio-v42/what-are-you-doing.mp3"],"checkedOn":"2026-10-26"}
+{"title":"Hey, stop!","author":"Project owner (user-provided recording)","url":"./assets/audio-v41/CREDITS.md","license":"Project recording","licenseUrl":"./assets/audio-v41/CREDITS.md","files":["assets/audio-v41/hey-stop.mp3"],"checkedOn":"2026-10-26"},
+{"title":"What are you doing?","author":"Project owner (user-provided recording)","url":"./assets/audio-v41/CREDITS.md","license":"Project recording","licenseUrl":"./assets/audio-v41/CREDITS.md","files":["assets/audio-v41/what-are-you-doing.mp3"],"checkedOn":"2026-10-26"}
 ];
 export function createAudioCredits(title,locale='en'){
  const ko=locale==='ko',details=document.createElement('details'),summary=document.createElement('summary');summary.textContent=title;details.append(summary);
