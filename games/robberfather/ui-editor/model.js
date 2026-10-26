@@ -1,5 +1,5 @@
-import {DETAIL_SCENES} from './scopes.js?v=chase-night-v38';
-import {MESSAGES} from '../i18n.js?v=chase-night-v38';
+import {DETAIL_SCENES} from './scopes.js?v=audio-credits-v39';
+import {MESSAGES} from '../i18n.js?v=audio-credits-v39';
 export const TARGETS=[
  ['resources','#resourceHud','돈·식사·기회 묶음','Resources','street'],
  ['coins','#resourceHud .hud-group:nth-child(1)','돈 칸','Coins','street'],

@@ -469,7 +469,7 @@ test('selected local music files and in-game attribution stay packaged together'
  const {createHash}=await import('node:crypto');for(const [i,key] of ['musicStreet','musicShop'].entries()){
   const bytes=await readFile(new URL(AUDIO_FILES[key]));assert.ok(bytes.length>100000);assert.equal(createHash('sha256').update(bytes).digest('hex'),sources[i].sha256);
  }
- const app=await readFile(new URL('../games/robberfather/app.js',import.meta.url),'utf8');assert.match(app,/Despair and Triumph/);assert.ok(app.includes('assets/audio-v37/CREDITS.md'));
+ const {AUDIO_CREDITS}=await import('../games/robberfather/audio-credits.js');for(const source of sources)assert.ok(AUDIO_CREDITS.some(item=>item.title===source.title&&item.author===source.author&&item.url===source.url&&item.licenseUrl===source.licenseUrl));
 });
 
 
@@ -482,4 +482,12 @@ test('pursuit immediately silences both scene music gains and restores exclusive
  assert.ok(calls.chase.some(([kind,v])=>kind==='fade'&&v>0));
  for(const key of Object.keys(calls))calls[key].length=0;mixer.update(ambienceMix(street));
  assert.deepEqual(calls.chase,[['cancel',2],['now',0,2]]);assert.ok(calls.musicStreet.some(([kind,v])=>kind==='fade'&&v>0));assert.ok(calls.musicShop.every(([,v])=>v===0));
+});
+
+
+test('all installed recordings have direct author, source and license credits, with exactly two attribution-required tracks',async()=>{
+ const {AUDIO_CREDITS}=await import('../games/robberfather/audio-credits.js');const {AUDIO_FILES}=await import('../games/robberfather/audio-samples.js');
+ const required=AUDIO_CREDITS.filter(item=>item.license==='CC BY 4.0');assert.deepEqual(required.map(item=>item.title).sort(),['Chase Pulse Faster','Despair and Triumph']);
+ for(const url of Object.values(AUDIO_FILES)){const suffix=new URL(url).pathname.split('/').slice(-3).join('/');const credits=AUDIO_CREDITS.filter(item=>item.files.includes(suffix));assert.equal(credits.length,1,suffix);assert.ok(credits[0].author);assert.ok(credits[0].url.startsWith('https://'));assert.ok(credits[0].licenseUrl.startsWith('https://creativecommons.org/'));}
+ assert.ok(AUDIO_CREDITS.every(item=>['CC0 1.0','CC BY 4.0'].includes(item.license)));
 });
