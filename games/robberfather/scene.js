@@ -1,12 +1,12 @@
-import {WAITING_CHILD,COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=opening-endings-v46';
-import {ARCHITECTURE} from './themes/config.js?v=opening-endings-v46';
-import {Backgrounds} from './themes/backgrounds.js?v=opening-endings-v46';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=opening-endings-v46';
-import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=opening-endings-v46';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=opening-endings-v46';
+import {WAITING_CHILD,COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=tutorial-focus-v47';
+import {ARCHITECTURE} from './themes/config.js?v=tutorial-focus-v47';
+import {Backgrounds} from './themes/backgrounds.js?v=tutorial-focus-v47';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=tutorial-focus-v47';
+import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=tutorial-focus-v47';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=tutorial-focus-v47';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=opening-endings-v46';
-import {HD2D} from './hd2d.js?v=opening-endings-v46';
+import {t,getLocale} from './i18n.js?v=tutorial-focus-v47';
+import {HD2D} from './hd2d.js?v=tutorial-focus-v47';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};

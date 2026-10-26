@@ -1,4 +1,4 @@
-import {SampleMixer,ambienceMix} from './audio-samples.js?v=opening-endings-v46';
+import {SampleMixer,ambienceMix} from './audio-samples.js?v=tutorial-focus-v47';
 // Three times the previous default gain; category sliders keep their saved values.
 export const MASTER_GAIN=2.4;
 // Sound timing is separate from synthesis so pauses and story states stay silent.
