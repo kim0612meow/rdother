@@ -1,5 +1,5 @@
 export const WAITING_CHILD={x:180,y:647,speechY:605};
-import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=food-meter-v48';
+import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=stress-cleanup-v49';
 
 // Keep a narrow walkable foreground at every street/room camera scale.
 export const FOOT_LINE=.85;

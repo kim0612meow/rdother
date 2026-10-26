@@ -16,4 +16,4 @@ The original v41 recordings are preserved. Current v42 playback lowers pitch by 
 
 ## Original pitch restored (v43)
 
-The owner rejected the v42 pitch processing as unnatural. Gameplay and review now use the preserved v41 recordings with original pitch, timbre and tempo. Only the quieter playback gain of 0.40 is retained (previously 0.65). The processed v42 files are inactive historical variants.
+The owner rejected the v42 pitch processing as unnatural. Gameplay and review now use the preserved v41 recordings with original pitch, timbre and tempo. Only the quieter playback gain of 0.40 is retained (previously 0.65). The rejected v42 files were removed during cleanup; their processing record remains in Git history.

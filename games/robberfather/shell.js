@@ -14,7 +14,7 @@ export class Shell{
  // A round is under way: the coin is already on the table.
  get busy(){return this.active&&this.state!=='idle';}
  bet(){if(!this.active||this.state!=='idle'||!this.hooks.bet())return;const difficulty=shellDifficulty(this.net);this.showSeconds=difficulty.show;this.ball=Math.floor(Math.random()*3);this.swaps=Array.from({length:difficulty.swaps},()=>{const a=Math.floor(Math.random()*3);return[a,(a+1+Math.floor(Math.random()*2))%3];});this.dur=difficulty.duration;this.step=0;this.state='show';this.time=0;this.result=null;}
- choose(cup){this.chosen=cup;this.win=cup===this.ball;this.state='reveal';this.time=0;this.hooks.sound('cupMove');}
+ choose(cup){if(!this.active||this.state!=='pick'||!Number.isInteger(cup)||cup<0||cup>2)return false;this.chosen=cup;this.win=cup===this.ball;this.state='reveal';this.time=0;this.hooks.sound('cupMove');return true;}
  update(dt){if(!this.active)return;this.time+=dt;
   if(this.state==='show'&&this.time>this.showSeconds){this.state='shuffle';this.time=0;}
   else if(this.state==='shuffle'&&this.time>=this.dur){const [a,b]=this.swaps[this.step],ca=this.slot.indexOf(a),cb=this.slot.indexOf(b);this.slot[ca]=b;this.slot[cb]=a;this.step++;this.time=0;this.hooks.sound('cupMove');if(this.step>=this.swaps.length)this.state='pick';}

@@ -1,5 +1,5 @@
-import {streetBays,facadeSlices} from './layout.js?v=food-meter-v48';
-import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=food-meter-v48';
+import {streetBays,facadeSlices} from './layout.js?v=stress-cleanup-v49';
+import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=stress-cleanup-v49';
 const W=1440,H=840,GROUND=650;
 export class Backgrounds{
  constructor(theme=ACTIVE_THEME){this.theme=THEMES[theme];this.panels={};this.props={};this.ready=false;if(!this.theme)return;this.loadStreetAssets();const img=new Image();img.onload=()=>{

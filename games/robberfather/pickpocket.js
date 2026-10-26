@@ -1,16 +1,16 @@
-import {drawPocketBack} from './characters.js?v=food-meter-v48';
+import {drawPocketBack} from './characters.js?v=stress-cleanup-v49';
 // The pocket window, seen over the victim's back. Draw the wallet out along a line with the mouse while keeping the Space gauge in time.
 // The street keeps moving underneath, so suspicion and witnesses still count while you play.
 // When the victim starts to turn (look, set by app.js) press E to leave the pocket; reopening the same pocket picks up where you stopped.
-import {dayDifficulty} from './difficulty.js?v=food-meter-v48';
-import {TYPES} from './engine.js?v=food-meter-v48';
-import {Trace} from './pick-trace.js?v=food-meter-v48';
-import {Timing} from './pick-timing.js?v=food-meter-v48';
+import {dayDifficulty} from './difficulty.js?v=stress-cleanup-v49';
+import {TYPES} from './engine.js?v=stress-cleanup-v49';
+import {Trace} from './pick-trace.js?v=stress-cleanup-v49';
+import {Timing} from './pick-timing.js?v=stress-cleanup-v49';
 // The Space gauge runs alongside the line including the tutorial. Set to false to go back to the mouse alone.
 const GAUGE=true;
 const RUSH=.7,W=640,H=400,START={x:206,y:252},HEAD={x:104,y:74};
 // How each victim looks from behind, and how much suspicion a mistake adds.
-const LOOK={civilian:{coat:'#6d5440',lining:'#3a2b20',hair:'#3b2a1e',slip:.3},wealthy:{coat:'#2c3550',lining:'#151a2a',hair:'#8d8a84',slip:.36},police:{coat:'#1d2c4a',lining:'#0d1526',hair:'#2a2420',slip:.45}};
+const LOOK={civilian:{coat:'#6d5440',hair:'#3b2a1e',slip:.3},wealthy:{coat:'#2c3550',hair:'#8d8a84',slip:.36},police:{coat:'#1d2c4a',hair:'#2a2420',slip:.45}};
 export class Pickpocket{
  constructor(root,t){this.root=root;this.t=t;this.canvas=root.querySelector('canvas');this.c=this.canvas.getContext('2d');this.active=false;this.coachKey=null;
   const pos=e=>{const r=this.canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};};
