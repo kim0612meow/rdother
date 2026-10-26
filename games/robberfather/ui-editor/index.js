@@ -1,7 +1,7 @@
-import {baseScene} from './scopes.js?v=stress-cleanup-v49';
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=stress-cleanup-v49';
-import {createLayoutRuntime} from './runtime.js?v=stress-cleanup-v49';
-import {EDITOR_CSS} from './styles.js?v=stress-cleanup-v49';
+import {baseScene} from './scopes.js?v=permanent-entry-v50';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=permanent-entry-v50';
+import {createLayoutRuntime} from './runtime.js?v=permanent-entry-v50';
+import {EDITOR_CSS} from './styles.js?v=permanent-entry-v50';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=true;
 const copy=value=>JSON.parse(JSON.stringify(value));

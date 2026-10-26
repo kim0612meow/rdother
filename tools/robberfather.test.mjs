@@ -499,3 +499,13 @@ test('recorded voices use their own volume bus as single playback sources',async
  const {SampleMixer}=await import('../games/robberfather/audio-samples.js');const routed=[],started=[];let source;const voiceBus={},effectsBus={};const gain={gain:{value:0},connect(to){routed.push(to);return this;},disconnect(){}};const mixer=Object.create(SampleMixer.prototype);Object.assign(mixer,{buffers:{voiceCaught:{duration:1.18},voiceWitness:{duration:.97}},voiceBus,master:effectsBus,c:{createGain:()=>gain,createBufferSource:()=>source={connect(){return gain;},start(){started.push(this.buffer);}}}});
  mixer.voice('voiceWitness');assert.equal(source.loop,false);assert.equal(started[0],mixer.buffers.voiceWitness);assert.equal(routed[0],voiceBus);assert.equal(gain.gain.value,.40);
 });
+
+test('legacy version links redirect to the permanent URL without touching saves or other parameters',async()=>{
+ const {runInNewContext}=await import('node:vm');const html=await readFile(new URL('../games/robberfather/index.html',import.meta.url),'utf8');const code=html.match(/<script id="canonical-entry">([\s\S]*?)<\/script>/)[1];
+ for(const [href,want] of [
+  ['https://kim0612meow.github.io/rdother/games/robberfather/?v=1','https://kim0612meow.github.io/rdother/games/robberfather/'],
+  ['https://kim0612meow.github.io/rdother/games/robberfather/?v=old&lang=en#game','https://kim0612meow.github.io/rdother/games/robberfather/?lang=en#game'],
+  ['https://kim0612meow.github.io/rdother/games/robberfather/',null],
+  ['file:///C:/game.html?v=1',null]
+ ]){let redirected=null;runInNewContext(code,{URL,location:{href,protocol:new URL(href).protocol,replace:value=>redirected=value}});assert.equal(redirected,want);}
+});

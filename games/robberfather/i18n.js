@@ -1,5 +1,5 @@
 import {UI_TEXT} from './ui-editor/text-overrides.js';
-import {controlText} from './settings.js?v=stress-cleanup-v49';
+import {controlText} from './settings.js?v=permanent-entry-v50';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={
@@ -14,7 +14,7 @@ export const MESSAGES={
     "arrestTitle": "He only wanted to help.",
     "back": "Back",
     "bakery": "BAKERY",
-    "barredShop": "Boarded up · they remember you here",
+    "barredShop": "Entry refused · they remember your face",
     "barredSign": "NO ENTRY",
     "betLost": "You lost the coin.",
     "betWatched": "You won. The men in the alley are eyeing your pockets…",
@@ -258,8 +258,8 @@ export const MESSAGES={
     "shellSign": "FIND THE BALL · 1 COIN",
     "shellTitle": "Shell game · find the ball",
     "shellWin": "Found it! 2 coins back.",
-    "shopBarred": "This shop knows your face. The door stays shut.",
-    "shopClosed": "They saw you in the {name}. You can never go in there again.",
+    "shopBarred": "They remember your face from the theft. You cannot enter this shop again.",
+    "shopClosed": "Caught stealing in the {name}. They remember your face, so you cannot enter again.",
     "shopLabel": "Shop",
     "sickNotice": "Your son feels ill",
     "skipEnding": "Skip ▸ (Space)",
@@ -324,7 +324,7 @@ export const MESSAGES={
     "arrestTitle": "그저 돕고 싶었을 뿐.",
     "back": "뒤로",
     "bakery": "빵집",
-    "barredShop": "출입 금지 · 여기선 얼굴이 알려졌어요",
+    "barredShop": "얼굴을 기억하고 있어 들어갈 수 없습니다",
     "barredSign": "출입 금지",
     "betLost": "돈 1칸을 잃었습니다.",
     "betWatched": "땄습니다. 골목 사람들이 당신 주머니를 힐끔거립니다…",
@@ -568,8 +568,8 @@ export const MESSAGES={
     "shellSign": "야바위 · 1칸",
     "shellTitle": "야바위 · 공 찾기",
     "shellWin": "맞혔다! 2칸을 돌려받았다.",
-    "shopBarred": "이 가게는 당신 얼굴을 압니다. 문이 열리지 않아요.",
-    "shopClosed": "{name} 안에서 들켰습니다. 이제 그 가게는 영원히 못 들어갑니다.",
+    "shopBarred": "소매치기했던 당신의 얼굴을 기억하고 있어 이 가게에는 다시 들어갈 수 없습니다.",
+    "shopClosed": "{name}에서 소매치기하다 들켰습니다. 얼굴을 기억하고 있어 다시 들어갈 수 없습니다.",
     "shopLabel": "가게",
     "sickNotice": "아이가 아파요",
     "skipEnding": "건너뛰기 ▸ (Space)",
