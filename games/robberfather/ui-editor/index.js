@@ -1,7 +1,7 @@
-import {baseScene} from './scopes.js?v=music-installed-v37';
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=music-installed-v37';
-import {createLayoutRuntime} from './runtime.js?v=music-installed-v37';
-import {EDITOR_CSS} from './styles.js?v=music-installed-v37';
+import {baseScene} from './scopes.js?v=chase-night-v38';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=chase-night-v38';
+import {createLayoutRuntime} from './runtime.js?v=chase-night-v38';
+import {EDITOR_CSS} from './styles.js?v=chase-night-v38';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=true;
 const copy=value=>JSON.parse(JSON.stringify(value));

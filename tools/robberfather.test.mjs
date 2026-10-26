@@ -276,7 +276,7 @@ test('the pocket title shows the same nominal reward and difficulty as the stree
 test('an emptied bin remains inspectable without blocking pickpocket targets beside it',async()=>{const {BINS}=await import('../games/robberfather/engine.js');const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.player.x=BINS[0].x;g.bins[0].searched=true;g.npcs[0].x=g.player.x+42;g.npcs[0].face=1;g.update(.02);assert.ok(g.nearbyBin());assert.equal(g.target?.id,g.npcs[0].id);});
 
 test('pocket foley only follows actual wallet movement and dinner clinks only accompany eating',async()=>{const {SoundDirector}=await import('../games/robberfather/audio.js');const d=new SoundDirector(),g=new Game();g.mode='day';g.activeTarget=0;g.progress=0;assert.equal(d.update(g,.05).some(e=>e.type==='rustle'),false);g.progress=.2;assert.ok(d.update(g,.05).some(e=>e.type==='rustle'));assert.equal(d.update(g,1).some(e=>e.type==='rustle'),false);g.mode='night';g.fed=false;g.ateRotten=false;assert.equal(d.update(g,2).some(e=>e.type==='eat'),false);g.fed=true;assert.ok(d.update(g,2).some(e=>e.type==='eat'));});
-test('backgrounds stay quiet while chase music only plays during a real pursuit',async()=>{const {ambienceMix}=await import('../games/robberfather/audio-samples.js');assert.ok(ambienceMix({mode:'day',chasers:[]},0).street<.02);assert.ok(ambienceMix({mode:'night'},0).night<.005);assert.equal(ambienceMix({mode:'day',chasers:[]},0).chase,0);assert.ok(ambienceMix({mode:'day',chasers:[0]},0).chase>0);assert.equal(ambienceMix({mode:'night',chasers:[0]},0).chase,0);});
+test('night ambience is audible while chase music only plays during a real pursuit',async()=>{const {ambienceMix}=await import('../games/robberfather/audio-samples.js');assert.ok(ambienceMix({mode:'day',chasers:[]},0).street<.02);assert.ok(ambienceMix({mode:'night'},0).night>.004&&ambienceMix({mode:'night'},0).night<.04);assert.equal(ambienceMix({mode:'day',chasers:[]},0).chase,0);assert.ok(ambienceMix({mode:'day',chasers:[0]},0).chase>0);assert.equal(ambienceMix({mode:'night',chasers:[0]},0).chase,0);});
 test('QTE, moving pockets and dinner dispatch their selected recordings',async()=>{const {Soundscape}=await import('../games/robberfather/audio.js');const s=new Soundscape(),played=[];s.context={};s.enabled=true;s.running=true;s.samples={has:()=>true,effect:key=>{played.push(key);return{disconnect(){},stop(){}}}};for(const type of ['qteSuccess','rustle','eat'])s.play(type);assert.deepEqual(played,['qte','pocket','cutlery']);});
 
 test('the bin hint is only introduced once, survives another day and save, and resets with a new story',async()=>{const {BINS}=await import('../games/robberfather/engine.js');const g=practice();g.tutorial=TUTORIAL.done;g.tutorialDone=true;g.player.x=BINS[0].x;assert.equal(g.binIntroduced,false);assert.equal(g.inspectBin(),true);assert.equal(g.binIntroduced,true);g.finishBin(false);const copy=new Game(g.save());copy.start();assert.equal(copy.binIntroduced,true);copy.resetDay();assert.equal(copy.binIntroduced,true);assert.equal(new Game().binIntroduced,false);assert.equal(new Game({...g.save(),binIntroduced:undefined,searchedBins:[1]}).binIntroduced,true);});
@@ -459,7 +459,7 @@ test('approved music follows outdoor and indoor locations and ducks through pock
  for(const kind of [null,0,1,2,3,4,5]){
   const g={mode:'day',shop:kind===null?null:{kind},chasers:[]};const normal=ambienceMix(g),focused=ambienceMix(g,1);const indoors=kind!==null&&kind!==5;
   assert.equal(normal[indoors?'musicStreet':'musicShop'],0);assert.ok(normal[indoors?'musicShop':'musicStreet']>0);
-  for(const key of ['musicStreet','musicShop']){assert.ok(focused[key]<=normal[key]);assert.ok(ambienceMix({...g,chasers:[1]})[key]<=normal[key]);}
+  for(const key of ['musicStreet','musicShop']){assert.ok(focused[key]<=normal[key]);assert.equal(ambienceMix({...g,chasers:[1]})[key],0);}
   assert.ok(focused.heartbeat>normal.heartbeat);if(indoors)assert.equal(normal.street,0);
  }
  for(const mode of ['intro','prologue','night','ending']){const mix=ambienceMix({mode});assert.equal(mix.musicStreet,0);assert.equal(mix.musicShop,0);}
@@ -470,4 +470,16 @@ test('selected local music files and in-game attribution stay packaged together'
   const bytes=await readFile(new URL(AUDIO_FILES[key]));assert.ok(bytes.length>100000);assert.equal(createHash('sha256').update(bytes).digest('hex'),sources[i].sha256);
  }
  const app=await readFile(new URL('../games/robberfather/app.js',import.meta.url),'utf8');assert.match(app,/Despair and Triumph/);assert.ok(app.includes('assets/audio-v37/CREDITS.md'));
+});
+
+
+test('pursuit immediately silences both scene music gains and restores exclusive scene music afterwards',async()=>{
+ const {SampleMixer,ambienceMix}=await import('../games/robberfather/audio-samples.js');
+ const calls={};const mixer=Object.create(SampleMixer.prototype);mixer.c={currentTime:2};mixer.buffers={};mixer.targets={};mixer.loops={};
+ for(const key of ['musicStreet','musicShop','chase']){calls[key]=[];mixer.loops[key]={gain:{gain:{cancelScheduledValues:t=>calls[key].push(['cancel',t]),setValueAtTime:(v,t)=>calls[key].push(['now',v,t]),setTargetAtTime:(v,t,s)=>calls[key].push(['fade',v,t,s])}}};}
+ const street={mode:'day',shop:null,chasers:[]};mixer.update(ambienceMix({...street,chasers:[1]}));
+ for(const key of ['musicStreet','musicShop'])assert.deepEqual(calls[key],[['cancel',2],['now',0,2]]);
+ assert.ok(calls.chase.some(([kind,v])=>kind==='fade'&&v>0));
+ for(const key of Object.keys(calls))calls[key].length=0;mixer.update(ambienceMix(street));
+ assert.deepEqual(calls.chase,[['cancel',2],['now',0,2]]);assert.ok(calls.musicStreet.some(([kind,v])=>kind==='fade'&&v>0));assert.ok(calls.musicShop.every(([,v])=>v===0));
 });

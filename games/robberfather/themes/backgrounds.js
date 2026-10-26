@@ -1,5 +1,5 @@
-import {streetBays,facadeSlices} from './layout.js?v=music-installed-v37';
-import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=music-installed-v37';
+import {streetBays,facadeSlices} from './layout.js?v=chase-night-v38';
+import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=chase-night-v38';
 const W=1440,H=840,GROUND=650;
 export class Backgrounds{
  constructor(theme=ACTIVE_THEME){this.theme=THEMES[theme];this.panels={};this.props={};this.ready=false;if(!this.theme)return;this.loadStreetAssets();const img=new Image();img.onload=()=>{
