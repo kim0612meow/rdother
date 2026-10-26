@@ -1,5 +1,5 @@
-import {DETAIL_SCENES} from './scopes.js?v=permanent-entry-v50';
-import {MESSAGES} from '../i18n.js?v=permanent-entry-v50';
+import {DETAIL_SCENES} from './scopes.js?v=release-menu-v51';
+import {MESSAGES} from '../i18n.js?v=release-menu-v51';
 export const TARGETS=[
  ['resources','#resourceHud','돈·식사·기회 묶음','Resources','street'],
  ['coins','#resourceHud .hud-group:nth-child(1)','돈 칸','Coins','street'],

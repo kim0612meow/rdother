@@ -509,3 +509,19 @@ test('legacy version links redirect to the permanent URL without touching saves 
   ['file:///C:/game.html?v=1',null]
  ]){let redirected=null;runInNewContext(code,{URL,location:{href,protocol:new URL(href).protocol,replace:value=>redirected=value}});assert.equal(redirected,want);}
 });
+
+test('release entry keeps saved layouts but does not load or offer the editor',async()=>{
+ const app=await readFile(new URL('../games/robberfather/app.js',import.meta.url),'utf8');
+ assert.match(app,/import \{createLayoutRuntime\} from '\.\/ui-editor\/runtime/);assert.doesNotMatch(app,/installUIEditor|uiEditor\?\.active|uiEditorBtn/);
+ const editor=await readFile(new URL('../games/robberfather/ui-editor/index.js',import.meta.url),'utf8');assert.match(editor,/ENABLE_EDITOR=false/);
+});
+test('player credits show only required music attribution with author, license and changes',async()=>{
+ const before=globalThis.document;
+ const node=tag=>({tag,children:[],style:{},textContent:'',append(...children){this.children.push(...children);}});
+ globalThis.document={createElement:node,createTextNode:text=>({tag:'#text',textContent:text})};
+ try{const {createAudioCredits}=await import('../games/robberfather/audio-credits.js');for(const lang of ['en','ko']){
+  const root=createAudioCredits('Credits',lang),all=[];const walk=n=>{all.push(n);for(const c of n.children||[])walk(c);};walk(root);
+  assert.equal(all.filter(n=>n.tag==='li').length,2);assert.equal(all.filter(n=>n.tag==='a'&&n.href==='https://creativecommons.org/licenses/by/4.0/').length,2);
+  const text=all.map(n=>n.textContent).join(' ');assert.match(text,/Kevin MacLeod/);assert.match(text,/Chase Pulse Faster/);assert.match(text,/Despair and Triumph/);assert.doesNotMatch(text,/CC0|Project voice|제작자 제공/);assert.match(text,lang==='en'?/Changes:/ : /변경:/);
+ }}finally{globalThis.document=before;}
+});

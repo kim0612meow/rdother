@@ -1,12 +1,12 @@
-import {WAITING_CHILD,COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=permanent-entry-v50';
-import {ARCHITECTURE} from './themes/config.js?v=permanent-entry-v50';
-import {Backgrounds} from './themes/backgrounds.js?v=permanent-entry-v50';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=permanent-entry-v50';
-import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=permanent-entry-v50';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=permanent-entry-v50';
+import {WAITING_CHILD,COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=release-menu-v51';
+import {ARCHITECTURE} from './themes/config.js?v=release-menu-v51';
+import {Backgrounds} from './themes/backgrounds.js?v=release-menu-v51';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=release-menu-v51';
+import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=release-menu-v51';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=release-menu-v51';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=permanent-entry-v50';
-import {HD2D} from './hd2d.js?v=permanent-entry-v50';
+import {t,getLocale} from './i18n.js?v=release-menu-v51';
+import {HD2D} from './hd2d.js?v=release-menu-v51';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
