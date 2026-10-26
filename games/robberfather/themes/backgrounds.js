@@ -1,5 +1,5 @@
-import {streetBays,facadeSlices} from './layout.js?v=release-menu-v51';
-import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=release-menu-v51';
+import {streetBays,facadeSlices} from './layout.js?v=robbery-floor-v52';
+import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=robbery-floor-v52';
 const W=1440,H=840,GROUND=650;
 export class Backgrounds{
  constructor(theme=ACTIVE_THEME){this.theme=THEMES[theme];this.panels={};this.props={};this.ready=false;if(!this.theme)return;this.loadStreetAssets();const img=new Image();img.onload=()=>{

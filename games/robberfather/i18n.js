@@ -1,5 +1,5 @@
 import {UI_TEXT} from './ui-editor/text-overrides.js';
-import {controlText} from './settings.js?v=release-menu-v51';
+import {controlText} from './settings.js?v=robbery-floor-v52';
 // One effective value per language and key. Keep matching keys when adding a language.
 export const DEFAULT_LOCALE='en';
 export const MESSAGES={

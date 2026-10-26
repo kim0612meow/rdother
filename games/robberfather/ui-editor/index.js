@@ -1,7 +1,7 @@
-import {baseScene} from './scopes.js?v=release-menu-v51';
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=release-menu-v51';
-import {createLayoutRuntime} from './runtime.js?v=release-menu-v51';
-import {EDITOR_CSS} from './styles.js?v=release-menu-v51';
+import {baseScene} from './scopes.js?v=robbery-floor-v52';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=robbery-floor-v52';
+import {createLayoutRuntime} from './runtime.js?v=robbery-floor-v52';
+import {EDITOR_CSS} from './styles.js?v=robbery-floor-v52';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=false;
 const copy=value=>JSON.parse(JSON.stringify(value));

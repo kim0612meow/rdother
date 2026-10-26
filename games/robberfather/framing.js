@@ -1,5 +1,5 @@
 export const WAITING_CHILD={x:180,y:647,speechY:605};
-import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=release-menu-v51';
+import {WIDTH,HEIGHT,GROUND,RULES} from './engine.js?v=robbery-floor-v52';
 
 // Keep a narrow walkable foreground at every street/room camera scale.
 export const FOOT_LINE=.85;
@@ -7,6 +7,9 @@ export function streetFocusY(zoom){return GROUND-HEIGHT*(FOOT_LINE-.5)/zoom;}
 // Meal/title scenes have no bottom HUD: keep paving to eight percent there.
 export const HOME_FOOT_LINE=.92,HOME_ZOOM=1.25;
 export function homeFocusY(zoom){return GROUND-HEIGHT*(HOME_FOOT_LINE-.5)/zoom;}
+// The robbery has no bottom HUD: keep the fight above a narrow foreground.
+export const ROBBERY_FOOT_LINE=.9;
+export function robberyFocusY(zoom){return GROUND-HEIGHT*(ROBBERY_FOOT_LINE-.5)/zoom;}
 // Keep both spoons, the bowl and the newspaper together at the screen centre.
 export const COLLAPSE_LAYOUT={sourceCenter:1010.5,center:WIDTH/2,scale:1.2};
 export const MEAL_LAYOUT={sourceCenter:982.5,center:WIDTH/2,scale:1.2};

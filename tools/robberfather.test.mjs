@@ -525,3 +525,9 @@ test('player credits show only required music attribution with author, license a
   const text=all.map(n=>n.textContent).join(' ');assert.match(text,/Kevin MacLeod/);assert.match(text,/Chase Pulse Faster/);assert.match(text,/Despair and Triumph/);assert.doesNotMatch(text,/CC0|Project voice|제작자 제공/);assert.match(text,lang==='en'?/Changes:/ : /변경:/);
  }}finally{globalThis.document=before;}
 });
+
+test('robbery fight keeps paving to ten percent without altering home/collapse framing',async()=>{
+ const {ROBBERY_FOOT_LINE,robberyFocusY,HOME_FOOT_LINE,homeFocusY,viewportSize,fitZoom,cameraWindow}=await import('../games/robberfather/framing.js');
+ for(const [w,h]of [[1028,883],[1280,720],[1718,975],[2100,900]]){const size=viewportSize(w,h),zoom=fitZoom(2.1,size.width,size.height),view=cameraWindow(zoom,720,robberyFocusY(zoom),size.width,size.height);assert.ok(Math.abs((650-view.sy)*zoom/840-ROBBERY_FOOT_LINE)<.001);for(const x of [656,784])assert.ok((x-view.sx)*zoom>0&&(x-view.sx)*zoom<size.width);const homeZoom=fitZoom(1.25,size.width,size.height),home=cameraWindow(homeZoom,720,homeFocusY(homeZoom),size.width,size.height);assert.ok(Math.abs((650-home.sy)*homeZoom/840-HOME_FOOT_LINE)<.001);}
+ const scene=await readFile(new URL('../games/robberfather/scene.js',import.meta.url),'utf8');assert.match(scene,/closeRobbery\?robberyFocusY\(this.zoom\)/);assert.match(scene,/this.zoom=home\|\|arrest\|\|closeRobbery\?wanted/);
+});
