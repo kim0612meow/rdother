@@ -551,3 +551,12 @@ test('empty bins stay closed on F spam and never claim that food was left behind
  for(let i=0;i<100;i++){g.update(.001,{hide:i%2===0,leave:i%2===1});g.inspectBin();g.finishBin(false);}assert.equal(g.inspectedBin,null);assert.ok(!g.drainEvents().some(e=>e.type==='binOpened'||e.type==='binLeft'));
  g.openBinId=g.bins[0].id;assert.equal(g.finishBin(false),false);assert.ok(!g.drainEvents().some(e=>e.type==='binLeft'));const restored=new Game(g.save());restored.start();assert.equal(restored.inspectBin(),false);
 });
+
+test('rotten dinner followed by two hungry nights reaches an arrest that renders every phase and remains skippable',async()=>{
+ const {Renderer}=await import('../games/robberfather/scene.js');const g=new Game({version:3,day:1,tutorialDone:true,mode:'day',inventory:['rotten','fresh','fresh']});g.start();
+ for(let night=0;night<3;night++){assert.equal(g.goHome(),true);g.beginNight();g.nextDay();if(night<2){assert.equal(g.mode,'morning');for(let i=0;i<3;i++)g.advanceMorning();}}
+ assert.equal(g.mode,'ending');assert.equal(g.ending,'arrest');assert.equal(g.rottenStreak,1);assert.equal(g.hungerStreak,2);
+ const c=new Proxy({},{get:()=>()=>{},set:()=>true}),r=Object.create(Renderer.prototype);Object.assign(r,{streetBase(){},homeBackground(){},roomBackground(){},backgrounds:{prop:()=>true}});
+ for(const kind of ['arrest','collapse','robbed']){const scene={...g,ending:kind};for(let frame=0;frame<=20*60;frame++){scene.endingTime=frame/60;r[kind==='arrest'?'drawArrest':kind==='collapse'?'drawCollapse':'drawRobbed'](c,scene,frame/60);}}
+ const restored=new Game(JSON.parse(JSON.stringify(g.save())));restored.start();assert.equal(restored.mode,'ending');assert.equal(restored.ending,'arrest');r.drawArrest(c,restored,0);restored.skipEnding();assert.equal(restored.endingTime,restored.endingDuration);r.drawArrest(c,restored,0);
+});

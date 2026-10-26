@@ -1,12 +1,12 @@
-import {WAITING_CHILD,COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,robberyFocusY,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=empty-bins-v56';
-import {ARCHITECTURE} from './themes/config.js?v=empty-bins-v56';
-import {Backgrounds} from './themes/backgrounds.js?v=empty-bins-v56';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=empty-bins-v56';
-import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady,spritesFailed} from './characters.js?v=empty-bins-v56';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=empty-bins-v56';
+import {WAITING_CHILD,COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,robberyFocusY,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=arrest-fix-v57';
+import {ARCHITECTURE} from './themes/config.js?v=arrest-fix-v57';
+import {Backgrounds} from './themes/backgrounds.js?v=arrest-fix-v57';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=arrest-fix-v57';
+import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady,spritesFailed} from './characters.js?v=arrest-fix-v57';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=arrest-fix-v57';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t} from './i18n.js?v=empty-bins-v56';
-import {HD2D} from './hd2d.js?v=empty-bins-v56';
+import {t} from './i18n.js?v=arrest-fix-v57';
+import {HD2D} from './hd2d.js?v=arrest-fix-v57';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};
@@ -84,6 +84,7 @@ const x=b.x,y=GROUND;rect(c,x-40,y-61,80,61,'#887955');rect(c,x-35,y-56,70,49,'#
  if(g.ateRotten){rect(c,987,623,10,3,'#8fa65e');rect(c,993,621,8,3,'#afbb73');}
 
  }
+ walkingChild(c,x,y,walk,face=1){drawChild(c,x,y,1.05,walk,'walk',face);}
  drawArrest(c,g,time){const phase=Math.min(ARREST.end,g.endingTime),scene=arrestScene(phase);this.streetBase(c,0);rect(c,0,0,W,H,'#172c3430');
  person(c,{x:scene.fatherX,y:GROUND,face:1,walk:0},true,1.8);person(c,{id:2,type:'wealthy',x:scene.victimX,y:GROUND,face:1,walk:phase>ARREST.caught&&phase<ARREST.caught+.8||phase>ARREST.escort&&phase<ARREST.leave?phase*6:0},false,1.8);
  c.save();c.translate(scene.childX,GROUND);c.scale(1.5,1.5);if(scene.trying){if(!drawAction(c,'child',scene.frame,0,0,1.05))this.walkingChild(c,0,0,0);}else this.walkingChild(c,0,0,phase>ARREST.leave||phase>=ARREST.reach&&phase<ARREST.escort?0:phase*6);c.restore();
