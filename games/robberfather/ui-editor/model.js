@@ -1,5 +1,5 @@
-import {DETAIL_SCENES} from './scopes.js?v=arrest-fix-v57';
-import {MESSAGES} from '../i18n.js?v=arrest-fix-v57';
+import {DETAIL_SCENES} from './scopes.js?v=first-opening-v58';
+import {MESSAGES} from '../i18n.js?v=first-opening-v58';
 export const TARGETS=[
  ['resources','#resourceHud','돈·식사·기회 묶음','Resources','street'],
  ['coins','#resourceHud .hud-group:nth-child(1)','돈 칸','Coins','street'],

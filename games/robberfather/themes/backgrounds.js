@@ -1,5 +1,5 @@
-import {streetBays,facadeSlices} from './layout.js?v=arrest-fix-v57';
-import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=arrest-fix-v57';
+import {streetBays,facadeSlices} from './layout.js?v=first-opening-v58';
+import {ACTIVE_THEME,THEMES,ARCHITECTURE} from './config.js?v=first-opening-v58';
 const W=1440,H=840,GROUND=650;
 export class Backgrounds{
  constructor(theme=ACTIVE_THEME){this.theme=THEMES[theme];this.panels={};this.props={};this.ready=false;this.assetsReady=false;this.failed=false;this.pending=[];if(!this.theme){this.failed=true;return;}this.loadStreetAssets();const img=this.image();img.onload=()=>{

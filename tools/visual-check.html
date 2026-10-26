@@ -3,8 +3,8 @@
 <h1>One More Meal · Pixel sprite studio · revision 2</h1><p>Raster dot sprites, sampled to native pixels with a shared 24-colour palette per person. Full-body animation; no rectangle-built bodies. Local QA fixtures replace only this preview origin's save.</p>
 <canvas id="sheet" width="1200" height="940"></canvas><p id="result"></p><div id="fixtures"></div>
 <script type="module">
-import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=arrest-fix-v57';
-import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=arrest-fix-v57';
+import {drawCharacter,drawChild,drawPocketBack,drawEating,drawCrouch,ready} from '/games/robberfather/characters.js?v=first-opening-v58';
+import {Game,TUTORIAL,GROUND,SHOPS,BOXES} from '/games/robberfather/engine.js?v=first-opening-v58';
 await ready;
 const c=document.getElementById('sheet').getContext('2d');c.fillStyle='#d8d4c7';c.fillRect(0,0,1200,630);c.imageSmoothingEnabled=false;
 const people=[['FATHER','father'],['SON','child'],['PASSERBY','civilian'],['WEALTHY','wealthy'],['POLICE','police'],['ALLEY MAN','thug']];
@@ -20,6 +20,7 @@ const savedPractice=JSON.parse(localStorage.getItem('one-more-meal-v3')||'null')
 const fresh=()=>{const g=new Game();g.start();for(let i=0;i<3;i++)g.advanceMorning();g.tutorialDone=true;g.tutorial=TUTORIAL.done;return g;};
 const recovery=()=>{const g=fresh();g.goHome();g.beginNight();g.nextDay();for(let i=0;i<3;i++)g.advanceMorning();return g;};
 const scenarios={
+ 'V58 · unseen opening Continue':()=>{const g=fresh();g.mode='morning';g.tutorialDone=false;g.tutorial=0;g.openingSeen=false;return g;},
  'V57 · sick then two hungry nights':()=>{const g=fresh();g.inventory=['rotten','fresh','fresh'];for(let i=0;i<3;i++){g.goHome();g.beginNight();g.nextDay();if(i<2)for(let j=0;j<3;j++)g.advanceMorning();}return g;},
  'V56 · empty bin cannot open':()=>{const g=fresh();g.player.x=1570;g.bins[0].searched=true;g.npcs.forEach(n=>n.pause=999);return g;},
  'V55 · near son home prompt':()=>{const g=fresh();g.player.x=250;return g;},

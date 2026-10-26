@@ -560,3 +560,9 @@ test('rotten dinner followed by two hungry nights reaches an arrest that renders
  for(const kind of ['arrest','collapse','robbed']){const scene={...g,ending:kind};for(let frame=0;frame<=20*60;frame++){scene.endingTime=frame/60;r[kind==='arrest'?'drawArrest':kind==='collapse'?'drawCollapse':'drawRobbed'](c,scene,frame/60);}}
  const restored=new Game(JSON.parse(JSON.stringify(g.save())));restored.start();assert.equal(restored.mode,'ending');assert.equal(restored.ending,'arrest');r.drawArrest(c,restored,0);restored.skipEnding();assert.equal(restored.endingTime,restored.endingDuration);r.drawArrest(c,restored,0);
 });
+
+test('Continue shows an unseen opening for pristine new and legacy saves, but never replays a seen opening',()=>{
+ const initial={...new Game().save(),mode:'morning'};for(const seen of [false,undefined]){const save={...initial};if(seen===undefined)delete save.openingSeen;const g=new Game(save);g.start();assert.equal(g.mode,'prologue');g.skipPrologue();assert.equal(g.openingSeen,true);const copy=new Game(g.save());copy.start();assert.equal(copy.mode,'morning');assert.equal(copy.morningIndex,0);}
+ const played=new Game({...initial,mode:'day',travel:100});played.start();assert.equal(played.mode,'day');
+ const later=new Game({...initial,day:2});later.start();assert.equal(later.mode,'morning');
+});

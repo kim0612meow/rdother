@@ -1,7 +1,7 @@
-import {baseScene} from './scopes.js?v=arrest-fix-v57';
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=arrest-fix-v57';
-import {createLayoutRuntime} from './runtime.js?v=arrest-fix-v57';
-import {EDITOR_CSS} from './styles.js?v=arrest-fix-v57';
+import {baseScene} from './scopes.js?v=first-opening-v58';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=first-opening-v58';
+import {createLayoutRuntime} from './runtime.js?v=first-opening-v58';
+import {EDITOR_CSS} from './styles.js?v=first-opening-v58';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=false;
 const copy=value=>JSON.parse(JSON.stringify(value));
