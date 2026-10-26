@@ -1,0 +1,28 @@
+[
+  {
+    "file": "hey-stop.mp3",
+    "title": "Hey, stop!",
+    "sourceFile": "2026-10-26 17-57-20.mp4",
+    "trimStart": 0.32,
+    "trimDuration": 1.18,
+    "event": "detected",
+    "author": "Project owner (user-provided recording)",
+    "permission": "Provided by the owner for inclusion in this game; original rights retained. Not CC0.",
+    "sha256": "4d0404f8f0acde3d1a88de3444833cbfdbc63f6fe4f17f5f2694ad0b5f02832a",
+    "sourceAsset": "../audio-v41/hey-stop.mp3",
+    "processing": "Pitch -3 semitones with formants preserved; unchanged tempo; high-pass 85 Hz, low-pass 4500 Hz. Playback gain 0.40 (previously 0.65)."
+  },
+  {
+    "file": "what-are-you-doing.mp3",
+    "title": "What are you doing?",
+    "sourceFile": "2026-10-26 17-58-50.mp4",
+    "trimStart": 0.33,
+    "trimDuration": 0.97,
+    "event": "witnessed",
+    "author": "Project owner (user-provided recording)",
+    "permission": "Provided by the owner for inclusion in this game; original rights retained. Not CC0.",
+    "sha256": "aa22e44ab18c26668c0bb16c65d672a17e7d4f0941e00b91a65fc198f1633f92",
+    "sourceAsset": "../audio-v41/what-are-you-doing.mp3",
+    "processing": "Pitch -3 semitones with formants preserved; unchanged tempo; high-pass 85 Hz, low-pass 4500 Hz. Playback gain 0.40 (previously 0.65)."
+  }
+]

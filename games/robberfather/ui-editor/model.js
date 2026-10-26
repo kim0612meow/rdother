@@ -1,5 +1,5 @@
-import {DETAIL_SCENES} from './scopes.js?v=owner-voices-v41';
-import {MESSAGES} from '../i18n.js?v=owner-voices-v41';
+import {DETAIL_SCENES} from './scopes.js?v=lower-voices-v42';
+import {MESSAGES} from '../i18n.js?v=lower-voices-v42';
 export const TARGETS=[
  ['resources','#resourceHud','돈·식사·기회 묶음','Resources','street'],
  ['coins','#resourceHud .hud-group:nth-child(1)','돈 칸','Coins','street'],

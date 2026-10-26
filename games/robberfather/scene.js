@@ -1,12 +1,12 @@
-import {WAITING_CHILD,COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=owner-voices-v41';
-import {ARCHITECTURE} from './themes/config.js?v=owner-voices-v41';
-import {Backgrounds} from './themes/backgrounds.js?v=owner-voices-v41';
-import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=owner-voices-v41';
-import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=owner-voices-v41';
-import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=owner-voices-v41';
+import {WAITING_CHILD,COLLAPSE_LAYOUT,MEAL_LAYOUT,homeFocusY,HOME_ZOOM,streetFocusY,cameraWindow,coverPlacement,viewportSize,fitZoom,worldToCanvas,canvasToWorld} from './framing.js?v=lower-voices-v42';
+import {ARCHITECTURE} from './themes/config.js?v=lower-voices-v42';
+import {Backgrounds} from './themes/backgrounds.js?v=lower-voices-v42';
+import {ARREST,arrestScene,ROBBERY,kickReach} from './cinematics.js?v=lower-voices-v42';
+import {drawCharacter,drawChild,drawLyingChild,drawEating,drawAction,drawCrouch,spritesReady} from './characters.js?v=lower-voices-v42';
+import {WIDTH as W,HEIGHT as H,WORLD,GROUND,TYPES,RULES,BOXES,SHOPS,INSIDE_DOOR,COUNTER,SELLS,ALLEY,ALLEY_DOORS,areaAt} from './engine.js?v=lower-voices-v42';
 const SHOP_NAMES=['bakery','market','cafe','hotel','pharmacy','darkAlley'],SIGNS={bread:'breadSign',potato:'potatoSign',medicine:'medicineSign'};
-import {t,getLocale} from './i18n.js?v=owner-voices-v41';
-import {HD2D} from './hd2d.js?v=owner-voices-v41';
+import {t,getLocale} from './i18n.js?v=lower-voices-v42';
+import {HD2D} from './hd2d.js?v=lower-voices-v42';
 // Street view is drawn closer than the full canvas so characters read larger.
 const STREET_ZOOM=1.5;
 const canvas=(w=W,h=H)=>{const el=document.createElement('canvas');el.width=w;el.height=h;return el;};

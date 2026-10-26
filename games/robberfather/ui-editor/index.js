@@ -1,7 +1,7 @@
-import {baseScene} from './scopes.js?v=owner-voices-v41';
-import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=owner-voices-v41';
-import {createLayoutRuntime} from './runtime.js?v=owner-voices-v41';
-import {EDITOR_CSS} from './styles.js?v=owner-voices-v41';
+import {baseScene} from './scopes.js?v=lower-voices-v42';
+import {TARGETS,SCENES,cleanLayout,textKeysFor,originalUIText,editableTextKeys,layoutTargets,newAddition,ADDITION_SCENES} from './model.js?v=lower-voices-v42';
+import {createLayoutRuntime} from './runtime.js?v=lower-voices-v42';
+import {EDITOR_CSS} from './styles.js?v=lower-voices-v42';
 // Change this one flag to keep saved layouts but remove the editing interface.
 export const ENABLE_EDITOR=true;
 const copy=value=>JSON.parse(JSON.stringify(value));

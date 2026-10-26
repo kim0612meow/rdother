@@ -479,7 +479,7 @@ test('pursuit immediately silences both scene music gains and restores exclusive
 test('all installed recordings have direct author, source and license credits, with exactly two attribution-required tracks',async()=>{
  const {AUDIO_CREDITS}=await import('../games/robberfather/audio-credits.js');const {AUDIO_FILES}=await import('../games/robberfather/audio-samples.js');
  const required=AUDIO_CREDITS.filter(item=>item.license==='CC BY 4.0');assert.deepEqual(required.map(item=>item.title).sort(),['Chase Pulse Faster','Despair and Triumph']);
- for(const url of Object.values(AUDIO_FILES)){const suffix=new URL(url).pathname.split('/').slice(-3).join('/');const credits=AUDIO_CREDITS.filter(item=>item.files.includes(suffix));assert.equal(credits.length,1,suffix);assert.ok(credits[0].author);if(credits[0].license==='Project recording'){assert.equal(credits[0].licenseUrl,'./assets/audio-v41/CREDITS.md');}else{assert.ok(credits[0].url.startsWith('https://'));assert.ok(credits[0].licenseUrl.startsWith('https://creativecommons.org/'));}}
+ for(const url of Object.values(AUDIO_FILES)){const suffix=new URL(url).pathname.split('/').slice(-3).join('/');const credits=AUDIO_CREDITS.filter(item=>item.files.includes(suffix));assert.equal(credits.length,1,suffix);assert.ok(credits[0].author);if(credits[0].license==='Project recording'){assert.equal(credits[0].licenseUrl,'./assets/audio-v42/CREDITS.md');}else{assert.ok(credits[0].url.startsWith('https://'));assert.ok(credits[0].licenseUrl.startsWith('https://creativecommons.org/'));}}
  assert.ok(AUDIO_CREDITS.every(item=>['CC0 1.0','CC BY 4.0','Project recording'].includes(item.license)));
 });
 
@@ -497,5 +497,5 @@ test('late-loading voice plays only while its detection chase remains active, an
 });
 test('recorded voices use their own volume bus as single playback sources',async()=>{
  const {SampleMixer}=await import('../games/robberfather/audio-samples.js');const routed=[],started=[];let source;const voiceBus={},effectsBus={};const gain={gain:{value:0},connect(to){routed.push(to);return this;},disconnect(){}};const mixer=Object.create(SampleMixer.prototype);Object.assign(mixer,{buffers:{voiceCaught:{duration:1.18},voiceWitness:{duration:.97}},voiceBus,master:effectsBus,c:{createGain:()=>gain,createBufferSource:()=>source={connect(){return gain;},start(){started.push(this.buffer);}}}});
- mixer.voice('voiceWitness');assert.equal(source.loop,false);assert.equal(started[0],mixer.buffers.voiceWitness);assert.equal(routed[0],voiceBus);assert.ok(gain.gain.value>0);
+ mixer.voice('voiceWitness');assert.equal(source.loop,false);assert.equal(started[0],mixer.buffers.voiceWitness);assert.equal(routed[0],voiceBus);assert.equal(gain.gain.value,.40);
 });
